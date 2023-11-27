@@ -1,9 +1,11 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { Logger } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  const logger = new Logger();
 
   const config = new DocumentBuilder()
     .setTitle('Attendance example')
@@ -14,6 +16,9 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('swagger', app, document);
 
+  logger.verbose('====================================');
+  logger.verbose('==== SERVER IS RUNNING ON 3000 =====');
+  logger.verbose('====================================');
   await app.listen(3000);
 }
 bootstrap();
