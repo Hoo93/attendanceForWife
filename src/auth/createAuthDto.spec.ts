@@ -2,6 +2,8 @@ import { plainToInstance } from 'class-transformer';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { validate, ValidationError } from 'class-validator';
 import {
+  INVALID_ID_MAX_LENGTH_MESSAGE,
+  INVALID_ID_MESSAGE,
   INVALID_ID_MIN_LENGTH_MESSAGE,
   INVALID_NAME_MAX_LENGTH_MESSAGE,
   INVALID_NAME_MESSAGE,
@@ -87,6 +89,37 @@ describe('create-auth.dto TEST', () => {
 
     expect(validationErrors[0].constraints.maxLength).toBe(
       INVALID_PASSWORD_MAX_LENGTH_MESSAGE,
+    );
+  });
+
+  it('아이디는 영문,숫자로 이루어져야 합니다.', async () => {
+    const invalidId = 'noSpecial#';
+    createAuthDto.id = invalidId;
+
+    const validationErrors = await validate(createAuthDto);
+
+    expect(validationErrors[0].constraints.matches).toBe(INVALID_ID_MESSAGE);
+  });
+
+  it('아이디는 6글자 이상이어야 합니다.', async () => {
+    const tooShortId = 'a1#';
+    createAuthDto.id = tooShortId;
+
+    const validationErrors = await validate(createAuthDto);
+
+    expect(validationErrors[0].constraints.minLength).toBe(
+      INVALID_ID_MIN_LENGTH_MESSAGE,
+    );
+  });
+
+  it('아이디는 12글자 이하이어야 합니다.', async () => {
+    const tooLongId = 'abcd123456789!';
+    createAuthDto.id = tooLongId;
+
+    const validationErrors = await validate(createAuthDto);
+
+    expect(validationErrors[0].constraints.maxLength).toBe(
+      INVALID_ID_MAX_LENGTH_MESSAGE,
     );
   });
 });
