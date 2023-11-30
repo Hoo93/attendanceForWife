@@ -3,6 +3,8 @@ import { CreateAuthDto } from './dto/create-auth.dto';
 import { validate, ValidationError } from 'class-validator';
 import {
   INVALID_ID_MIN_LENGTH_MESSAGE,
+  INVALID_NAME_MAX_LENGTH_MESSAGE,
+  INVALID_NAME_MESSAGE,
   INVALID_NAME_MIN_LENGTH_MESSAGE,
 } from './const/error-message';
 
@@ -21,7 +23,7 @@ describe('create-auth.dto TEST', () => {
     createAuthDto = plainToInstance(CreateAuthDto, dto);
   });
 
-  it('이름은 6글자 이상이어야 합니', async () => {
+  it('이름은 6글자 이상이어야 합니다.', async () => {
     const tooShortName = 'short';
     createAuthDto.name = tooShortName;
 
@@ -30,5 +32,25 @@ describe('create-auth.dto TEST', () => {
     expect(validationErrors[0].constraints.minLength).toBe(
       INVALID_NAME_MIN_LENGTH_MESSAGE,
     );
+  });
+
+  it('이름은 12글자 이하이어야 합니다.', async () => {
+    const tooLongName = 'abcd123456789';
+    createAuthDto.name = tooLongName;
+
+    const validationErrors = await validate(createAuthDto);
+    console.log(validationErrors[0]);
+    expect(validationErrors[0].constraints.maxLength).toBe(
+      INVALID_NAME_MAX_LENGTH_MESSAGE,
+    );
+  });
+
+  it('이름은 한글,영문,숫자로 이루어져야 합니다.', async () => {
+    const invalidName = 'noSpecial#';
+    createAuthDto.name = invalidName;
+
+    const validationErrors = await validate(createAuthDto);
+    console.log(validationErrors[0]);
+    expect(validationErrors[0].constraints.matches).toBe(INVALID_NAME_MESSAGE);
   });
 });
