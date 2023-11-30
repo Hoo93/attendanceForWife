@@ -2,6 +2,7 @@ import { plainToInstance } from 'class-transformer';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { validate, ValidationError } from 'class-validator';
 import {
+  INVALID_EMAIL_MESSAGE,
   INVALID_ID_MAX_LENGTH_MESSAGE,
   INVALID_ID_MESSAGE,
   INVALID_ID_MIN_LENGTH_MESSAGE,
@@ -133,5 +134,14 @@ describe('create-auth.dto TEST', () => {
     expect(validationErrors[0].constraints.matches).toBe(
       INVALID_PHONENUMBER_MESSAGE,
     );
+  });
+
+  it('이메일주소는 XXXX@XXXX.XXX 형식이어야 합니다.', async () => {
+    const invalidEmail = 'invalidEmailAddress';
+    createAuthDto.email = invalidEmail;
+
+    const validationErrors = await validate(createAuthDto);
+
+    expect(validationErrors[0].constraints.matches).toBe(INVALID_EMAIL_MESSAGE);
   });
 });
