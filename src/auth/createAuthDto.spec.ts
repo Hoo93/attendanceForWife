@@ -6,6 +6,9 @@ import {
   INVALID_NAME_MAX_LENGTH_MESSAGE,
   INVALID_NAME_MESSAGE,
   INVALID_NAME_MIN_LENGTH_MESSAGE,
+  INVALID_PASSWORD_MAX_LENGTH_MESSAGE,
+  INVALID_PASSWORD_MESSAGE,
+  INVALID_PASSWORD_MIN_LENGTH_MESSAGE,
 } from './const/error-message';
 
 describe('create-auth.dto TEST', () => {
@@ -28,7 +31,7 @@ describe('create-auth.dto TEST', () => {
     createAuthDto.name = tooShortName;
 
     const validationErrors = await validate(createAuthDto);
-    console.log(validationErrors[0]);
+
     expect(validationErrors[0].constraints.minLength).toBe(
       INVALID_NAME_MIN_LENGTH_MESSAGE,
     );
@@ -39,7 +42,7 @@ describe('create-auth.dto TEST', () => {
     createAuthDto.name = tooLongName;
 
     const validationErrors = await validate(createAuthDto);
-    console.log(validationErrors[0]);
+
     expect(validationErrors[0].constraints.maxLength).toBe(
       INVALID_NAME_MAX_LENGTH_MESSAGE,
     );
@@ -50,7 +53,40 @@ describe('create-auth.dto TEST', () => {
     createAuthDto.name = invalidName;
 
     const validationErrors = await validate(createAuthDto);
-    console.log(validationErrors[0]);
+
     expect(validationErrors[0].constraints.matches).toBe(INVALID_NAME_MESSAGE);
+  });
+
+  it('비밀번호는 각각 최소 1개 이상의 한글,영문,숫자로 이루어져야 합니다.', async () => {
+    const invalidPassword = 'noSpecial#';
+    createAuthDto.password = invalidPassword;
+
+    const validationErrors = await validate(createAuthDto);
+
+    expect(validationErrors[0].constraints.matches).toBe(
+      INVALID_PASSWORD_MESSAGE,
+    );
+  });
+
+  it('비밀번호는 6글자 이상이어야 합니다.', async () => {
+    const tooShortPassword = 'a1#';
+    createAuthDto.password = tooShortPassword;
+
+    const validationErrors = await validate(createAuthDto);
+
+    expect(validationErrors[0].constraints.minLength).toBe(
+      INVALID_PASSWORD_MIN_LENGTH_MESSAGE,
+    );
+  });
+
+  it('비밀번호는 12글자 이하이어야 합니다.', async () => {
+    const tooLongPassword = 'abcd123456789!';
+    createAuthDto.password = tooLongPassword;
+
+    const validationErrors = await validate(createAuthDto);
+
+    expect(validationErrors[0].constraints.maxLength).toBe(
+      INVALID_PASSWORD_MAX_LENGTH_MESSAGE,
+    );
   });
 });
