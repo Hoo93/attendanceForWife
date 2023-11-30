@@ -11,6 +11,7 @@ import {
   INVALID_PASSWORD_MAX_LENGTH_MESSAGE,
   INVALID_PASSWORD_MESSAGE,
   INVALID_PASSWORD_MIN_LENGTH_MESSAGE,
+  INVALID_PHONENUMBER_MESSAGE,
 } from './const/error-message';
 
 describe('create-auth.dto TEST', () => {
@@ -120,6 +121,17 @@ describe('create-auth.dto TEST', () => {
 
     expect(validationErrors[0].constraints.maxLength).toBe(
       INVALID_ID_MAX_LENGTH_MESSAGE,
+    );
+  });
+
+  it('핸드폰 번호는 01X-XXXX-XXXX 형식이어야 합니다.', async () => {
+    const invalidPhoneNumber = '01080981398';
+    createAuthDto.phoneNumber = invalidPhoneNumber;
+
+    const validationErrors = await validate(createAuthDto);
+
+    expect(validationErrors[0].constraints.matches).toBe(
+      INVALID_PHONENUMBER_MESSAGE,
     );
   });
 });
