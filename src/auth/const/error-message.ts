@@ -1,5 +1,3 @@
-export const MIN_NAME_LENGTH_ERROR_MESSAGE = `아이디는 `;
-
 export const INVALID_ID_MIN_LENGTH_MESSAGE =
   '아이디는 최소 6글자 이상이어야 합니다.';
 export const INVALID_ID_MAX_LENGTH_MESSAGE =
