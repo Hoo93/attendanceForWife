@@ -1,5 +1,4 @@
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
-import { User } from './users/entities/user.entity';
 
 export const ormConfig: TypeOrmModuleOptions = {
   type: 'mysql',
@@ -13,5 +12,4 @@ export const ormConfig: TypeOrmModuleOptions = {
   poolSize: 10,
   charset: 'utf8mb4',
   autoLoadEntities: true,
-  entities: [User],
 };
