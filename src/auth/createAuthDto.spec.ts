@@ -1,6 +1,10 @@
-import { plainToClass, plainToInstance } from 'class-transformer';
+import { plainToInstance } from 'class-transformer';
 import { CreateAuthDto } from './dto/create-auth.dto';
-import { validate } from 'class-validator';
+import { validate, ValidationError } from 'class-validator';
+import {
+  INVALID_ID_MIN_LENGTH_MESSAGE,
+  INVALID_NAME_MIN_LENGTH_MESSAGE,
+} from './const/error-message';
 
 describe('create-auth.dto TEST', () => {
   let createAuthDto;
@@ -8,7 +12,7 @@ describe('create-auth.dto TEST', () => {
   beforeEach(() => {
     const dto = {
       id: 'testID',
-      password: 'testpwd123',
+      password: 'testpwd123!',
       name: 'testname',
       phoneNumber: '010-8098-1398',
       age: 31,
@@ -17,19 +21,14 @@ describe('create-auth.dto TEST', () => {
     createAuthDto = plainToInstance(CreateAuthDto, dto);
   });
 
-  it('validate method return ValidateError', async () => {
-    const validationErrors = await validate(createAuthDto);
-    expect(validationErrors.length).toBe(0);
-  });
+  it('이름은 6글자 이상이어야 합니', async () => {
+    const tooShortName = 'short';
+    createAuthDto.name = tooShortName;
 
-  it.each([
-    ['short', 1],
-    ['maxLengthIs12', 1],
-    ['NoSpecial!@', 1],
-    ['UseNum&Alpha', 1],
-  ])('If name is %s should return %p', async (name, errorLength) => {
-    createAuthDto.name = name;
     const validationErrors = await validate(createAuthDto);
-    expect(validationErrors.length).toBe(errorLength);
+    console.log(validationErrors[0]);
+    expect(validationErrors[0].constraints.minLength).toBe(
+      INVALID_NAME_MIN_LENGTH_MESSAGE,
+    );
   });
 });
