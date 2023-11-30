@@ -1,15 +1,16 @@
 import { Column, CreateDateColumn, Entity, UpdateDateColumn } from 'typeorm';
+import { IsOptional } from 'class-validator';
 
 @Entity()
 export class BaseTimeEntity {
   @Column()
-  createId: number;
+  createId: string;
 
   @CreateDateColumn()
   createAt: Date;
 
   @Column()
-  updateId: number;
+  updateId?: string;
 
   @UpdateDateColumn()
   updateAt: Date;

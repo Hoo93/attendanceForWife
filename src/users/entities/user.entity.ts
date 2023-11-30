@@ -1,7 +1,9 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn, Unique } from 'typeorm';
 import { BaseTimeEntity } from '../BaseTimeEntity';
+import { IsOptional } from 'class-validator';
 
 @Entity()
+@Unique(['id'])
 export class User extends BaseTimeEntity {
   @PrimaryGeneratedColumn('uuid')
   no: string;
@@ -18,9 +20,9 @@ export class User extends BaseTimeEntity {
   @Column()
   phoneNumber: string;
 
-  @Column()
+  @Column({ nullable: true })
   age?: number;
 
-  @Column()
+  @Column({ nullable: true })
   email?: string;
 }
