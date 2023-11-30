@@ -1,6 +1,6 @@
 import { plainToInstance } from 'class-transformer';
 import { CreateAuthDto } from './dto/create-auth.dto';
-import { validate, ValidationError } from 'class-validator';
+import { validate } from 'class-validator';
 import {
   INVALID_EMAIL_MESSAGE,
   INVALID_ID_MAX_LENGTH_MESSAGE,
