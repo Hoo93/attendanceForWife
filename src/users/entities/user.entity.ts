@@ -16,7 +16,7 @@ export class User extends BaseTimeEntity {
   id: string;
 
   @Column({ comment: '회원 비밀번호', type: 'string' })
-  @ApiProperty({ comment: '회원 비밀번호', type: 'string' })
+  @ApiProperty({ description: '회원 비밀번호', type: 'string' })
   password: string;
 
   @Column({ comment: '회원 이름', type: 'string' })
@@ -29,7 +29,7 @@ export class User extends BaseTimeEntity {
 
   @Column({ nullable: true, comment: '회원 생년월일', type: 'string' })
   @ApiPropertyOptional({ description: '회원 생년월일', type: 'string' })
-  age?: string;
+  birthday?: string;
 
   @Column({ nullable: true, comment: '회원 이메일', type: 'string' })
   @ApiPropertyOptional({ description: '회원 이메일', type: 'string' })

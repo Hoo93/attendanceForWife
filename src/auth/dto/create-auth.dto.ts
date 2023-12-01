@@ -1,6 +1,5 @@
 import {
   IsEmail,
-  IsNumber,
   IsOptional,
   IsString,
   Matches,
@@ -8,6 +7,7 @@ import {
   MinLength,
 } from 'class-validator';
 import {
+  INVALID_BIRTHDAY_MESSAGE,
   INVALID_EMAIL_MESSAGE,
   INVALID_ID_MAX_LENGTH_MESSAGE,
   INVALID_ID_MESSAGE,
@@ -53,9 +53,12 @@ export class CreateAuthDto {
   })
   mobileNumber: string;
 
-  @IsNumber()
+  @IsString()
   @IsOptional()
-  age?: number;
+  @Matches(/^\d{6}$/, {
+    message: INVALID_BIRTHDAY_MESSAGE,
+  })
+  birthday?: string;
 
   @IsString()
   @IsOptional()
@@ -72,7 +75,7 @@ export class CreateAuthDto {
     user.name = this.name;
     user.mobileNumber = this.mobileNumber;
     user.email = this?.email || null;
-    user.age = this?.age || null;
+    user.birthday = this?.birthday || null;
     return user;
   }
 }

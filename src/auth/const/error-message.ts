@@ -20,3 +20,4 @@ export const INVALID_NAME_MESSAGE =
 export const INVALID_MOBILENUMBER_MESSAGE =
   '핸드폰 번호를 정확히 입력해 주세요.';
 export const INVALID_EMAIL_MESSAGE = '이메일 주소를 정확히 입력해 주세요.';
+export const INVALID_BIRTHDAY_MESSAGE = '생년월일 6자리를 입력해 주세요.';
