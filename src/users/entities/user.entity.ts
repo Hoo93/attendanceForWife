@@ -11,28 +11,28 @@ export class User extends BaseTimeEntity {
   @ApiProperty({ description: '회원번호' })
   no: string;
 
-  @Column({ comment: '회원 아이디', type: 'string' })
-  @ApiProperty({ description: '회원 아이디', type: 'string' })
+  @Column({ comment: '회원 아이디', type: 'varchar' })
+  @ApiProperty({ description: '회원 아이디', type: 'varchar' })
   id: string;
 
-  @Column({ comment: '회원 비밀번호', type: 'string' })
-  @ApiProperty({ description: '회원 비밀번호', type: 'string' })
+  @Column({ comment: '회원 비밀번호', type: 'varchar' })
+  @ApiProperty({ description: '회원 비밀번호', type: 'varchar' })
   password: string;
 
-  @Column({ comment: '회원 이름', type: 'string' })
-  @ApiProperty({ description: '회원 이름', type: 'string' })
+  @Column({ comment: '회원 이름', type: 'varchar' })
+  @ApiProperty({ description: '회원 이름', type: 'varchar' })
   name: string;
 
-  @Column({ comment: '회원 전화번호', type: 'string' })
-  @ApiProperty({ description: '회원 전화번호', type: 'string' })
+  @Column({ comment: '회원 전화번호', type: 'varchar' })
+  @ApiProperty({ description: '회원 전화번호', type: 'varchar' })
   mobileNumber: string;
 
-  @Column({ nullable: true, comment: '회원 생년월일', type: 'string' })
-  @ApiPropertyOptional({ description: '회원 생년월일', type: 'string' })
+  @Column({ nullable: true, comment: '회원 생년월일', type: 'varchar' })
+  @ApiPropertyOptional({ description: '회원 생년월일', type: 'varchar' })
   birthday?: string;
 
-  @Column({ nullable: true, comment: '회원 이메일', type: 'string' })
-  @ApiPropertyOptional({ description: '회원 이메일', type: 'string' })
+  @Column({ nullable: true, comment: '회원 이메일', type: 'varchar' })
+  @ApiPropertyOptional({ description: '회원 이메일', type: 'varchar' })
   email?: string;
 
   async hashPassword() {
