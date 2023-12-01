@@ -17,6 +17,6 @@ export const INVALID_NAME_MAX_LENGTH_MESSAGE =
 export const INVALID_NAME_MESSAGE =
   '이름은 한글,영문,숫자로만 이루어져야 합니다';
 
-export const INVALID_PHONENUMBER_MESSAGE =
+export const INVALID_MOBILENUMBER_MESSAGE =
   '핸드폰 번호를 정확히 입력해 주세요.';
 export const INVALID_EMAIL_MESSAGE = '이메일 주소를 정확히 입력해 주세요.';
