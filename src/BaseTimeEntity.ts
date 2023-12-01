@@ -1,5 +1,4 @@
 import { Column, CreateDateColumn, Entity, UpdateDateColumn } from 'typeorm';
-import { IsOptional } from 'class-validator';
 
 @Entity()
 export class BaseTimeEntity {
@@ -9,9 +8,9 @@ export class BaseTimeEntity {
   @CreateDateColumn()
   createAt: Date;
 
-  @Column()
-  updateId?: string;
+  @Column({ nullable: true })
+  updateId: string;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ nullable: true })
   updateAt: Date;
 }
