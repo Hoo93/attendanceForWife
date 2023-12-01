@@ -1,6 +1,7 @@
 import { Column, Entity, PrimaryGeneratedColumn, Unique } from 'typeorm';
 import { BaseTimeEntity } from '../BaseTimeEntity';
-import { IsOptional } from 'class-validator';
+import * as bcrypt from 'bcrypt';
+
 
 @Entity()
 @Unique(['id'])
@@ -25,4 +26,8 @@ export class User extends BaseTimeEntity {
 
   @Column({ nullable: true })
   email?: string;
+
+  async hashPassword() {
+    this.password = await bcrypt.hash(this.password,10)
+  }
 }
