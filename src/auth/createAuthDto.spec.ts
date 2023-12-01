@@ -42,7 +42,7 @@ describe('create-auth.dto TEST', () => {
     expect(user.mobileNumber).toBe(createAuthDto.mobileNumber);
   });
 
-  it('이름은 한글,영문,숫자로 이루어져야 합니다.', async () => {
+  it('이름은 한글,영문로 이루어져야 합니다.', async () => {
     const invalidName = 'noSpecial#';
     createAuthDto.name = invalidName;
 
@@ -52,7 +52,7 @@ describe('create-auth.dto TEST', () => {
   });
 
   it('이름은 6글자 이상이어야 합니다.', async () => {
-    const tooShortName = 'short';
+    const tooShortName = '짧';
     createAuthDto.name = tooShortName;
 
     const validationErrors = await validate(createAuthDto);
@@ -62,8 +62,8 @@ describe('create-auth.dto TEST', () => {
     );
   });
 
-  it('이름은 12글자 이하이어야 합니다.', async () => {
-    const tooLongName = 'abcd123456789';
+  it('이름은 20글자 이하이어야 합니다.', async () => {
+    const tooLongName = 'ThisNameIsTooLongForOurSystem';
     createAuthDto.name = tooLongName;
 
     const validationErrors = await validate(createAuthDto);
