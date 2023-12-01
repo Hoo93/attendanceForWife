@@ -11,8 +11,6 @@ export class AuthService {
   ) {}
   async signup(createAuthDto: CreateAuthDto) {
     const user = createAuthDto.toEntity();
-    user.createId = user.id;
-    user.updateId = user.id;
     return await this.userRepository.save(user);
   }
 
