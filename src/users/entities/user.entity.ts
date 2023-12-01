@@ -26,7 +26,5 @@ export class User extends BaseTimeEntity {
   @Column({ nullable: true })
   email?: string;
 
-  async hashPassword() {
-    this.password = await bcrypt.hash(this.password, 10);
-  }
+  async hashPassword() {}
 }
