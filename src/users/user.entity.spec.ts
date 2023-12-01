@@ -1,4 +1,3 @@
-import * as bcrypt from 'bcrypt';
 import { User } from './entities/user.entity';
 
 describe('User Entity Test', () => {
@@ -6,6 +5,7 @@ describe('User Entity Test', () => {
     const user = new User();
     const password = 'testpassword';
     user.password = password;
+
     await user.hashPassword();
     expect(user.password).not.toBe(password);
   });

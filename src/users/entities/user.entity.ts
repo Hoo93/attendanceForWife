@@ -1,6 +1,7 @@
 import { Column, Entity, PrimaryGeneratedColumn, Unique } from 'typeorm';
 import { BaseTimeEntity } from '../BaseTimeEntity';
 import * as bcrypt from 'bcrypt';
+import { SALT } from '../../auth/const/auth.const';
 
 @Entity()
 @Unique(['id'])
@@ -26,5 +27,7 @@ export class User extends BaseTimeEntity {
   @Column({ nullable: true })
   email?: string;
 
-  async hashPassword() {}
+  async hashPassword() {
+    this.password = await bcrypt.hash(this.password, SALT);
+  }
 }
