@@ -6,14 +6,15 @@ import {
   INVALID_ID_MAX_LENGTH_MESSAGE,
   INVALID_ID_MESSAGE,
   INVALID_ID_MIN_LENGTH_MESSAGE,
+  INVALID_MOBILENUMBER_MESSAGE,
   INVALID_NAME_MAX_LENGTH_MESSAGE,
   INVALID_NAME_MESSAGE,
   INVALID_NAME_MIN_LENGTH_MESSAGE,
   INVALID_PASSWORD_MAX_LENGTH_MESSAGE,
   INVALID_PASSWORD_MESSAGE,
   INVALID_PASSWORD_MIN_LENGTH_MESSAGE,
-  INVALID_PHONENUMBER_MESSAGE,
 } from './const/error-message';
+import { User } from '../users/entities/user.entity';
 
 describe('create-auth.dto TEST', () => {
   let createAuthDto;
@@ -28,6 +29,26 @@ describe('create-auth.dto TEST', () => {
       email: 'sksk8922@gmail.com',
     };
     createAuthDto = plainToInstance(CreateAuthDto, dto);
+  });
+
+  it('toEntity should return User Instance', () => {
+    const user = createAuthDto.toEntity();
+
+    expect(user).toBeInstanceOf(User);
+
+    expect(user.id).toBe(createAuthDto.id);
+    expect(user.password).toBe(createAuthDto.password);
+    expect(user.name).toBe(createAuthDto.name);
+    expect(user.phoneNumber).toBe(createAuthDto.phoneNumber);
+  });
+
+  it('이름은 한글,영문,숫자로 이루어져야 합니다.', async () => {
+    const invalidName = 'noSpecial#';
+    createAuthDto.name = invalidName;
+
+    const validationErrors = await validate(createAuthDto);
+
+    expect(validationErrors[0].constraints.matches).toBe(INVALID_NAME_MESSAGE);
   });
 
   it('이름은 6글자 이상이어야 합니다.', async () => {
@@ -50,15 +71,6 @@ describe('create-auth.dto TEST', () => {
     expect(validationErrors[0].constraints.maxLength).toBe(
       INVALID_NAME_MAX_LENGTH_MESSAGE,
     );
-  });
-
-  it('이름은 한글,영문,숫자로 이루어져야 합니다.', async () => {
-    const invalidName = 'noSpecial#';
-    createAuthDto.name = invalidName;
-
-    const validationErrors = await validate(createAuthDto);
-
-    expect(validationErrors[0].constraints.matches).toBe(INVALID_NAME_MESSAGE);
   });
 
   it('비밀번호는 각각 최소 1개 이상의 한글,영문,숫자로 이루어져야 합니다.', async () => {
@@ -126,13 +138,13 @@ describe('create-auth.dto TEST', () => {
   });
 
   it('핸드폰 번호는 01X-XXXX-XXXX 형식이어야 합니다.', async () => {
-    const invalidPhoneNumber = '01080981398';
-    createAuthDto.phoneNumber = invalidPhoneNumber;
+    const invalidMobileNumber = '01080981398';
+    createAuthDto.mobileNumber = invalidMobileNumber;
 
     const validationErrors = await validate(createAuthDto);
 
     expect(validationErrors[0].constraints.matches).toBe(
-      INVALID_PHONENUMBER_MESSAGE,
+      INVALID_MOBILENUMBER_MESSAGE,
     );
   });
 
