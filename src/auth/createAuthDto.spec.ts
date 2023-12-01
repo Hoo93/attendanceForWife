@@ -24,7 +24,7 @@ describe('create-auth.dto TEST', () => {
       id: 'testID',
       password: 'testpwd123!',
       name: 'testname',
-      phoneNumber: '010-8098-1398',
+      mobileNumber: '010-8098-1398',
       age: 31,
       email: 'sksk8922@gmail.com',
     };
@@ -39,7 +39,7 @@ describe('create-auth.dto TEST', () => {
     expect(user.id).toBe(createAuthDto.id);
     expect(user.password).toBe(createAuthDto.password);
     expect(user.name).toBe(createAuthDto.name);
-    expect(user.phoneNumber).toBe(createAuthDto.phoneNumber);
+    expect(user.mobileNumber).toBe(createAuthDto.mobileNumber);
   });
 
   it('이름은 한글,영문,숫자로 이루어져야 합니다.', async () => {
