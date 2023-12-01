@@ -12,27 +12,27 @@ export class User extends BaseTimeEntity {
   no: string;
 
   @Column({ comment: '회원 아이디', type: 'varchar' })
-  @ApiProperty({ description: '회원 아이디', type: 'varchar' })
+  @ApiProperty({ description: '회원 아이디', type: 'string' })
   id: string;
 
   @Column({ comment: '회원 비밀번호', type: 'varchar' })
-  @ApiProperty({ description: '회원 비밀번호', type: 'varchar' })
+  @ApiProperty({ description: '회원 비밀번호', type: 'string' })
   password: string;
 
   @Column({ comment: '회원 이름', type: 'varchar' })
-  @ApiProperty({ description: '회원 이름', type: 'varchar' })
+  @ApiProperty({ description: '회원 이름', type: 'string' })
   name: string;
 
   @Column({ comment: '회원 전화번호', type: 'varchar' })
-  @ApiProperty({ description: '회원 전화번호', type: 'varchar' })
+  @ApiProperty({ description: '회원 전화번호', type: 'string' })
   mobileNumber: string;
 
   @Column({ nullable: true, comment: '회원 생년월일', type: 'varchar' })
-  @ApiPropertyOptional({ description: '회원 생년월일', type: 'varchar' })
+  @ApiPropertyOptional({ description: '회원 생년월일', type: 'string' })
   birthday?: string;
 
   @Column({ nullable: true, comment: '회원 이메일', type: 'varchar' })
-  @ApiPropertyOptional({ description: '회원 이메일', type: 'varchar' })
+  @ApiPropertyOptional({ description: '회원 이메일', type: 'string' })
   email?: string;
 
   async hashPassword() {
