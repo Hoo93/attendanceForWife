@@ -36,7 +36,7 @@ describe('AuthService Test', function () {
     expect(service.signup).toBeDefined();
   });
 
-  it('signup return User without password', () => {
+  it('signup return User without password', async () => {
     const dto = new CreateAuthDto();
     dto.id = 'testID';
     dto.password = 'testpwd123!';
@@ -45,12 +45,17 @@ describe('AuthService Test', function () {
     dto.birthday = '931117';
     dto.email = 'sksk8922@gmail.com';
 
-    const signupResult = service.signup(dto);
-    expect(signupResult.id).toBe(dto.id);
-    expect(signupResult.name).toBe(dto.name);
-    expect(signupResult.mobileNumber).toBe(dto.mobileNumber);
-    expect(signupResult.birthday).toBe(dto.birthday);
-    expect(signupResult.email).toBe(dto.email);
+    const expectedResult = {
+      id: 'testID',
+      name: 'testname',
+      mobileNumber: '010-8098-1398',
+      birthday: '931117',
+      email: 'sksk8922@gmail.com',
+      createId: 'testID',
+    };
+
+    const signupResult = await service.signup(dto);
+    expect(signupResult).toEqual(expectedResult);
     expect(signupResult.password).not.toBeDefined();
   });
 });
