@@ -95,7 +95,7 @@ export class CreateAuthDto {
   })
   email?: string;
 
-  toEntity() {
+  toEntity(createdAt = new Date()) {
     const user = new User();
     user.id = this.id;
     user.password = this.password;
@@ -104,6 +104,7 @@ export class CreateAuthDto {
     user.email = this?.email || null;
     user.birthday = this?.birthday || null;
     user.createId = this.id;
+    user.createdAt = createAt;
     return user;
   }
 }

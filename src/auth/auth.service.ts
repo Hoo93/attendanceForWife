@@ -11,6 +11,7 @@ export class AuthService {
   ) {}
   async signup(createAuthDto: CreateAuthDto): Promise<Partial<User>> {
     const user = createAuthDto.toEntity();
+    await user.hashPassword();
     const { password, ...result } = await this.userRepository.save(user);
     return result;
   }

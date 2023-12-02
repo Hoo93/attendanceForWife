@@ -6,11 +6,11 @@ export class BaseTimeEntity {
   createId: string;
 
   @CreateDateColumn()
-  createAt: Date;
+  createdAt: Date;
 
   @Column({ nullable: true })
   updateId: string;
 
   @UpdateDateColumn({ nullable: true })
-  updateAt: Date;
+  updatedAt: Date;
 }
