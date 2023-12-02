@@ -1,12 +1,11 @@
-import { Repository } from "typeorm";
-import { User } from "../users/entities/user.entity";
-import { EntityManager } from "typeorm/entity-manager/EntityManager";
-import { Inject, Injectable } from "@nestjs/common";
+import { User } from '../users/entities/user.entity';
+import { CreateAuthDto } from './dto/create-auth.dto';
 
-type MockRepository<T = any> = Partial<Record<keyof T, jest.Mock>>
-
-@Injectable()
 export class MockUserRepository {
   private users: User[] = [];
 
+  public save(createAuthDto: CreateAuthDto) {
+    const { password, ...result } = createAuthDto;
+    return result;
+  }
 }
