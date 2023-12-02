@@ -9,9 +9,10 @@ export class AuthService {
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
   ) {}
-  async signup(createAuthDto: CreateAuthDto) {
+  async signup(createAuthDto: CreateAuthDto): Promise<Partial<User>> {
     const user = createAuthDto.toEntity();
-    return await this.userRepository.save(user);
+    const { password, ...result } = await this.userRepository.save(user);
+    return result;
   }
 
   async validateUser(id: string, password: string) {
