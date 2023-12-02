@@ -104,7 +104,7 @@ export class CreateAuthDto {
     user.email = this?.email || null;
     user.birthday = this?.birthday || null;
     user.createId = this.id;
-    user.createdAt = createAt;
+    user.createdAt = createdAt;
     return user;
   }
 }
