@@ -1,10 +1,10 @@
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { User } from '../users/entities/user.entity';
-import { Repository } from 'typeorm';
 import { MockUserRepository } from './mockUserRepository';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthService } from './auth.service';
 import { CreateAuthDto } from './dto/create-auth.dto';
+import * as bcrypt from 'bcrypt';
 
 // type MockRepository<T = any> = Partial<Record<keyof T, jest.Mock>>;
 // const mockRepository = () => ({
@@ -14,7 +14,7 @@ import { CreateAuthDto } from './dto/create-auth.dto';
 // });
 describe('AuthService Test', function () {
   let service: AuthService;
-  let userRepository: Repository<User>;
+  let userRepository: MockUserRepository;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -28,6 +28,7 @@ describe('AuthService Test', function () {
     }).compile();
 
     service = module.get<AuthService>(AuthService);
+    userRepository = module.get<MockUserRepository>(getRepositoryToken(User));
   });
 
   it('authService should be defined', function () {
@@ -53,5 +54,20 @@ describe('AuthService Test', function () {
     expect(signupResult.email).toBe(dto.email);
 
     expect(signupResult.password).not.toBeDefined();
+  });
+
+  describe('Validate Method Test', () => {
+    it('should return User without password', async () => {
+      jest
+        .spyOn(bcrypt, 'compare')
+        .mockImplementationOnce(() => Promise.resolve(true));
+
+      const id = 'TestUser1';
+
+      const found = await userRepository.findOne({ where: { id: id } });
+
+      const result = await service.validateUser('TestUser1', 'pwd123!@#');
+      expect(result).toEqual(found);
+    });
   });
 });
