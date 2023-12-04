@@ -70,4 +70,8 @@ describe('AuthService Test', function () {
       expect(result).toEqual(found);
     });
   });
+
+  describe('signin method test', () => {
+    it('should return access-token', () => {});
+  });
 });
