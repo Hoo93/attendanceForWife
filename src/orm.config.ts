@@ -2,11 +2,11 @@ import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 
 export const ormConfig: TypeOrmModuleOptions = {
   type: 'mysql',
-  port: 3306,
+  port: 11100,
   host: 'localhost',
   username: 'root',
   password: 'test',
-  database: 'attendance_express',
+  database: 'sys',
   synchronize: true,
   logging: true,
   poolSize: 10,
