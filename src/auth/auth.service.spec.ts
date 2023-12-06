@@ -71,7 +71,12 @@ describe('AuthService Test', function () {
     });
   });
 
-  describe('signin method test', () => {
-    it('should return access-token', () => {});
+  describe('signin method test',  () => {
+    it('should return access-token', async() => {
+      const id = 'TestUser1';
+
+      const result = await service.signin(id, password)
+      expect(result).toHaveProperty('access-token')
+    });
   });
 });
