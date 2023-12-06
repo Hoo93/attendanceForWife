@@ -25,4 +25,8 @@ export class AuthService {
     }
     throw new BadRequestException('ID 또는 비밀번호가 정확하지 않습니다.');
   }
+
+  async signin(id: string, password: string) {
+    return
+  }
 }
