@@ -6,6 +6,8 @@ import { AuthService } from './auth.service';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import * as bcrypt from 'bcrypt';
 import { SigninDto } from "./dto/signin.dto";
+import { JwtService } from "@nestjs/jwt";
+import { MockJwtService } from "./mockJwtService";
 
 // type MockRepository<T = any> = Partial<Record<keyof T, jest.Mock>>;
 // const mockRepository = () => ({
@@ -16,8 +18,11 @@ import { SigninDto } from "./dto/signin.dto";
 describe('AuthService Test', function () {
   let service: AuthService;
   let userRepository: MockUserRepository;
+  let jwtService: MockJwtService;
 
   beforeEach(async () => {
+
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AuthService,
@@ -25,11 +30,16 @@ describe('AuthService Test', function () {
           provide: getRepositoryToken(User),
           useClass: MockUserRepository,
         },
+        {
+          provide:JwtService,
+          useClass: MockJwtService
+        }
       ],
     }).compile();
 
     service = module.get<AuthService>(AuthService);
     userRepository = module.get<MockUserRepository>(getRepositoryToken(User));
+    jwtService = module.get<JwtService>(JwtService);
   });
 
   it('authService should be defined', function () {
