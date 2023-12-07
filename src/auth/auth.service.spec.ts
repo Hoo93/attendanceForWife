@@ -82,6 +82,10 @@ describe('AuthService Test', function () {
 
   describe('signin method test', () => {
     it('should return access-token', async () => {
+      jest
+        .spyOn(bcrypt, 'compare')
+        .mockImplementationOnce(() => Promise.resolve(true));
+
       const signinDto: SigninDto = new SigninDto();
       signinDto.id = 'TestUser1';
       signinDto.password = 'pwd123!@#';
