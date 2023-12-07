@@ -23,18 +23,20 @@ export class AuthService {
 
   async validateUser(id: string, password: string) {
     const user = await this.userRepository.findOne({ where: { id } });
-    if (user && (await bcrypt.compare(user.password, password))) {
-      const { password, ...result } = user;
-      return result;
+    if (user && (await bcrypt.compare(password, user.password))) {
+      return user;
     }
     throw new BadRequestException('ID 또는 비밀번호가 정확하지 않습니다.');
   }
 
   async signin(signinDto: SigninDto) {
+    const user = await this.validateUser(signinDto.id, signinDto.password);
+
     const payload = {
-      id: signinDto.id,
-      password: signinDto.password,
+      id: user.id,
+      password: user.password,
     };
+
     const result = {
       access_token: this.jwtService.sign(payload, {
         secret: jwtConstants.secret,

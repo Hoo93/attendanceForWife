@@ -36,7 +36,7 @@ export class AuthController {
     type: SigninDto,
     description: '로그인 DTO',
   })
-  signin(@Body() signinDto: SigninDto) {
+  async signin(@Body() signinDto: SigninDto) {
     return this.authService.signin(signinDto);
   }
 }
