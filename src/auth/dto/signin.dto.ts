@@ -1,10 +1,20 @@
-import { IsString } from "class-validator";
+import { ApiProperty } from '@nestjs/swagger';
+import { IsString } from 'class-validator';
 
 export class SigninDto {
-
+  @ApiProperty({
+    description: '로그인 ID',
+    type: 'string',
+    example: 'testID',
+  })
   @IsString()
-  id:string;
+  id: string;
 
+  @ApiProperty({
+    description: '회원 비밀번호',
+    type: 'string',
+    example: 'pwd123!@#',
+  })
   @IsString()
-  password:string
+  password: string;
 }
