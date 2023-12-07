@@ -35,6 +35,11 @@ export class AuthService {
       id: signinDto.id,
       password: signinDto.password,
     };
-    return this.jwtService.sign(payload, { secret: jwtConstants.secret });
+    const result = {
+      access_token: this.jwtService.sign(payload, {
+        secret: jwtConstants.secret,
+      }),
+    };
+    return result;
   }
 }
