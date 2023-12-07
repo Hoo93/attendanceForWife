@@ -5,6 +5,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AuthService } from './auth.service';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import * as bcrypt from 'bcrypt';
+import { SigninDto } from "./dto/signin.dto";
 
 // type MockRepository<T = any> = Partial<Record<keyof T, jest.Mock>>;
 // const mockRepository = () => ({
@@ -73,9 +74,11 @@ describe('AuthService Test', function () {
 
   describe('signin method test',  () => {
     it('should return access-token', async() => {
-      const id = 'TestUser1';
+      const signinDto:SigninDto = new SigninDto();
+      signinDto.id = 'TestUser1';
+      signinDto.password = 'pwd123!@#';
 
-      const result = await service.signin(id, password)
+      const result = await service.signin(signinDto)
       expect(result).toHaveProperty('access-token')
     });
   });

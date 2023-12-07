@@ -4,11 +4,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../users/entities/user.entity';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
+import { JwtService } from "@nestjs/jwt";
+import { SigninDto } from "./dto/signin.dto";
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
+    private jwtService:JwtService,
   ) {}
   async signup(createAuthDto: CreateAuthDto): Promise<Partial<User>> {
     const user = createAuthDto.toEntity();
@@ -26,7 +29,7 @@ export class AuthService {
     throw new BadRequestException('ID 또는 비밀번호가 정확하지 않습니다.');
   }
 
-  async signin(id: string, password: string) {
+  async signin(signinDto: SigninDto) {
     return
   }
 }
