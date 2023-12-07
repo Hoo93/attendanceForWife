@@ -4,15 +4,15 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../users/entities/user.entity';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
-import { JwtService } from "@nestjs/jwt";
-import { SigninDto } from "./dto/signin.dto";
-import { jwtConstants } from "./const/auth.const";
+import { JwtService } from '@nestjs/jwt';
+import { SigninDto } from './dto/signin.dto';
+import { jwtConstants } from './const/auth.const';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
-    private jwtService:JwtService,
+    private jwtService: JwtService,
   ) {}
   async signup(createAuthDto: CreateAuthDto): Promise<Partial<User>> {
     const user = createAuthDto.toEntity();
@@ -33,8 +33,8 @@ export class AuthService {
   async signin(signinDto: SigninDto) {
     const payload = {
       id: signinDto.id,
-      password : signinDto.password
-    }
-    return this.jwtService.sign(payload,{secret:jwtConstants.secret})
+      password: signinDto.password,
+    };
+    return this.jwtService.sign(payload, { secret: jwtConstants.secret });
   }
 }

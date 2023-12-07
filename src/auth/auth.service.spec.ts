@@ -5,9 +5,9 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AuthService } from './auth.service';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import * as bcrypt from 'bcrypt';
-import { SigninDto } from "./dto/signin.dto";
-import { JwtService } from "@nestjs/jwt";
-import { MockJwtService } from "./mockJwtService";
+import { SigninDto } from './dto/signin.dto';
+import { JwtService } from '@nestjs/jwt';
+import { MockJwtService } from './mockJwtService';
 
 // type MockRepository<T = any> = Partial<Record<keyof T, jest.Mock>>;
 // const mockRepository = () => ({
@@ -21,8 +21,6 @@ describe('AuthService Test', function () {
   let jwtService: MockJwtService;
 
   beforeEach(async () => {
-
-
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AuthService,
@@ -31,15 +29,15 @@ describe('AuthService Test', function () {
           useClass: MockUserRepository,
         },
         {
-          provide:JwtService,
-          useClass: MockJwtService
-        }
+          provide: JwtService,
+          useClass: MockJwtService,
+        },
       ],
     }).compile();
 
     service = module.get<AuthService>(AuthService);
     userRepository = module.get<MockUserRepository>(getRepositoryToken(User));
-    jwtService = module.get<JwtService>(JwtService);
+    jwtService = module.get<MockJwtService>(JwtService);
   });
 
   it('authService should be defined', function () {
@@ -82,14 +80,14 @@ describe('AuthService Test', function () {
     });
   });
 
-  describe('signin method test',  () => {
-    it('should return access-token', async() => {
-      const signinDto:SigninDto = new SigninDto();
+  describe('signin method test', () => {
+    it('should return access-token', async () => {
+      const signinDto: SigninDto = new SigninDto();
       signinDto.id = 'TestUser1';
       signinDto.password = 'pwd123!@#';
 
-      const result = await service.signin(signinDto)
-      expect(result).toHaveProperty('access-token')
+      const result = await service.signin(signinDto);
+      expect(result).toBe('access_token');
     });
   });
 });
