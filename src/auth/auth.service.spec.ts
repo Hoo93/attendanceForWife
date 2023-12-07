@@ -87,7 +87,7 @@ describe('AuthService Test', function () {
       signinDto.password = 'pwd123!@#';
 
       const result = await service.signin(signinDto);
-      expect(result).toBe('access_token');
+      expect(result).toHaveProperty('access_token');
     });
   });
 });
