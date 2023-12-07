@@ -6,6 +6,7 @@ import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from "@nestjs/jwt";
 import { SigninDto } from "./dto/signin.dto";
+import { jwtConstants } from "./const/auth.const";
 
 @Injectable()
 export class AuthService {
@@ -30,6 +31,10 @@ export class AuthService {
   }
 
   async signin(signinDto: SigninDto) {
-    return
+    const payload = {
+      id: signinDto.id,
+      password : signinDto.password
+    }
+    return this.jwtService.sign(payload,{secret:jwtConstants.secret})
   }
 }
