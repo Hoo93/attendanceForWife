@@ -3,6 +3,7 @@ import { AuthService } from './auth.service';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { User } from '../users/entities/user.entity';
+import { SigninDto } from './dto/signin.dto';
 
 @Controller('auth')
 @ApiTags('인증')
@@ -22,5 +23,20 @@ export class AuthController {
   })
   signup(@Body() createAuthDto: CreateAuthDto) {
     return this.authService.signup(createAuthDto);
+  }
+
+  @Post('/signin')
+  @ApiOperation({ summary: '로그인' })
+  @ApiResponse({
+    status: 200,
+    description: '로그인',
+    type: String,
+  })
+  @ApiBody({
+    type: SigninDto,
+    description: '로그인 DTO',
+  })
+  signin(@Body() signinDto: SigninDto) {
+    return this.authService.signin(signinDto);
   }
 }
