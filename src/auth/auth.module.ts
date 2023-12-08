@@ -3,7 +3,6 @@ import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from '../users/entities/user.entity';
-import { LocalStrategy } from './local.strategy';
 import { UsersModule } from '../users/users.module';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './jwt/jwt.strategy';
@@ -21,6 +20,6 @@ import { jwtConstants } from './const/auth.const';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, User, LocalStrategy],
+  providers: [AuthService, User],
 })
 export class AuthModule {}
