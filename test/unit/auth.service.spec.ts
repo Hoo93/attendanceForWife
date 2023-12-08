@@ -48,7 +48,7 @@ describe('AuthService Test', function () {
 
   it('signup return User without password', async () => {
     const dto = new CreateAuthDto();
-    dto.id = 'testID';
+    dto.userId = 'testID';
     dto.password = 'testpwd123!';
     dto.name = 'testname';
     dto.mobileNumber = '010-8098-1398';
@@ -56,7 +56,7 @@ describe('AuthService Test', function () {
     dto.email = 'sksk8922@gmail.com';
 
     const signupResult = await service.signup(dto);
-    expect(signupResult.id).toBe(dto.id);
+    expect(signupResult.userId).toBe(dto.userId);
     expect(signupResult.name).toBe(dto.name);
     expect(signupResult.mobileNumber).toBe(dto.mobileNumber);
     expect(signupResult.birthday).toBe(dto.birthday);
@@ -71,9 +71,9 @@ describe('AuthService Test', function () {
         .spyOn(bcrypt, 'compare')
         .mockImplementationOnce(() => Promise.resolve(true));
 
-      const id = 'TestUser1';
+      const userId = 'TestUser1';
 
-      const found = await userRepository.findOne({ where: { id: id } });
+      const found = await userRepository.findOne({ where: { userId: userId } });
 
       const result = await service.validateUser('TestUser1', 'pwd123!@#');
       expect(result).toEqual(found);
@@ -87,7 +87,7 @@ describe('AuthService Test', function () {
         .mockImplementationOnce(() => Promise.resolve(true));
 
       const signinDto: SigninDto = new SigninDto();
-      signinDto.id = 'TestUser1';
+      signinDto.userId = 'TestUser1';
       signinDto.password = 'pwd123!@#';
 
       const result = await service.signin(signinDto);

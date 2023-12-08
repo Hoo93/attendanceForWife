@@ -21,7 +21,7 @@ describe('create-auth.dto TEST', () => {
 
   beforeEach(() => {
     const dto = {
-      id: 'testID',
+      userId: 'testID',
       password: 'testpwd123!',
       name: 'testname',
       mobileNumber: '010-8098-1398',
@@ -36,7 +36,7 @@ describe('create-auth.dto TEST', () => {
 
     expect(user).toBeInstanceOf(User);
 
-    expect(user.id).toBe(createAuthDto.id);
+    expect(user.userId).toBe(createAuthDto.userId);
     expect(user.password).toBe(createAuthDto.password);
     expect(user.name).toBe(createAuthDto.name);
     expect(user.mobileNumber).toBe(createAuthDto.mobileNumber);
@@ -108,7 +108,7 @@ describe('create-auth.dto TEST', () => {
 
   it('아이디는 영문,숫자로 이루어져야 합니다.', async () => {
     const invalidId = 'noSpecial#';
-    createAuthDto.id = invalidId;
+    createAuthDto.userId = invalidId;
 
     const validationErrors = await validate(createAuthDto);
 
@@ -117,7 +117,7 @@ describe('create-auth.dto TEST', () => {
 
   it('아이디는 6글자 이상이어야 합니다.', async () => {
     const tooShortId = 'a1#';
-    createAuthDto.id = tooShortId;
+    createAuthDto.userId = tooShortId;
 
     const validationErrors = await validate(createAuthDto);
 
@@ -128,7 +128,7 @@ describe('create-auth.dto TEST', () => {
 
   it('아이디는 12글자 이하이어야 합니다.', async () => {
     const tooLongId = 'abcd123456789!';
-    createAuthDto.id = tooLongId;
+    createAuthDto.userId = tooLongId;
 
     const validationErrors = await validate(createAuthDto);
 

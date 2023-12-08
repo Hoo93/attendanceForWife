@@ -9,11 +9,11 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 export class User extends BaseTimeEntity {
   @PrimaryGeneratedColumn('uuid', { comment: '회원번호' })
   @ApiProperty({ description: '회원번호' })
-  no: string;
+  id: string;
 
   @Column({ comment: '회원 아이디', type: 'varchar' })
   @ApiProperty({ description: '회원 아이디', type: 'string' })
-  id: string;
+  userId: string;
 
   @Column({ comment: '회원 비밀번호', type: 'varchar' })
   @ApiProperty({ description: '회원 비밀번호', type: 'string' })

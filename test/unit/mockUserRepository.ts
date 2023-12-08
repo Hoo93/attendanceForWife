@@ -6,25 +6,25 @@ import { plainToClass } from 'class-transformer';
 export class MockUserRepository {
   private users: User[] = [
     plainToClass(User, {
-      id: 'TestUser1',
+      userId: 'TestUser1',
       password: 'pwd123!@#',
       email: 'email@gmail.com',
       birthday: '931117',
       mobileNumber: '010-8098-1398',
     }),
     plainToClass(User, {
-      id: 'TestUser2',
+      userId: 'TestUser2',
       password: 'pwd123!@#',
-      email: 'email@gmail.com',
-      birthday: '931117',
-      mobileNumber: '010-8098-1398',
+      email: 'test@gmail.com',
+      birthday: '930519',
+      mobileNumber: '010-1234-1398',
     }),
     plainToClass(User, {
-      id: 'TestUser3',
+      userId: 'TestUser3',
       password: 'pwd123!@#',
-      email: 'email@gmail.com',
-      birthday: '931117',
-      mobileNumber: '010-8098-1398',
+      email: 'default@gmail.com',
+      birthday: '890222',
+      mobileNumber: '010-5678-1398',
     }),
   ];
 

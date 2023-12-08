@@ -21,8 +21,8 @@ export class AuthService {
     return result;
   }
 
-  async validateUser(id: string, password: string) {
-    const user = await this.userRepository.findOne({ where: { id } });
+  async validateUser(userId: string, password: string) {
+    const user = await this.userRepository.findOne({ where: { userId } });
     if (user && (await bcrypt.compare(password, user.password))) {
       return user;
     }
@@ -30,10 +30,10 @@ export class AuthService {
   }
 
   async signin(signinDto: SigninDto) {
-    const user = await this.validateUser(signinDto.id, signinDto.password);
+    const user = await this.validateUser(signinDto.userId, signinDto.password);
 
     const payload = {
-      id: user.id,
+      userId: user.userId,
       password: user.password,
     };
 
