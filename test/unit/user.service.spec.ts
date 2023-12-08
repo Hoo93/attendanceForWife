@@ -42,6 +42,11 @@ describe('UserService Test', function () {
     const user = await service.findOneById(id);
 
     expect(user.id).toBe(id)
+  })
 
+  it('findAll returns all users', async () => {
+    const users:User[] = await service.findAll()
+
+    expect(users.length).not.toBe(0)
   })
 });
