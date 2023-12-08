@@ -1,5 +1,5 @@
 import { plainToInstance } from 'class-transformer';
-import { CreateAuthDto } from './dto/create-auth.dto';
+import { CreateAuthDto } from '../../src/auth/dto/create-auth.dto';
 import { validate } from 'class-validator';
 import {
   INVALID_EMAIL_MESSAGE,
@@ -13,8 +13,8 @@ import {
   INVALID_PASSWORD_MAX_LENGTH_MESSAGE,
   INVALID_PASSWORD_MESSAGE,
   INVALID_PASSWORD_MIN_LENGTH_MESSAGE,
-} from './const/error-message';
-import { User } from '../users/entities/user.entity';
+} from '../../src/auth/const/error-message';
+import { User } from '../../src/users/entities/user.entity';
 
 describe('create-auth.dto TEST', () => {
   let createAuthDto;

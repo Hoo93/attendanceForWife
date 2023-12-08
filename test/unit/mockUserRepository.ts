@@ -1,5 +1,5 @@
-import { User } from '../users/entities/user.entity';
-import { CreateAuthDto } from './dto/create-auth.dto';
+import { User } from '../../src/users/entities/user.entity';
+import { CreateAuthDto } from '../../src/auth/dto/create-auth.dto';
 import { NotFoundException } from '@nestjs/common';
 import { plainToClass } from 'class-transformer';
 
