@@ -4,6 +4,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
+import { Pagination } from '../common/pagination';
 
 @Injectable()
 export class UsersService {
@@ -14,8 +15,15 @@ export class UsersService {
     return 'This action adds a new user';
   }
 
-  async findAll() {
-    return `This action returns all users`;
+  async findAll(pagination: Pagination) {
+    const [list, count] = await this.userRepository.findAndCount({
+      ...pagination,
+    });
+
+    return {
+      list: list,
+      count: count,
+    };
   }
 
   async findOne(id: number) {
@@ -23,7 +31,7 @@ export class UsersService {
   }
 
   async findOneById(id: string) {
-    return this.userRepository.findOne({where:{id}});
+    return this.userRepository.findOne({ where: { id } });
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {
