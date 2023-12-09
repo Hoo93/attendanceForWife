@@ -6,7 +6,7 @@ import { plainToClass } from 'class-transformer';
 export class MockUserRepository {
   private users: User[] = [
     plainToClass(User, {
-      id :'TEST_1',
+      id: 'TEST_1',
       userId: 'TestUser1',
       password: 'pwd123!@#',
       email: 'email@gmail.com',
@@ -14,7 +14,7 @@ export class MockUserRepository {
       mobileNumber: '010-8098-1398',
     }),
     plainToClass(User, {
-      id :'TEST_2',
+      id: 'TEST_2',
       userId: 'TestUser2',
       password: 'pwd123!@#',
       email: 'test@gmail.com',
@@ -22,7 +22,7 @@ export class MockUserRepository {
       mobileNumber: '010-1234-1398',
     }),
     plainToClass(User, {
-      id :'TEST_3',
+      id: 'TEST_3',
       userId: 'TestUser3',
       password: 'pwd123!@#',
       email: 'default@gmail.com',
@@ -42,13 +42,19 @@ export class MockUserRepository {
   }
 
   public async findOne(options) {
-    const property = Object.keys(options)[0]
+    const property = Object.keys(options)[0];
 
-    const user: User = this.users.find((user) => user[property] === options.where[property]);
+    const user: User = this.users.find(
+      (user) => user[property] === options.where[property],
+    );
     if (!user) {
       throw new NotFoundException('해당 ID의 유저가 없습니다.');
     }
     const { password, ...result } = user;
     return result;
+  }
+
+  public async findAll() {
+    return this.users;
   }
 }

@@ -3,7 +3,7 @@ import { User } from '../../src/users/entities/user.entity';
 import { MockUserRepository } from './mockUserRepository';
 import { Test, TestingModule } from '@nestjs/testing';
 import { MockJwtService } from './mockJwtService';
-import { UsersService } from "../../dist/users/users.service";
+import { UsersService } from '../../src/users/users.service';
 
 // type MockRepository<T = any> = Partial<Record<keyof T, jest.Mock>>;
 // const mockRepository = () => ({
@@ -37,16 +37,20 @@ describe('UserService Test', function () {
   });
 
   it('findOneById should returns exact user', async () => {
-    const id = 'TEST_1'
+    const id = 'TEST_1';
 
     const user = await service.findOneById(id);
 
-    expect(user.id).toBe(id)
-  })
+    expect(user.id).toBe(id);
+  });
 
   it('findAll returns all users', async () => {
-    const users:User[] = await service.findAll()
+    const pagination = {
+      skip: 0,
+      take: 2,
+    };
+    const users: User[] = await service.findAll(pagination);
 
-    expect(users.length).not.toBe(0)
-  })
+    expect(users.length).toBe(2);
+  });
 });
