@@ -6,20 +6,23 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { ApiTags } from "@nestjs/swagger";
+import { ApiTags } from '@nestjs/swagger';
+import { Pagination } from '../common/pagination';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('users')
 @ApiTags('회원')
+@UseGuards(AuthGuard('jwt'))
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get()
-  findAll() {
-    return this.usersService.findAll();
+  findAll(pagination: Pagination) {
+    return this.usersService.findAll(pagination);
   }
 
   @Get(':id')
