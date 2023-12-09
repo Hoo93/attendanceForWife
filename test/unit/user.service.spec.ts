@@ -4,6 +4,7 @@ import { MockUserRepository } from './mockUserRepository';
 import { Test, TestingModule } from '@nestjs/testing';
 import { MockJwtService } from './mockJwtService';
 import { UsersService } from '../../src/users/users.service';
+import { Pagination } from '../../src/common/pagination';
 
 // type MockRepository<T = any> = Partial<Record<keyof T, jest.Mock>>;
 // const mockRepository = () => ({
@@ -45,12 +46,13 @@ describe('UserService Test', function () {
   });
 
   it('findAll returns all users', async () => {
-    const pagination = {
+    const pagination: Pagination = {
       skip: 0,
       take: 2,
     };
-    const users: User[] = await service.findAll(pagination);
+    const result = await service.findAll(pagination);
 
-    expect(users.length).toBe(2);
+    expect(result.count).toBe(3);
+    expect(result.list.length).toBe(2);
   });
 });

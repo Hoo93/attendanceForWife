@@ -2,6 +2,7 @@ import { User } from '../../src/users/entities/user.entity';
 import { CreateAuthDto } from '../../src/auth/dto/create-auth.dto';
 import { NotFoundException } from '@nestjs/common';
 import { plainToClass } from 'class-transformer';
+import { Pagination } from '../../src/common/pagination';
 
 export class MockUserRepository {
   private users: User[] = [
@@ -54,7 +55,9 @@ export class MockUserRepository {
     return result;
   }
 
-  public async findAll() {
-    return this.users;
+  public async findAndCount(options) {
+    const list = this.users.slice(options.skip, options.skip + options.take);
+    const count = this.users.length;
+    return [list, count];
   }
 }
