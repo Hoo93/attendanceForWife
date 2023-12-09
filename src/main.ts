@@ -22,6 +22,16 @@ async function bootstrap() {
     .setDescription('Attendance API 서버 설명')
     .setVersion('v1.0')
     .addTag('Attendances')
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        name: 'JWT',
+        description: 'Enter JWT token',
+        in: 'header',
+      },
+      'token',
+    )
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('swagger', app, document);

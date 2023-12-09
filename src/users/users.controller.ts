@@ -10,13 +10,14 @@ import {
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Pagination } from '../common/pagination';
 import { AuthGuard } from '@nestjs/passport';
 
 @Controller('users')
 @ApiTags('회원')
 @UseGuards(AuthGuard('jwt'))
+@ApiBearerAuth('token')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
