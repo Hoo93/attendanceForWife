@@ -1,8 +1,7 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn, Unique } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { RoleType } from '../role-type.enum';
 import { BaseTimeEntity } from '../../BaseTimeEntity';
-import { Unique } from 'typeorm/browser';
 
 @Entity()
 @Unique(['name'])

@@ -5,12 +5,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ormConfig, ormConfigDevelopment } from './orm.config';
 import { User } from './users/entities/user.entity';
 import { RolesModule } from './roles/roles.module';
+import { Role } from './roles/entities/role.entity';
 
 @Module({
   imports: [
     UsersModule,
     AuthModule,
-    TypeOrmModule.forRoot({ ...ormConfigDevelopment, entities: [User] }),
+    TypeOrmModule.forRoot({ ...ormConfigDevelopment, entities: [User, Role] }),
     RolesModule,
   ],
 })
