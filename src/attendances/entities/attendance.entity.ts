@@ -1,8 +1,9 @@
 import { BaseTimeEntity } from '../../BaseTimeEntity';
-import { Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { AttendanceType } from '../attendance-type.enum';
 
+@Entity()
 export class Attendance extends BaseTimeEntity {
   @PrimaryGeneratedColumn('uuid', { comment: '출석부 번호' })
   @ApiProperty({ description: '출석부 번호' })
