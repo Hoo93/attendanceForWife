@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ormConfig, ormConfigDevelopment } from './orm.config';
+import { ormConfig } from './orm.config';
 import { User } from './users/entities/user.entity';
 import { RolesModule } from './roles/roles.module';
 import { Role } from './roles/entities/role.entity';
@@ -11,7 +11,7 @@ import { Role } from './roles/entities/role.entity';
   imports: [
     UsersModule,
     AuthModule,
-    TypeOrmModule.forRoot({ ...ormConfigDevelopment, entities: [User, Role] }),
+    TypeOrmModule.forRoot({ ...ormConfig, entities: [User, Role,Attendance] }),
     RolesModule,
   ],
 })
