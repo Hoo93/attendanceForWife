@@ -8,7 +8,7 @@ export class MockUserRepository {
   private users: User[] = [
     plainToClass(User, {
       id: 'TEST_1',
-      userId: 'TestUser1',
+      username: 'TestUser1',
       password: 'pwd123!@#',
       email: 'email@gmail.com',
       birthday: '931117',
@@ -16,7 +16,7 @@ export class MockUserRepository {
     }),
     plainToClass(User, {
       id: 'TEST_2',
-      userId: 'TestUser2',
+      username: 'TestUser2',
       password: 'pwd123!@#',
       email: 'test@gmail.com',
       birthday: '930519',
@@ -24,7 +24,7 @@ export class MockUserRepository {
     }),
     plainToClass(User, {
       id: 'TEST_3',
-      userId: 'TestUser3',
+      username: 'TestUser3',
       password: 'pwd123!@#',
       email: 'default@gmail.com',
       birthday: '890222',
