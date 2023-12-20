@@ -4,6 +4,7 @@ import { AuthModule } from './auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ormConfig } from './orm.config';
 import { User } from './users/entities/user.entity';
+import { Attendance } from './attendances/entities/attendance.entity' ;
 import { RolesModule } from './roles/roles.module';
 import { Role } from './roles/entities/role.entity';
 
