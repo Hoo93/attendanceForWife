@@ -3,6 +3,7 @@ import {
   Entity,
   JoinTable,
   ManyToMany,
+  OneToMany,
   PrimaryGeneratedColumn,
   Unique,
 } from 'typeorm';
@@ -11,6 +12,7 @@ import * as bcrypt from 'bcrypt';
 import { SALT } from '../../auth/const/auth.const';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Attendance } from '../../attendances/entities/attendance.entity';
+import { UserAttendance } from '../../attendances/entities/user-attendance.entity';
 
 @Entity()
 @Unique(['id'])
@@ -21,7 +23,7 @@ export class User extends BaseTimeEntity {
 
   @Column({ comment: '회원 아이디', type: 'varchar' })
   @ApiProperty({ description: '회원 아이디', type: 'string' })
-  userId: string;
+  username: string;
 
   @Column({ comment: '회원 비밀번호', type: 'varchar' })
   @ApiProperty({ description: '회원 비밀번호', type: 'string' })
@@ -43,9 +45,8 @@ export class User extends BaseTimeEntity {
   @ApiPropertyOptional({ description: '회원 이메일', type: 'string' })
   email?: string;
 
-  @ManyToMany(() => Attendance, { cascade: true })
-  @JoinTable({ name: 'user_attendance' }) // This is the name of your custom join table
-  attendances: Attendance[];
+  @OneToMany(() => UserAttendance, (userAttendance) => userAttendance.user)
+  userAttendance: UserAttendance[];
 
   async hashPassword() {
     this.password = await bcrypt.hash(this.password, SALT);

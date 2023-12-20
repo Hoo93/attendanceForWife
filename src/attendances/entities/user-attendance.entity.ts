@@ -1,29 +1,31 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  ManyToOne,
-  JoinColumn,
-} from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
 import { Attendance } from './attendance.entity';
 import { RoleType } from '../../roles/role-type.enum';
 import { ApiProperty } from '@nestjs/swagger';
+import { BaseTimeEntity } from '../../BaseTimeEntity';
 
 @Entity({ name: 'user_attendance' }) // This should match the join table name in User entity
-export class UserAttendance {
+export class UserAttendance extends BaseTimeEntity {
   @PrimaryGeneratedColumn('increment')
-  id: number;
+  @ApiProperty({ description: '회원 출석부 아이디' })
+  userAttendanceId: number;
 
-  @ManyToOne(() => User, { onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'user_no' })
-  userNo: User;
+  @Column({ comment: '회원 번호', type: 'varchar' })
+  @ApiProperty({ description: '회원 번호', type: 'string' })
+  userId: User;
 
-  @ManyToOne(() => Attendance, { onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'attendance_no' })
-  attendanceNo: Attendance;
+  @Column({ comment: '출석부 번호', type: 'varchar' })
+  @ApiProperty({ description: '출석부 번호', type: 'string' })
+  attendanceId: Attendance;
 
   @Column({ comment: '회원별 출석부별 권한', type: 'enum', enum: RoleType })
   @ApiProperty({ description: '회원별 출석부별 권한', type: RoleType })
   role: RoleType; // Additional column for the role
+
+  @ManyToOne(() => User, (user) => user.userAttendance)
+  user: User;
+
+  @ManyToOne(() => Attendance, (attendance) => attendance.userAttendance)
+  attendance: Attendance;
 }

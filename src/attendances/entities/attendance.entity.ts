@@ -1,20 +1,14 @@
 import { BaseTimeEntity } from '../../BaseTimeEntity';
-import {
-  Column,
-  Entity,
-  JoinTable,
-  ManyToMany,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { AttendanceType } from '../attendance-type.enum';
-import { User } from '../../users/entities/user.entity';
+import { UserAttendance } from './user-attendance.entity';
 
 @Entity()
 export class Attendance extends BaseTimeEntity {
   @PrimaryGeneratedColumn('uuid', { comment: '출석부 번호' })
   @ApiProperty({ description: '출석부 번호' })
-  no: string;
+  id: string;
 
   @Column({ comment: '출석부 제목', type: 'varchar' })
   @ApiProperty({ description: '출석부 제목', type: 'string' })
@@ -28,7 +22,9 @@ export class Attendance extends BaseTimeEntity {
   @ApiProperty({ description: '출석부 타입', type: AttendanceType })
   type: AttendanceType;
 
-  @ManyToMany(() => User, { cascade: true })
-  @JoinTable({ name: 'user_attendance' }) // This should match the join table name in User entity
-  users: User[];
+  @OneToMany(
+    () => UserAttendance,
+    (userAttendance) => userAttendance.attendance,
+  )
+  userAttendance: UserAttendance[];
 }
