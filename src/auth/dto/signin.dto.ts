@@ -8,7 +8,7 @@ export class SigninDto {
     example: 'testID',
   })
   @IsString()
-  userId: string;
+  username: string;
 
   @ApiProperty({
     description: '회원 비밀번호',

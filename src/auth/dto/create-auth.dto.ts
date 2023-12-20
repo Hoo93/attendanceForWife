@@ -35,7 +35,7 @@ export class CreateAuthDto {
     type: 'string',
     example: 'testID',
   })
-  userId: string;
+  username: string;
 
   @IsString()
   @MinLength(6, { message: INVALID_PASSWORD_MIN_LENGTH_MESSAGE })
@@ -97,13 +97,13 @@ export class CreateAuthDto {
 
   toEntity(createdAt = new Date()) {
     const user = new User();
-    user.userId = this.userId;
+    user.username = this.username;
     user.password = this.password;
     user.name = this.name;
     user.mobileNumber = this.mobileNumber;
     user.email = this?.email || null;
     user.birthday = this?.birthday || null;
-    user.createId = this.userId;
+    user.createId = this.username;
     user.createdAt = createdAt;
     return user;
   }
