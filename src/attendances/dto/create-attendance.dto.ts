@@ -3,6 +3,7 @@ import {} from '../../auth/const/error-message';
 import { ApiProperty } from '@nestjs/swagger';
 import { Optional } from '@nestjs/common';
 import { AttendanceType } from '../attendance-type.enum';
+import { Attendance } from '../entities/attendance.entity';
 
 export class CreateAttendanceDto {
   @IsString()
@@ -29,4 +30,12 @@ export class CreateAttendanceDto {
     type: AttendanceType,
   })
   type: AttendanceType;
+
+  toEntity() {
+    const attendance = new Attendance();
+    attendance.title = this.title;
+    attendance.description = this?.description;
+    attendance.type = this.type;
+    return attendance;
+  }
 }
