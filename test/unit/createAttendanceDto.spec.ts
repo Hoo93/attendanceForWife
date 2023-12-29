@@ -1,8 +1,6 @@
 import { plainToInstance } from 'class-transformer';
-import { User } from '../../src/users/entities/user.entity';
 import { CreateAttendanceDto } from '../../src/attendances/dto/create-attendance.dto';
 import { Attendance } from '../../src/attendances/entities/attendance.entity';
-import { CreateAuthDto } from '../../src/auth/dto/create-auth.dto';
 
 describe('create-auth.dto TEST', () => {
   let createAttendanceDto;
