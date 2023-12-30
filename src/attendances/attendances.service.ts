@@ -4,14 +4,18 @@ import { UpdateAttendanceDto } from './dto/update-attendance.dto';
 import { Repository } from 'typeorm';
 import { Attendance } from './entities/attendance.entity';
 import { InjectRepository } from '@nestjs/typeorm';
+import { User } from '../users/entities/user.entity';
+import { UserAttendance } from './entities/user-attendance.entity';
 
 @Injectable()
 export class AttendancesService {
   constructor(
     @InjectRepository(Attendance)
     private attendanceRepository: Repository<Attendance>,
+    @InjectRepository(UserAttendance)
+    private userAttendanceRepository: Repository<Attendance>,
   ) {}
-  create(createAttendanceDto: CreateAttendanceDto) {
+  create(createAttendanceDto: CreateAttendanceDto, user: User) {
     return 'This action adds a new attendance';
   }
 
