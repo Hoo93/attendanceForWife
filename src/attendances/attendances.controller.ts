@@ -13,6 +13,8 @@ import { CreateAttendanceDto } from './dto/create-attendance.dto';
 import { UpdateAttendanceDto } from './dto/update-attendance.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { User } from '../users/entities/user.entity';
+import { GetUser } from '../common/user.decorator';
 
 @UseGuards(AuthGuard('jwt'))
 @Controller('attendances')
@@ -22,8 +24,11 @@ export class AttendancesController {
   constructor(private readonly attendancesService: AttendancesService) {}
 
   @Post()
-  create(@Body() createAttendanceDto: CreateAttendanceDto) {
-    return this.attendancesService.create(createAttendanceDto);
+  createAttendance(
+    @Body() createAttendanceDto: CreateAttendanceDto,
+    @GetUser() user: User,
+  ) {
+    return this.attendancesService.create(createAttendanceDto, user);
   }
 
   @Get()
