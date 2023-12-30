@@ -46,6 +46,7 @@ export class User extends BaseTimeEntity {
   email?: string;
 
   @OneToMany(() => UserAttendance, (userAttendance) => userAttendance.user)
+  @ApiProperty({ type: () => UserAttendance })
   userAttendance: UserAttendance[];
 
   async hashPassword() {

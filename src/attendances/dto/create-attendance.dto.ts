@@ -27,7 +27,7 @@ export class CreateAttendanceDto {
   @IsEnum(AttendanceType)
   @ApiProperty({
     description: '출석부 타입',
-    type: AttendanceType,
+    enum: AttendanceType,
   })
   type: AttendanceType;
 

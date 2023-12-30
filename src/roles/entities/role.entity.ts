@@ -15,6 +15,6 @@ export class Role extends BaseTimeEntity {
   name: string;
 
   @Column({ comment: '권한 타입', type: 'enum', enum: RoleType })
-  @ApiProperty({ description: '권한 타입', type: RoleType })
+  @ApiProperty({ description: '권한 타입', enum: RoleType })
   type: RoleType;
 }

@@ -19,12 +19,13 @@ export class Attendance extends BaseTimeEntity {
   description: string;
 
   @Column({ comment: '출석부 타입', type: 'enum', enum: AttendanceType })
-  @ApiProperty({ description: '출석부 타입', type: AttendanceType })
+  @ApiProperty({ description: '출석부 타입', enum: AttendanceType })
   type: AttendanceType;
 
   @OneToMany(
     () => UserAttendance,
     (userAttendance) => userAttendance.attendance,
   )
+  @ApiProperty({ type: () => UserAttendance })
   userAttendance: UserAttendance[];
 }

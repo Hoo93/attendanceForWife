@@ -1,4 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  JoinColumn,
+} from 'typeorm';
 import { User } from '../../users/entities/user.entity';
 import { Attendance } from './attendance.entity';
 import { RoleType } from '../../roles/role-type.enum';
@@ -20,12 +26,16 @@ export class UserAttendance extends BaseTimeEntity {
   attendanceId: Attendance;
 
   @Column({ comment: '회원별 출석부별 권한', type: 'enum', enum: RoleType })
-  @ApiProperty({ description: '회원별 출석부별 권한', type: RoleType })
+  @ApiProperty({ description: '회원별 출석부별 권한', enum: RoleType })
   role: RoleType; // Additional column for the role
 
   @ManyToOne(() => User, (user) => user.userAttendance)
+  @JoinColumn({ name: 'userId', referencedColumnName: 'id' })
+  @ApiProperty({ type: () => User })
   user: User;
 
   @ManyToOne(() => Attendance, (attendance) => attendance.userAttendance)
+  @JoinColumn({ name: 'attendanceId', referencedColumnName: 'id' })
+  @ApiProperty({ type: () => Attendance })
   attendance: Attendance;
 }
