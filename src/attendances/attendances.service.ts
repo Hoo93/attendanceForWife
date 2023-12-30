@@ -13,7 +13,7 @@ export class AttendancesService {
     @InjectRepository(Attendance)
     private attendanceRepository: Repository<Attendance>,
     @InjectRepository(UserAttendance)
-    private userAttendanceRepository: Repository<Attendance>,
+    private userAttendanceRepository: Repository<UserAttendance>,
   ) {}
   create(createAttendanceDto: CreateAttendanceDto, user: User) {
     return 'This action adds a new attendance';
