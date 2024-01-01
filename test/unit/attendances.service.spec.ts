@@ -24,4 +24,6 @@ describe('AttendancesService', () => {
   it('should be defined', () => {
     expect(service).toBeDefined();
   });
+
+  it('어드민 권한으로 출석부를 생성한다.', async () => {});
 });
