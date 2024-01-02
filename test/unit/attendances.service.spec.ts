@@ -28,7 +28,7 @@ describe('AttendancesService', () => {
     expect(service).toBeDefined();
   });
 
-  it('어드민 권한으로 출석부를 생성한다.', async () => {
+  it('출석부 테이블에 출석부를 생성한다.', async () => {
     // given
     const createAttendanceDto = new CreateAttendanceDto();
     createAttendanceDto.title = 'test title';
@@ -39,9 +39,13 @@ describe('AttendancesService', () => {
     user.id = 'user id';
 
     // when
-    const sut = await service.create(createAttendanceDto, user);
+    const createdAttendanceId = await service.create(createAttendanceDto, user);
+
+    const newAttendance = await service.findOne({ id: createdAttendanceId });
 
     // then
-    expect(service.findOne({ userNo: user.id })).toBeInstanceOf(Attendance);
+    expect(newAttendance.title).toBe('test title');
+    expect(newAttendance.description).toBe('test description');
+    expect(newAttendance.type).toBe(AttendanceType.WEEKDAY);
   });
 });
