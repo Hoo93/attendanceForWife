@@ -41,7 +41,7 @@ describe('AttendancesService', () => {
     // when
     const createdAttendanceId = await service.create(createAttendanceDto, user);
 
-    const newAttendance = await service.findOne({ id: createdAttendanceId });
+    const newAttendance = await service.findOneById(createdAttendanceId);
 
     // then
     expect(newAttendance.title).toBe('test title');
