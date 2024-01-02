@@ -4,6 +4,9 @@ import { Attendance } from '../../src/attendances/entities/attendance.entity';
 import { UserAttendance } from '../../src/attendances/entities/user-attendance.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppModule } from '../../src/app.module';
+import { CreateAttendanceDto } from '../../src/attendances/dto/create-attendance.dto';
+import { User } from '../../src/users/entities/user.entity';
+import { AttendanceType } from '../../src/attendances/attendance-type.enum';
 
 describe('AttendancesService', () => {
   let service: AttendancesService;
@@ -25,5 +28,20 @@ describe('AttendancesService', () => {
     expect(service).toBeDefined();
   });
 
-  it('어드민 권한으로 출석부를 생성한다.', async () => {});
+  it('어드민 권한으로 출석부를 생성한다.', async () => {
+    // given
+    const createAttendanceDto = new CreateAttendanceDto();
+    createAttendanceDto.title = 'test title';
+    createAttendanceDto.description = 'test description';
+    createAttendanceDto.type = AttendanceType.WEEKDAY;
+
+    const user = new User();
+    user.id = 'user id';
+
+    // when
+    const sut = await service.create(createAttendanceDto, user);
+
+    // then
+    expect(service.findOne({ userNo: user.id })).toBeInstanceOf(Attendance);
+  });
 });
