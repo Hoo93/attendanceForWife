@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AttendancesService } from '../../src/attendances/attendances.service';
 import { Attendance } from '../../src/attendances/entities/attendance.entity';
 import { UserAttendance } from '../../src/attendances/entities/user-attendance.entity';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm';
 import { AppModule } from '../../src/app.module';
 import { CreateAttendanceDto } from '../../src/attendances/dto/create-attendance.dto';
 import { User } from '../../src/users/entities/user.entity';
@@ -10,6 +10,8 @@ import { AttendanceType } from '../../src/attendances/attendance-type.enum';
 
 describe('AttendancesService', () => {
   let service: AttendancesService;
+  let attendanceRepository;
+  let userAttendanceRepository;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -22,6 +24,14 @@ describe('AttendancesService', () => {
     }).compile();
 
     service = module.get<AttendancesService>(AttendancesService);
+    attendanceRepository = module.get(getRepositoryToken(Attendance));
+    userAttendanceRepository = module.get(getRepositoryToken(UserAttendance));
+  });
+
+  afterEach(async () => {
+    // Truncate tables after each test
+    await userAttendanceRepository.query('TRUNCATE TABLE user_attendance;');
+    await attendanceRepository.query('DELETE FROM attendance;');
   });
 
   it('should be defined', () => {
