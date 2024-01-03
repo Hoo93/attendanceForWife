@@ -15,16 +15,20 @@ export class AttendancesService {
     @InjectRepository(UserAttendance)
     private userAttendanceRepository: Repository<UserAttendance>,
   ) {}
-  create(createAttendanceDto: CreateAttendanceDto, user: User) {
-    return 'This action adds a new attendance';
+  async create(createAttendanceDto: CreateAttendanceDto, user: User) {
+    const attendance = createAttendanceDto.toEntity();
+    attendance.createId = user.id;
+
+    const result = await this.attendanceRepository.save(attendance);
+    return result.id;
   }
 
   findAll() {
     return `This action returns all attendances`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} attendance`;
+  async findOneById(id: string) {
+    return this.attendanceRepository.findOneBy({ id });
   }
 
   update(id: number, updateAttendanceDto: UpdateAttendanceDto) {
