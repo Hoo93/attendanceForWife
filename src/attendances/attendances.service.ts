@@ -35,6 +35,7 @@ export class AttendancesService {
 
   async findAllByUserId(userId: string) {
     return this.userAttendanceRepository.find({
+      select: { attendanceId: true, userId: true, role: true },
       where: { userId: userId },
       relations: { attendance: true },
     });
