@@ -22,6 +22,7 @@ import {
 import { User } from '../users/entities/user.entity';
 import { GetUser } from '../common/user.decorator';
 import { Attendance } from './entities/attendance.entity';
+import { UserAttendance } from './entities/user-attendance.entity';
 
 @UseGuards(AuthGuard('jwt'))
 @Controller('attendances')
@@ -49,6 +50,12 @@ export class AttendancesController {
   }
 
   @Get()
+  @ApiOperation({ summary: '로그인한 회원의 출석부 목록 조회' })
+  @ApiResponse({
+    status: 200,
+    description: '로그인한 회원의 출석부 목록 조회',
+    type: UserAttendance,
+  })
   findAllByUserId(@GetUser() user: User) {
     return this.attendancesService.findAllByUserId(user.id);
   }
