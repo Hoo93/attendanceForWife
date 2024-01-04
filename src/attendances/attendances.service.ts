@@ -33,8 +33,11 @@ export class AttendancesService {
     return newAttendance;
   }
 
-  findAll() {
-    return `This action returns all attendances`;
+  async findAllByUserId(userId: string) {
+    return this.userAttendanceRepository.find({
+      where: { userId: userId },
+      relations: { attendance: true },
+    });
   }
 
   async findOneById(id: string) {
