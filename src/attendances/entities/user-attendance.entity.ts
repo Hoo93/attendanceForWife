@@ -19,11 +19,11 @@ export class UserAttendance extends BaseTimeEntity {
 
   @Column({ comment: '회원 번호', type: 'varchar' })
   @ApiProperty({ description: '회원 번호', type: 'string' })
-  userId: User;
+  userId: string;
 
   @Column({ comment: '출석부 번호', type: 'varchar' })
   @ApiProperty({ description: '출석부 번호', type: 'string' })
-  attendanceId: Attendance;
+  attendanceId: string;
 
   @Column({ comment: '회원별 출석부별 권한', type: 'enum', enum: RoleType })
   @ApiProperty({ description: '회원별 출석부별 권한', enum: RoleType })

@@ -6,6 +6,7 @@ import { Attendance } from './entities/attendance.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../users/entities/user.entity';
 import { UserAttendance } from './entities/user-attendance.entity';
+import { RoleType } from '../roles/role-type.enum';
 
 @Injectable()
 export class AttendancesService {
@@ -19,8 +20,17 @@ export class AttendancesService {
     const attendance = createAttendanceDto.toEntity();
     attendance.createId = user.id;
 
-    const result = await this.attendanceRepository.save(attendance);
-    return result.id;
+    const newAttendance = await this.attendanceRepository.save(attendance);
+
+    const newUserAttendance = new UserAttendance();
+    newUserAttendance.attendanceId = newAttendance.id;
+    newUserAttendance.userId = user.id;
+    newUserAttendance.role = RoleType.ADMIN;
+    newUserAttendance.createId = user.id;
+
+    const result = await this.userAttendanceRepository.save(newUserAttendance);
+
+    return newAttendance.id;
   }
 
   findAll() {

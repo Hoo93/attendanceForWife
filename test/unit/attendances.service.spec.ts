@@ -74,10 +74,11 @@ describe('AttendancesService', () => {
     const createdAttendanceId = await service.create(createAttendanceDto, user);
 
     const userAttendance = await userAttendanceRepository.query(
-      `SELECT * FROM userAttendance WHERE userId = 'user id'`,
+      `SELECT * FROM user_attendance WHERE userId = 'user id'`,
     );
+
     // then
-    expect(userAttendance.role).toBe(RoleType.ADMIN);
-    expect(userAttendance.attendanceId).toBe(createdAttendanceId);
+    expect(userAttendance[0].role).toBe(RoleType.ADMIN);
+    expect(userAttendance[0].attendanceId).toBe(createdAttendanceId);
   });
 });
