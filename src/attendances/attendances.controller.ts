@@ -12,9 +12,16 @@ import { AttendancesService } from './attendances.service';
 import { CreateAttendanceDto } from './dto/create-attendance.dto';
 import { UpdateAttendanceDto } from './dto/update-attendance.dto';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { User } from '../users/entities/user.entity';
 import { GetUser } from '../common/user.decorator';
+import { Attendance } from './entities/attendance.entity';
 
 @UseGuards(AuthGuard('jwt'))
 @Controller('attendances')
@@ -24,6 +31,16 @@ export class AttendancesController {
   constructor(private readonly attendancesService: AttendancesService) {}
 
   @Post()
+  @ApiOperation({ summary: '출석부 생성' })
+  @ApiResponse({
+    status: 200,
+    description: '출석부 생성',
+    type: Attendance,
+  })
+  @ApiBody({
+    type: CreateAttendanceDto,
+    description: '출석부 생성 DTO',
+  })
   createAttendance(
     @Body() createAttendanceDto: CreateAttendanceDto,
     @GetUser() user: User,
