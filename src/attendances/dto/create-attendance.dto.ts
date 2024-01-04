@@ -2,7 +2,7 @@ import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
 import {} from '../../auth/const/error-message';
 import { ApiProperty } from '@nestjs/swagger';
 import { Optional } from '@nestjs/common';
-import { AttendanceType } from '../attendance-type.enum';
+import { AttendanceType } from '../const/attendance-type.enum';
 import { Attendance } from '../entities/attendance.entity';
 
 export class CreateAttendanceDto {

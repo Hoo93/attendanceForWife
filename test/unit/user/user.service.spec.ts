@@ -1,10 +1,10 @@
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { User } from '../../src/users/entities/user.entity';
+import { User } from '../../../src/users/entities/user.entity';
 import { MockUserRepository } from './mockUserRepository';
 import { Test, TestingModule } from '@nestjs/testing';
 import { MockJwtService } from './mockJwtService';
-import { UsersService } from '../../src/users/users.service';
-import { Pagination } from '../../src/common/pagination';
+import { UsersService } from '../../../src/users/users.service';
+import { Pagination } from '../../../src/common/pagination';
 
 // type MockRepository<T = any> = Partial<Record<keyof T, jest.Mock>>;
 // const mockRepository = () => ({

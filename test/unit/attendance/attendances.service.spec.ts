@@ -1,14 +1,14 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { AttendancesService } from '../../src/attendances/attendances.service';
-import { Attendance } from '../../src/attendances/entities/attendance.entity';
-import { UserAttendance } from '../../src/attendances/entities/user-attendance.entity';
+import { AttendancesService } from '../../../src/attendances/attendances.service';
+import { Attendance } from '../../../src/attendances/entities/attendance.entity';
+import { UserAttendance } from '../../../src/attendances/entities/user-attendance.entity';
 import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm';
-import { AppModule } from '../../src/app.module';
-import { CreateAttendanceDto } from '../../src/attendances/dto/create-attendance.dto';
-import { User } from '../../src/users/entities/user.entity';
-import { AttendanceType } from '../../src/attendances/attendance-type.enum';
-import { RoleType } from '../../src/roles/role-type.enum';
-import { TestModule } from '../../src/test.module';
+import { AppModule } from '../../../src/app.module';
+import { CreateAttendanceDto } from '../../../src/attendances/dto/create-attendance.dto';
+import { User } from '../../../src/users/entities/user.entity';
+import { AttendanceType } from '../../../src/attendances/const/attendance-type.enum';
+import { RoleType } from '../../../src/roles/role-type.enum';
+import { TestModule } from '../../../src/test.module';
 
 describe('AttendancesService', () => {
   let service: AttendancesService;

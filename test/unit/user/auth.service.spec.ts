@@ -1,11 +1,11 @@
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { User } from '../../src/users/entities/user.entity';
+import { User } from '../../../src/users/entities/user.entity';
 import { MockUserRepository } from './mockUserRepository';
 import { Test, TestingModule } from '@nestjs/testing';
-import { AuthService } from '../../src/auth/auth.service';
-import { CreateAuthDto } from '../../src/auth/dto/create-auth.dto';
+import { AuthService } from '../../../src/auth/auth.service';
+import { CreateAuthDto } from '../../../src/auth/dto/create-auth.dto';
 import * as bcrypt from 'bcrypt';
-import { SigninDto } from '../../src/auth/dto/signin.dto';
+import { SigninDto } from '../../../src/auth/dto/signin.dto';
 import { JwtService } from '@nestjs/jwt';
 import { MockJwtService } from './mockJwtService';
 
