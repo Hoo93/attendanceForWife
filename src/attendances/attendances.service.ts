@@ -28,9 +28,9 @@ export class AttendancesService {
     newUserAttendance.role = RoleType.ADMIN;
     newUserAttendance.createId = user.id;
 
-    const result = await this.userAttendanceRepository.save(newUserAttendance);
+    await this.userAttendanceRepository.save(newUserAttendance);
 
-    return newAttendance.id;
+    return newAttendance;
   }
 
   findAll() {
