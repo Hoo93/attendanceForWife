@@ -49,12 +49,12 @@ export class AttendancesController {
   }
 
   @Get()
-  findAll() {
-    return this.attendancesService.findAll();
+  findAllByUserId(@GetUser() user: User) {
+    return this.attendancesService.findAllByUserId(user.id);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOneById(@Param('id') id: string) {
     return this.attendancesService.findOneById(id);
   }
 
