@@ -27,3 +27,17 @@ export const ormConfigDevelopment: TypeOrmModuleOptions = {
   charset: 'utf8mb4',
   autoLoadEntities: true,
 };
+
+export const ormConfigTest: TypeOrmModuleOptions = {
+  type: 'mysql',
+  port: 12300,
+  host: 'localhost',
+  username: 'root',
+  password: 'test',
+  database: 'attendanceTest',
+  synchronize: true,
+  logging: true,
+  poolSize: 10,
+  charset: 'utf8mb4',
+  autoLoadEntities: true,
+};
