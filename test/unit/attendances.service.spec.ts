@@ -8,18 +8,20 @@ import { CreateAttendanceDto } from '../../src/attendances/dto/create-attendance
 import { User } from '../../src/users/entities/user.entity';
 import { AttendanceType } from '../../src/attendances/attendance-type.enum';
 import { RoleType } from '../../src/roles/role-type.enum';
+import { TestModule } from '../../src/test.module';
 
 describe('AttendancesService', () => {
   let service: AttendancesService;
   let attendanceRepository;
   let userAttendanceRepository;
+  let userRepository;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [
         // TypeOrmModule.forRoot <- DB 커넥션을 위해 AppModule import
-        AppModule,
-        TypeOrmModule.forFeature([Attendance, UserAttendance]),
+        TestModule,
+        TypeOrmModule.forFeature([Attendance, UserAttendance, User]),
       ],
       providers: [AttendancesService],
     }).compile();
@@ -27,12 +29,24 @@ describe('AttendancesService', () => {
     service = module.get<AttendancesService>(AttendancesService);
     attendanceRepository = module.get(getRepositoryToken(Attendance));
     userAttendanceRepository = module.get(getRepositoryToken(UserAttendance));
+    userRepository = module.get(getRepositoryToken(User));
+
+    await userRepository.query(
+      `INSERT INTO user SET 
+        id = 'user id' , 
+        username = 'test id',
+        password = 'testPWD',
+        mobileNumber = '010-8098-1398',
+        name = 'test name',
+        createId ='user id'`,
+    );
   });
 
   afterEach(async () => {
     // Truncate tables after each test
-    await userAttendanceRepository.query('TRUNCATE TABLE user_attendance;');
+    await userAttendanceRepository.query('DELETE FROM user_attendance;');
     await attendanceRepository.query('DELETE FROM attendance;');
+    await userRepository.query(`DELETE FROM user;`);
   });
 
   it('should be defined', () => {
@@ -52,7 +66,7 @@ describe('AttendancesService', () => {
     // when
     const createdAttendanceId = await service.create(createAttendanceDto, user);
 
-    const newAttendance = await service.findOneById(createdAttendanceId);
+    const newAttendance = await service.findOneById(createdAttendanceId.id);
 
     // then
     expect(newAttendance.title).toBe('test title');
@@ -79,6 +93,6 @@ describe('AttendancesService', () => {
 
     // then
     expect(userAttendance[0].role).toBe(RoleType.ADMIN);
-    expect(userAttendance[0].attendanceId).toBe(createdAttendanceId);
+    expect(userAttendance[0].attendanceId).toBe(createdAttendanceId.id);
   });
 });
