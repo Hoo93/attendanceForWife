@@ -138,9 +138,15 @@ describe('AttendancesService', () => {
       createAttendanceDto_3.description = 'test description';
       createAttendanceDto_3.type = AttendanceType.WEEKDAY;
 
-      await service.create(createAttendanceDto_1, user_1);
-      await service.create(createAttendanceDto_2, user_1);
-      const createdByUserTwo = await service.create(
+      const shouldContain_1 = await service.create(
+        createAttendanceDto_1,
+        user_1,
+      );
+      const shouldContain_2 = await service.create(
+        createAttendanceDto_2,
+        user_1,
+      );
+      const shouldNotContain = await service.create(
         createAttendanceDto_3,
         user_2,
       );
@@ -148,8 +154,11 @@ describe('AttendancesService', () => {
       // when
       const sut = await service.findAllByUserId(user_1.id);
       // then
-      expect(sut.length).toBe(2);
-      expect(sut).not.toContain(createdByUserTwo);
+      expect(sut).toHaveLength(2);
+      sut.forEach((data) => {
+        expect(data.attendance.createId).not.toBe(user_2.id);
+        expect(data.attendance.createId).toBe(user_1.id);
+      });
     });
   });
 });
