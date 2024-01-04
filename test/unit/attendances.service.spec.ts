@@ -7,6 +7,7 @@ import { AppModule } from '../../src/app.module';
 import { CreateAttendanceDto } from '../../src/attendances/dto/create-attendance.dto';
 import { User } from '../../src/users/entities/user.entity';
 import { AttendanceType } from '../../src/attendances/attendance-type.enum';
+import { RoleType } from '../../src/roles/role-type.enum';
 
 describe('AttendancesService', () => {
   let service: AttendancesService;
@@ -57,5 +58,26 @@ describe('AttendancesService', () => {
     expect(newAttendance.title).toBe('test title');
     expect(newAttendance.description).toBe('test description');
     expect(newAttendance.type).toBe(AttendanceType.WEEKDAY);
+  });
+
+  it('출석부를 생성하면 조인테이블에 데이터가 생성된다.', async () => {
+    // given
+    const createAttendanceDto = new CreateAttendanceDto();
+    createAttendanceDto.title = 'test title';
+    createAttendanceDto.description = 'test description';
+    createAttendanceDto.type = AttendanceType.WEEKDAY;
+
+    const user = new User();
+    user.id = 'user id';
+
+    // when
+    const createdAttendanceId = await service.create(createAttendanceDto, user);
+
+    const userAttendance = await userAttendanceRepository.query(
+      `SELECT * FROM userAttendance WHERE userId = 'user id'`,
+    );
+    // then
+    expect(userAttendance.role).toBe(RoleType.ADMIN);
+    expect(userAttendance.attendanceId).toBe(createdAttendanceId);
   });
 });
