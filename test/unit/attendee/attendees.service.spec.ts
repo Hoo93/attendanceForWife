@@ -6,6 +6,7 @@ import { Attendee } from '../../../src/attendees/entities/attendee.entity';
 import { Attendance } from '../../../src/attendances/entities/attendance.entity';
 import { User } from '../../../src/users/entities/user.entity';
 import { UserAttendance } from '../../../src/attendances/entities/user-attendance.entity';
+import { CreateAttendeeDto } from '../../../src/attendees/dto/create-attendee.dto';
 
 describe('AttendeesService', () => {
   let service: AttendeesService;
@@ -41,5 +42,29 @@ describe('AttendeesService', () => {
 
   it('should be defined', () => {
     expect(service).toBeDefined();
+  });
+
+  describe('createAttendee Test ', () => {
+    it('출석 대상 테이블에 출석 대상자를 생성한다.', async () => {
+      // given
+      const createAttendeeDto = new CreateAttendeeDto();
+      createAttendeeDto.name = 'test name';
+      createAttendeeDto.description = 'this is first attendee';
+      createAttendeeDto.age = 15;
+
+      const user = new User();
+      user.id = 'user id 1';
+
+      // when
+      const createdAttendee = await service.createAttendee(
+        createAttendeeDto,
+        user,
+      );
+
+      // then
+      expect(createdAttendee.name).toBe('test name');
+      expect(createdAttendee.description).toBe('this is first attendee');
+      expect(createdAttendee.createId).toBe('user id 1');
+    });
   });
 });
