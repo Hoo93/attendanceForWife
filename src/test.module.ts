@@ -9,12 +9,13 @@ import { RolesModule } from './roles/roles.module';
 import { Role } from './roles/entities/role.entity';
 import { AttendancesModule } from './attendances/attendances.module';
 import { UserAttendance } from './attendances/entities/user-attendance.entity';
+import { Attendee } from './attendees/entities/attendee.entity';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot({
       ...ormConfigTest,
-      entities: [User, Role, Attendance, UserAttendance],
+      entities: [User, Role, Attendance, UserAttendance, Attendee],
     }),
     UsersModule,
     AuthModule,

@@ -1,8 +1,16 @@
 import { BaseTimeEntity } from '../../BaseTimeEntity';
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { AttendanceType } from '../const/attendance-type.enum';
 import { UserAttendance } from './user-attendance.entity';
+import { Attendee } from '../../attendees/entities/attendee.entity';
 
 @Entity()
 export class Attendance extends BaseTimeEntity {
@@ -28,4 +36,8 @@ export class Attendance extends BaseTimeEntity {
   )
   @ApiProperty({ type: () => UserAttendance })
   userAttendance: UserAttendance[];
+
+  @OneToMany(() => Attendee, (attendee) => attendee.attendance)
+  @ApiProperty({ type: () => Attendee })
+  attendees: Attendee[];
 }

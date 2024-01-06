@@ -8,17 +8,20 @@ import { Attendance } from './attendances/entities/attendance.entity';
 import { RolesModule } from './roles/roles.module';
 import { Role } from './roles/entities/role.entity';
 import { AttendancesModule } from './attendances/attendances.module';
+import { UserAttendance } from './attendances/entities/user-attendance.entity';
+import { AttendeesModule } from './attendees/attendees.module';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot({
       ...ormConfig,
-      entities: [User, Role, Attendance],
+      entities: [User, Role, Attendance, UserAttendance],
     }),
     UsersModule,
     AuthModule,
     RolesModule,
     AttendancesModule,
+    AttendeesModule,
   ],
 })
 export class AppModule {}
