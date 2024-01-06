@@ -7,7 +7,7 @@ import {
 } from 'typeorm';
 
 @Entity()
-export class BaseTimeEntity {
+export abstract class BaseTimeEntity {
   @Column()
   createId: string;
 
