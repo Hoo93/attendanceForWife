@@ -62,9 +62,9 @@ describe('AttendeesService', () => {
       );
 
       // then
-      expect(createdAttendee.name).toBe('test name');
-      expect(createdAttendee.description).toBe('this is first attendee');
-      expect(createdAttendee.createId).toBe('user id 1');
+      expect(createdAttendee?.name).toBe('test name');
+      expect(createdAttendee?.description).toBe('this is first attendee');
+      expect(createdAttendee?.createId).toBe('user id 1');
     });
   });
 });

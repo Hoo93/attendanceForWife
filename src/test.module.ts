@@ -10,6 +10,7 @@ import { Role } from './roles/entities/role.entity';
 import { AttendancesModule } from './attendances/attendances.module';
 import { UserAttendance } from './attendances/entities/user-attendance.entity';
 import { Attendee } from './attendees/entities/attendee.entity';
+import { AttendeesModule } from './attendees/attendees.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { Attendee } from './attendees/entities/attendee.entity';
     AuthModule,
     RolesModule,
     AttendancesModule,
+    AttendeesModule,
   ],
 })
 export class TestModule {}

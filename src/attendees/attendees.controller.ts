@@ -1,15 +1,25 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { AttendeesService } from './attendees.service';
 import { CreateAttendeeDto } from './dto/create-attendee.dto';
 import { UpdateAttendeeDto } from './dto/update-attendee.dto';
+import { GetUser } from '../common/user.decorator';
+import { User } from '../users/entities/user.entity';
 
 @Controller('attendees')
 export class AttendeesController {
   constructor(private readonly attendeesService: AttendeesService) {}
 
   @Post()
-  create(@Body() createAttendeeDto: CreateAttendeeDto) {
-    return this.attendeesService.create(createAttendeeDto);
+  create(@Body() createAttendeeDto: CreateAttendeeDto, @GetUser() user: User) {
+    return this.attendeesService.createAttendee(createAttendeeDto, user);
   }
 
   @Get()
@@ -23,7 +33,10 @@ export class AttendeesController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAttendeeDto: UpdateAttendeeDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateAttendeeDto: UpdateAttendeeDto,
+  ) {
     return this.attendeesService.update(+id, updateAttendeeDto);
   }
 

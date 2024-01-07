@@ -12,7 +12,10 @@ export class AttendeesService {
     @InjectRepository(Attendee)
     private attendeeRepository: Repository<Attendee>,
   ) {}
-  async createAttendee(createAttendeeDto: CreateAttendeeDto, user: User) {
+  async createAttendee(
+    createAttendeeDto: CreateAttendeeDto,
+    user: User,
+  ): Promise<Attendee> {
     return;
   }
 
