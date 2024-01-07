@@ -11,6 +11,7 @@ import { CreateAttendeeDto } from '../../../src/attendees/dto/create-attendee.dt
 describe('AttendeesService', () => {
   let service: AttendeesService;
   let attendeeRepository;
+  let attendanceRepository;
   let userRepository;
 
   beforeEach(async () => {
@@ -21,6 +22,7 @@ describe('AttendeesService', () => {
 
     service = module.get<AttendeesService>(AttendeesService);
     attendeeRepository = module.get(getRepositoryToken(Attendee));
+    attendanceRepository = module.get(getRepositoryToken(Attendance));
     userRepository = module.get(getRepositoryToken(User));
 
     await userRepository.query(
@@ -31,6 +33,16 @@ describe('AttendeesService', () => {
         mobileNumber = '010-8098-1398',
         name = 'test name',
         createId ='user id'`,
+    );
+
+    await attendanceRepository.query(
+      `INSERT INTO attendance SET
+        id = 'testAttendanceId',
+        title = 'testAttendanceTitle',
+        description = 'description',
+        type = 'weekday',
+        createdId = 'user id 1',
+        createdAt = NOW();`,
     );
   });
 
@@ -65,6 +77,7 @@ describe('AttendeesService', () => {
       expect(createdAttendee?.name).toBe('test name');
       expect(createdAttendee?.description).toBe('this is first attendee');
       expect(createdAttendee?.createId).toBe('user id 1');
+      expect(createdAttendee?.attendanceId).toBe('testAttendanceId');
     });
   });
 });
