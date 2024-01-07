@@ -25,7 +25,7 @@ export class Attendee extends BaseTimeEntity {
 
   @Column({ comment: '출석 대상자 나이', type: 'int', nullable: true })
   @ApiProperty({ description: '출석 대상자 나이', type: 'int' })
-  age: string;
+  age: number;
 
   @Column({ comment: '출석 대상자 설명', type: 'varchar', nullable: true })
   @ApiProperty({ description: '출석 대상자 설명', type: 'string' })

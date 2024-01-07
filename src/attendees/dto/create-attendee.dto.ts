@@ -1,5 +1,7 @@
 import { IsInt, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { Attendance } from '../../attendances/entities/attendance.entity';
+import { Attendee } from '../entities/attendee.entity';
 
 export class CreateAttendeeDto {
   @IsString()
@@ -10,6 +12,15 @@ export class CreateAttendeeDto {
     example: 'attendee name',
   })
   name: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({
+    description: '출석부 ID',
+    type: 'string',
+    example: 'attendanceId',
+  })
+  attendanceId: string;
 
   @IsInt()
   @IsOptional()
@@ -28,4 +39,13 @@ export class CreateAttendeeDto {
     example: 'attendee description',
   })
   description: string;
+
+  toEntity() {
+    const attendee = new Attendee();
+    attendee.name = this.name;
+    attendee.attendanceId = this.attendanceId;
+    attendee.description = this?.description;
+    attendee.age = this?.age;
+    return attendee;
+  }
 }
