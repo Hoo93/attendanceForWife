@@ -25,6 +25,9 @@ describe('AttendeesService', () => {
     attendanceRepository = module.get(getRepositoryToken(Attendance));
     userRepository = module.get(getRepositoryToken(User));
 
+    await attendanceRepository.query('DELETE FROM attendance');
+    await userRepository.query(`DELETE FROM user;`);
+
     await userRepository.query(
       `INSERT INTO user SET 
         id = 'user id 1' , 
@@ -41,7 +44,7 @@ describe('AttendeesService', () => {
         title = 'testAttendanceTitle',
         description = 'description',
         type = 'weekday',
-        createdId = 'user id 1',
+        createId = 'user id 1',
         createdAt = NOW();`,
     );
   });
@@ -49,6 +52,7 @@ describe('AttendeesService', () => {
   afterEach(async () => {
     // Truncate tables after each test
     await attendeeRepository.query('DELETE FROM attendee;');
+    await attendanceRepository.query('DELETE FROM attendance');
     await userRepository.query(`DELETE FROM user;`);
   });
 
@@ -62,6 +66,7 @@ describe('AttendeesService', () => {
       const createAttendeeDto = new CreateAttendeeDto();
       createAttendeeDto.name = 'test name';
       createAttendeeDto.description = 'this is first attendee';
+      createAttendeeDto.attendanceId = 'testAttendanceId';
       createAttendeeDto.age = 15;
 
       const user = new User();
