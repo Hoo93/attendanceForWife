@@ -16,7 +16,14 @@ export class AttendeesService {
     createAttendeeDto: CreateAttendeeDto,
     user: User,
   ): Promise<Attendee> {
-    return;
+    const attendee = createAttendeeDto.toEntity();
+    attendee.createId = user.id;
+
+    console.log(attendee);
+
+    const createdAttendee = await this.attendeeRepository.save(attendee);
+
+    return createdAttendee;
   }
 
   findAll() {
