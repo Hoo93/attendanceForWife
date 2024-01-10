@@ -31,7 +31,7 @@ import { RoleType } from '../roles/entities/role-type.enum';
 @UseGuards(AuthGuard('jwt'))
 @Controller('attendees')
 @ApiTags('출석 대상')
-@ApiBearerAuth('access-token')
+@ApiBearerAuth('token')
 export class AttendeesController {
   constructor(private readonly attendeesService: AttendeesService) {}
 
@@ -54,16 +54,15 @@ export class AttendeesController {
   }
 
   @Get(':attendanceId')
+  @ApiOperation({ summary: '로그인한 회원의 출석부 출석 대상 조회' })
   @UseGuards(RoleGuard)
-  @Roles(RoleType.MASTER)
+  @Roles(RoleType.MASTER,RoleType.GENERAL)
   async findAllByAttendanceId(@Param('attendanceId') attendanceId: string) {
-    console.log('ROLE GUARD SUCCESS');
     return this.attendeesService.findAllByAttendanceId(attendanceId);
   }
 
   @Get(':id')
   async findOne(@Param('id') id: string) {
-    console.log('SUCCESS');
     return this.attendeesService.findOne(id);
   }
 
