@@ -9,6 +9,7 @@ import {CreateAttendeeDto} from '../../../src/attendees/dto/create-attendee.dto'
 import {AttendanceType} from "../../../src/attendances/const/attendance-type.enum";
 import {DataSource} from "typeorm";
 import * as module from "module";
+import {UpdateAttendeeDto} from "../../../src/attendees/dto/update-attendee.dto";
 
 describe('AttendeesService', () => {
   let module:TestingModule
@@ -97,6 +98,34 @@ describe('AttendeesService', () => {
       });
     });
   });
+
+  describe('update TEST', () =>{
+    it('이름, 설명, 나이 중 원하는 값을 수정할 수 있다.',async () => {
+      // Given
+      const attendance = new Attendance();
+      attendance.id = 'testAttendanceId';
+
+      const user_1 = new User();
+      user_1.id = 'user id 1';
+
+      const attendeeDto = createAttendeeDto('가나다','testAttendanceId','가나다 학생',3)
+
+      const attendee = await attendeeRepository.save(attendeeDto)
+
+      // When
+      const updateDto = new UpdateAttendeeDto()
+      updateDto.name = '수정된'
+      updateDto.description = '수정되었습니다'
+      updateDto.age = 99
+
+      const updatedAttendee = await service.update(attendee.id,updateDto);
+
+      // Then
+      expect(updatedAttendee.name).toBe('수정된')
+      expect(updatedAttendee.description).toBe('수정되었습니다')
+      expect(updatedAttendee.age).toBe(99)
+    })
+  })
 
   async function setupTest() {
     await attendanceRepository.query('DELETE FROM attendance;');

@@ -76,7 +76,7 @@ export class AttendeesController {
     @Param('id') id: string,
     @Body() updateAttendeeDto: UpdateAttendeeDto,
   ) {
-    return this.attendeesService.update(+id, updateAttendeeDto);
+    return this.attendeesService.update(id, updateAttendeeDto);
   }
 
   @Delete(':id')

@@ -37,8 +37,8 @@ export class AttendeesService {
     return this.attendeeRepository.findOneBy({ id });
   }
 
-  update(id: number, updateAttendeeDto: UpdateAttendeeDto) {
-    return `This action updates a #${id} attendee`;
+  async update(id: string, updateAttendeeDto: UpdateAttendeeDto):Promise<Attendee> {
+    return ;
   }
 
   remove(id: number) {
