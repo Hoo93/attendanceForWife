@@ -108,9 +108,9 @@ describe('AttendeesService', () => {
       const user_1 = new User();
       user_1.id = 'user id 1';
 
-      const attendeeDto = createAttendeeDto('가나다','testAttendanceId','가나다 학생',3)
+      const attendee = createAttendee('가나다','testAttendanceId','가나다 학생',3,user_1.id)
 
-      const attendee = await attendeeRepository.save(attendeeDto)
+      const createdAttendee = await attendeeRepository.save(attendee)
 
       // When
       const updateDto = new UpdateAttendeeDto()
@@ -118,7 +118,7 @@ describe('AttendeesService', () => {
       updateDto.description = '수정되었습니다'
       updateDto.age = 99
 
-      const updatedAttendee = await service.update(attendee.id,updateDto);
+      const updatedAttendee = await service.update(createdAttendee.id,updateDto);
 
       // Then
       expect(updatedAttendee.name).toBe('수정된')
@@ -176,4 +176,14 @@ function createAttendeeDto(name,attendanceId,description,age) {
   createAttendeeDto.description = description;
   createAttendeeDto.age = age;
   return createAttendeeDto
+}
+
+function createAttendee(name,attendanceId,description,age,createId) {
+  const attendee = new Attendee()
+  attendee.name = name ;
+  attendee.attendanceId = attendanceId;
+  attendee.description = description;
+  attendee.age = age;
+  attendee.createId = createId;
+  return attendee
 }
