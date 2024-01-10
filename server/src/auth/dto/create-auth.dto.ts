@@ -67,7 +67,7 @@ export class CreateAuthDto {
   @ApiProperty({
     description: '회원 전화번호',
     type: 'string',
-    example: '010-2647-8104',
+    example: '010-1234-5678',
   })
   mobileNumber: string;
 
@@ -79,7 +79,7 @@ export class CreateAuthDto {
   @ApiPropertyOptional({
     description: '회원 생년월일',
     type: 'string',
-    example: '930519',
+    example: '700101',
   })
   birthday?: string;
 
@@ -92,7 +92,7 @@ export class CreateAuthDto {
   @ApiPropertyOptional({
     description: '회원 이메일',
     type: 'string',
-    example: 'leetmdgud@naver.com',
+    example: 'daum@naver.com',
   })
   email?: string;
 
