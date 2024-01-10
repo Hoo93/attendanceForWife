@@ -33,7 +33,7 @@ export class AttendeesService {
     });
   }
 
-  async findOne(id: string) {
+  async findOneById(id: string) {
     return this.attendeeRepository.findOneBy({ id });
   }
 

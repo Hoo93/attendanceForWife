@@ -68,7 +68,7 @@ export class AttendeesController {
 
   @Get(':id')
   async findOne(@Param('id') id: string) {
-    return this.attendeesService.findOne(id);
+    return this.attendeesService.findOneById(id);
   }
 
   @Patch(':id')
