@@ -22,7 +22,7 @@ export class AuthService {
   }
 
   async validateUser(username: string, password: string) {
-    const user = await this.userRepository.findOne({ where: { username } });
+    const user = await this.userRepository.findOne({ relations:{userAttendance:true},where: { username } });
     if (user && (await bcrypt.compare(password, user.password))) {
       return user;
     }
@@ -38,6 +38,7 @@ export class AuthService {
     const payload = {
       id: user.id,
       username: user.username,
+      userAttendances: user.userAttendance
     };
 
     const result = {
