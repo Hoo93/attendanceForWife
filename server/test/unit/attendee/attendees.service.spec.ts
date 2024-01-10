@@ -49,18 +49,14 @@ describe('AttendeesService', () => {
   describe('createAttendee Test ', () => {
     it('출석 대상 테이블에 출석 대상자를 생성한다.', async () => {
       // given
-      const createAttendeeDto = new CreateAttendeeDto();
-      createAttendeeDto.name = 'test name';
-      createAttendeeDto.description = 'this is first attendee';
-      createAttendeeDto.attendanceId = 'testAttendanceId';
-      createAttendeeDto.age = 15;
+      const attendeeDto = createAttendeeDto('test name','testAttendanceId','this is first attendee',15)
 
       const user = new User();
       user.id = 'user id 1';
 
       // when
       const createdAttendee = await service.createAttendee(
-          createAttendeeDto,
+          attendeeDto,
           user,
       );
 
@@ -81,27 +77,13 @@ describe('AttendeesService', () => {
       const user_1 = new User();
       user_1.id = 'user id 1';
 
-      const createAttendeeDto_1 = new CreateAttendeeDto();
-      createAttendeeDto_1.name = '가나다';
-      createAttendeeDto_1.description = '가나다 학생';
-      createAttendeeDto_1.age = 3;
-      createAttendeeDto_1.attendanceId = 'testAttendanceId';
+      const attendeeDto_1 = createAttendeeDto('가나다','testAttendanceId','가나다 학생',3)
+      const attendeeDto_2 = createAttendeeDto('라마바','testAttendanceId','라마바 학생',4)
+      const attendeeDto_3 = createAttendeeDto('아자차','notTestAttendanceId','아자차 학생',5)
 
-      const createAttendeeDto_2 = new CreateAttendeeDto();
-      createAttendeeDto_2.name = '라마바';
-      createAttendeeDto_2.description = '라마바 학생';
-      createAttendeeDto_2.age = 4;
-      createAttendeeDto_2.attendanceId = 'testAttendanceId';
-
-      const createAttendeeDto_3 = new CreateAttendeeDto();
-      createAttendeeDto_3.name = '아자차';
-      createAttendeeDto_3.description = '아자차 학생';
-      createAttendeeDto_3.age = 5;
-      createAttendeeDto_3.attendanceId = 'notTestAttendanceId';
-
-      await service.createAttendee(createAttendeeDto_1, user_1);
-      await service.createAttendee(createAttendeeDto_2, user_1);
-      await service.createAttendee(createAttendeeDto_3, user_1);
+      await service.createAttendee(attendeeDto_1, user_1);
+      await service.createAttendee(attendeeDto_2, user_1);
+      await service.createAttendee(attendeeDto_3, user_1);
 
       // when
       const sut = await service.findAllByAttendanceId(attendance.id);
@@ -119,6 +101,7 @@ describe('AttendeesService', () => {
   async function setupTest() {
     await attendanceRepository.query('DELETE FROM attendance;');
     await userRepository.query(`DELETE FROM user;`);
+
     const user_1 = new User()
     user_1.id = 'user id 1';
     user_1.username = 'test id';
@@ -149,25 +132,6 @@ describe('AttendeesService', () => {
     await attendanceRepository.save(attendance_1)
     await attendanceRepository.save(attendance_2)
 
-
-    // await attendanceRepository.query(
-    //     `INSERT INTO attendance SET
-    //     id = 'testAttendanceId',
-    //     title = 'testAttendanceTitle',
-    //     description = 'description',
-    //     type = 'weekday',
-    //     createId = 'user id 1',
-    //     createdAt = NOW();`,
-    // );
-    // await attendanceRepository.query(
-    //     `INSERT INTO attendance SET
-    //     id = 'notTestAttendanceId',
-    //     title = 'testAttendanceTitle2',
-    //     description = 'description',
-    //     type = 'weekday',
-    //     createId = 'user id 1',
-    //     createdAt = NOW();`,
-    // );
   }
 
   async function clear() {
@@ -176,3 +140,11 @@ describe('AttendeesService', () => {
     await userRepository.query(`DELETE FROM user;`);
   }
 });
+function createAttendeeDto(name,attendanceId,description,age) {
+  const createAttendeeDto = new CreateAttendeeDto();
+  createAttendeeDto.name = name ;
+  createAttendeeDto.attendanceId = attendanceId;
+  createAttendeeDto.description = description;
+  createAttendeeDto.age = age;
+  return createAttendeeDto
+}

@@ -53,17 +53,14 @@ describe('AttendancesService', () => {
   describe('createAttendance Test', () => {
     it('출석부 테이블에 출석부를 생성한다.', async () => {
       // given
-      const createAttendanceDto = new CreateAttendanceDto();
-      createAttendanceDto.title = 'test title';
-      createAttendanceDto.description = 'test description';
-      createAttendanceDto.type = AttendanceType.WEEKDAY;
+      const attendanceDto = createAttendanceDto('test title','test description',AttendanceType.WEEKDAY)
 
       const user = new User();
       user.id = 'user id 1';
 
       // when
       const createdAttendanceId = await service.create(
-        createAttendanceDto,
+        attendanceDto,
         user,
       );
 
@@ -77,21 +74,15 @@ describe('AttendancesService', () => {
 
     it('UserAttendance 테이블에 Admin 권한으로 데이터가 생성된다.', async () => {
       // given
-      // const createAttendanceDto = createAttendanceDto('test title','test description',AttendanceType.WEEKDAY);
-      const createdDto = createAttendanceDto('test title 1','test description',AttendanceType.WEEKDAY);
+      const attendanceDto = createAttendanceDto('test title 1','test description',AttendanceType.WEEKDAY);
 
       const user = new User();
       user.id = 'user id 1';
 
       // when
-      const createdAttendanceId = await service.create(
-          createdDto,
-        user,
-      );
+      const createdAttendanceId = await service.create(attendanceDto, user,);
 
-      const userAttendance = await userAttendanceRepository.query(
-        `SELECT * FROM user_attendance WHERE userId = 'user id 1'`,
-      );
+      const userAttendance = await userAttendanceRepository.findBy({userId:'user id 1'})
 
       // then
       expect(userAttendance[0].role).toBe(RoleType.MASTER);
