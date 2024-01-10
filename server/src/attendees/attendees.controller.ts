@@ -53,8 +53,13 @@ export class AttendeesController {
     return this.attendeesService.createAttendee(createAttendeeDto, user);
   }
 
-  @Get(':attendanceId')
+  @Get('attendanceId/:attendanceId')
   @ApiOperation({ summary: '로그인한 회원의 출석부 출석 대상 조회' })
+  @ApiResponse({
+    status:200,
+    description: '해당 출석부의 출석 대상 조회',
+    type:Attendee
+  })
   @UseGuards(RoleGuard)
   @Roles(RoleType.MASTER,RoleType.GENERAL)
   async findAllByAttendanceId(@Param('attendanceId') attendanceId: string) {
