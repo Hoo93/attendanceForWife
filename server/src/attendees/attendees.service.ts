@@ -38,7 +38,8 @@ export class AttendeesService {
   }
 
   async update(id: string, updateAttendeeDto: UpdateAttendeeDto):Promise<Attendee> {
-    return ;
+    await this.attendeeRepository.update({id},updateAttendeeDto);
+    return this.findOneById(id)
   }
 
   remove(id: number) {
