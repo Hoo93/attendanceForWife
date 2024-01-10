@@ -11,13 +11,14 @@ import { TestModule } from '../../../src/test.module';
 import {RoleType} from "../../../src/roles/entities/role-type.enum";
 
 describe('AttendancesService', () => {
+  let module: TestingModule
   let service: AttendancesService;
   let attendanceRepository;
   let userAttendanceRepository;
   let userRepository;
 
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
+  beforeAll(async () => {
+    module = await Test.createTestingModule({
       imports: [
         // TypeOrmModule.forRoot <- DB 커넥션을 위해 AppModule import
         TestModule,
@@ -30,14 +31,20 @@ describe('AttendancesService', () => {
     attendanceRepository = module.get(getRepositoryToken(Attendance));
     userAttendanceRepository = module.get(getRepositoryToken(UserAttendance));
     userRepository = module.get(getRepositoryToken(User));
+  })
 
+  beforeEach(async () => {
     await setupTest();
   });
 
   afterEach(async () => {
-// Truncate tables after each test
+    // Delete tables after each test
     await clear();
   });
+
+  afterAll(async () => {
+    await module.close()
+  })
 
   it('should be defined', () => {
     expect(service).toBeDefined();

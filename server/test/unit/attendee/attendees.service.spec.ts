@@ -1,20 +1,24 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { AttendeesService } from '../../../src/attendees/attendees.service';
-import { TestModule } from '../../../src/test.module';
-import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm';
-import { Attendee } from '../../../src/attendees/entities/attendee.entity';
-import { Attendance } from '../../../src/attendances/entities/attendance.entity';
-import { User } from '../../../src/users/entities/user.entity';
-import { CreateAttendeeDto } from '../../../src/attendees/dto/create-attendee.dto';
+import {Test, TestingModule} from '@nestjs/testing';
+import {AttendeesService} from '../../../src/attendees/attendees.service';
+import {TestModule} from '../../../src/test.module';
+import {getDataSourceToken, getRepositoryToken, TypeOrmModule} from '@nestjs/typeorm';
+import {Attendee} from '../../../src/attendees/entities/attendee.entity';
+import {Attendance} from '../../../src/attendances/entities/attendance.entity';
+import {User} from '../../../src/users/entities/user.entity';
+import {CreateAttendeeDto} from '../../../src/attendees/dto/create-attendee.dto';
+import {AttendanceType} from "../../../src/attendances/const/attendance-type.enum";
+import {DataSource} from "typeorm";
+import * as module from "module";
 
 describe('AttendeesService', () => {
+  let module:TestingModule
   let service: AttendeesService;
   let attendeeRepository;
   let attendanceRepository;
   let userRepository;
 
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
+  beforeAll(async () => {
+    module = await Test.createTestingModule({
       imports: [TestModule, TypeOrmModule.forFeature([Attendee, User])],
       providers: [AttendeesService],
     }).compile();
@@ -23,14 +27,20 @@ describe('AttendeesService', () => {
     attendeeRepository = module.get(getRepositoryToken(Attendee));
     attendanceRepository = module.get(getRepositoryToken(Attendance));
     userRepository = module.get(getRepositoryToken(User));
+  })
 
+  beforeEach(async () => {
     await setupTest();
   });
 
   afterEach(async () => {
-// Truncate tables after each test
+    // Delete tables after each test
     await clear();
   });
+
+  afterAll(async () => {
+    await module.close()
+  })
 
   it('should be defined', () => {
     expect(service).toBeDefined();
@@ -107,37 +117,57 @@ describe('AttendeesService', () => {
   });
 
   async function setupTest() {
-    await attendanceRepository.query('DELETE FROM attendance');
+    await attendanceRepository.query('DELETE FROM attendance;');
     await userRepository.query(`DELETE FROM user;`);
+    const user_1 = new User()
+    user_1.id = 'user id 1';
+    user_1.username = 'test id';
+    user_1.password = 'testPWD';
+    user_1.mobileNumber = '010-8098-1398';
+    user_1.name = 'test name';
+    user_1.createId ='user id';
 
-    await userRepository.query(
-        `INSERT INTO user SET 
-        id = 'user id 1' , 
-        username = 'test id',
-        password = 'testPWD',
-        mobileNumber = '010-8098-1398',
-        name = 'test name',
-        createId ='user id'`,
-    );
+    await userRepository.save(user_1)
 
-    await attendanceRepository.query(
-        `INSERT INTO attendance SET
-        id = 'testAttendanceId',
-        title = 'testAttendanceTitle',
-        description = 'description',
-        type = 'weekday',
-        createId = 'user id 1',
-        createdAt = NOW();`,
-    );
-    await attendanceRepository.query(
-        `INSERT INTO attendance SET
-        id = 'notTestAttendanceId',
-        title = 'testAttendanceTitle2',
-        description = 'description',
-        type = 'weekday',
-        createId = 'user id 1',
-        createdAt = NOW();`,
-    );
+    await attendanceRepository
+    const attendance_1 = new Attendance()
+    attendance_1.id = 'testAttendanceId';
+    attendance_1.title = 'testAttendanceTitle';
+    attendance_1.description = 'description';
+    attendance_1.type = AttendanceType.WEEKDAY;
+    attendance_1.createId = 'user id 1';
+    attendance_1.createdAt = new Date();
+
+    const attendance_2 = new Attendance()
+    attendance_2.id = 'notTestAttendanceId';
+    attendance_2.title = 'testAttendanceTitle2';
+    attendance_2.description = 'description';
+    attendance_2.type = AttendanceType.WEEKDAY;
+    attendance_2.createId = 'user id 1';
+    attendance_2.createdAt = new Date();
+
+    await attendanceRepository.save(attendance_1)
+    await attendanceRepository.save(attendance_2)
+
+
+    // await attendanceRepository.query(
+    //     `INSERT INTO attendance SET
+    //     id = 'testAttendanceId',
+    //     title = 'testAttendanceTitle',
+    //     description = 'description',
+    //     type = 'weekday',
+    //     createId = 'user id 1',
+    //     createdAt = NOW();`,
+    // );
+    // await attendanceRepository.query(
+    //     `INSERT INTO attendance SET
+    //     id = 'notTestAttendanceId',
+    //     title = 'testAttendanceTitle2',
+    //     description = 'description',
+    //     type = 'weekday',
+    //     createId = 'user id 1',
+    //     createdAt = NOW();`,
+    // );
   }
 
   async function clear() {
