@@ -5,10 +5,7 @@ import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm';
 import { Attendee } from '../../../src/attendees/entities/attendee.entity';
 import { Attendance } from '../../../src/attendances/entities/attendance.entity';
 import { User } from '../../../src/users/entities/user.entity';
-import { UserAttendance } from '../../../src/attendances/entities/user-attendance.entity';
 import { CreateAttendeeDto } from '../../../src/attendees/dto/create-attendee.dto';
-import { CreateAttendanceDto } from '../../../src/attendances/dto/create-attendance.dto';
-import { AttendanceType } from '../../../src/attendances/const/attendance-type.enum';
 
 describe('AttendeesService', () => {
   let service: AttendeesService;
@@ -27,44 +24,12 @@ describe('AttendeesService', () => {
     attendanceRepository = module.get(getRepositoryToken(Attendance));
     userRepository = module.get(getRepositoryToken(User));
 
-    await attendanceRepository.query('DELETE FROM attendance');
-    await userRepository.query(`DELETE FROM user;`);
-
-    await userRepository.query(
-      `INSERT INTO user SET 
-        id = 'user id 1' , 
-        username = 'test id',
-        password = 'testPWD',
-        mobileNumber = '010-8098-1398',
-        name = 'test name',
-        createId ='user id'`,
-    );
-
-    await attendanceRepository.query(
-      `INSERT INTO attendance SET
-        id = 'testAttendanceId',
-        title = 'testAttendanceTitle',
-        description = 'description',
-        type = 'weekday',
-        createId = 'user id 1',
-        createdAt = NOW();`,
-    );
-    await attendanceRepository.query(
-      `INSERT INTO attendance SET
-        id = 'notTestAttendanceId',
-        title = 'testAttendanceTitle2',
-        description = 'description',
-        type = 'weekday',
-        createId = 'user id 1',
-        createdAt = NOW();`,
-    );
+    await setupTest();
   });
 
   afterEach(async () => {
-    // Truncate tables after each test
-    await attendeeRepository.query('DELETE FROM attendee;');
-    await attendanceRepository.query('DELETE FROM attendance');
-    await userRepository.query(`DELETE FROM user;`);
+// Truncate tables after each test
+    await clear();
   });
 
   it('should be defined', () => {
@@ -85,8 +50,8 @@ describe('AttendeesService', () => {
 
       // when
       const createdAttendee = await service.createAttendee(
-        createAttendeeDto,
-        user,
+          createAttendeeDto,
+          user,
       );
 
       // then
@@ -140,4 +105,44 @@ describe('AttendeesService', () => {
       });
     });
   });
+
+  async function setupTest() {
+    await attendanceRepository.query('DELETE FROM attendance');
+    await userRepository.query(`DELETE FROM user;`);
+
+    await userRepository.query(
+        `INSERT INTO user SET 
+        id = 'user id 1' , 
+        username = 'test id',
+        password = 'testPWD',
+        mobileNumber = '010-8098-1398',
+        name = 'test name',
+        createId ='user id'`,
+    );
+
+    await attendanceRepository.query(
+        `INSERT INTO attendance SET
+        id = 'testAttendanceId',
+        title = 'testAttendanceTitle',
+        description = 'description',
+        type = 'weekday',
+        createId = 'user id 1',
+        createdAt = NOW();`,
+    );
+    await attendanceRepository.query(
+        `INSERT INTO attendance SET
+        id = 'notTestAttendanceId',
+        title = 'testAttendanceTitle2',
+        description = 'description',
+        type = 'weekday',
+        createId = 'user id 1',
+        createdAt = NOW();`,
+    );
+  }
+
+  async function clear() {
+    await attendeeRepository.query('DELETE FROM attendee;');
+    await attendanceRepository.query('DELETE FROM attendance');
+    await userRepository.query(`DELETE FROM user;`);
+  }
 });

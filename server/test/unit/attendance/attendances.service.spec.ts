@@ -7,8 +7,8 @@ import { AppModule } from '../../../src/app.module';
 import { CreateAttendanceDto } from '../../../src/attendances/dto/create-attendance.dto';
 import { User } from '../../../src/users/entities/user.entity';
 import { AttendanceType } from '../../../src/attendances/const/attendance-type.enum';
-import { RoleType } from '../../../src/roles/role-type.enum';
 import { TestModule } from '../../../src/test.module';
+import {RoleType} from "../../../src/roles/entities/role-type.enum";
 
 describe('AttendancesService', () => {
   let service: AttendancesService;
@@ -31,32 +31,12 @@ describe('AttendancesService', () => {
     userAttendanceRepository = module.get(getRepositoryToken(UserAttendance));
     userRepository = module.get(getRepositoryToken(User));
 
-    await userRepository.query(
-      `INSERT INTO user SET 
-        id = 'user id 1' , 
-        username = 'test id',
-        password = 'testPWD',
-        mobileNumber = '010-8098-1398',
-        name = 'test name',
-        createId ='user id'`,
-    );
-
-    await userRepository.query(
-      `INSERT INTO user SET 
-        id = 'user id 2' , 
-        username = 'test id',
-        password = 'testPWD',
-        mobileNumber = '010-8098-1398',
-        name = 'test name',
-        createId ='user id'`,
-    );
+    await setupTest();
   });
 
   afterEach(async () => {
-    // Truncate tables after each test
-    await userAttendanceRepository.query('DELETE FROM user_attendance;');
-    await attendanceRepository.query('DELETE FROM attendance;');
-    await userRepository.query(`DELETE FROM user;`);
+// Truncate tables after each test
+    await clear();
   });
 
   it('should be defined', () => {
@@ -90,17 +70,15 @@ describe('AttendancesService', () => {
 
     it('UserAttendance 테이블에 Admin 권한으로 데이터가 생성된다.', async () => {
       // given
-      const createAttendanceDto = new CreateAttendanceDto();
-      createAttendanceDto.title = 'test title';
-      createAttendanceDto.description = 'test description';
-      createAttendanceDto.type = AttendanceType.WEEKDAY;
+      // const createAttendanceDto = createAttendanceDto('test title','test description',AttendanceType.WEEKDAY);
+      const createdDto = createAttendanceDto('test title 1','test description',AttendanceType.WEEKDAY);
 
       const user = new User();
       user.id = 'user id 1';
 
       // when
       const createdAttendanceId = await service.create(
-        createAttendanceDto,
+          createdDto,
         user,
       );
 
@@ -109,7 +87,7 @@ describe('AttendancesService', () => {
       );
 
       // then
-      expect(userAttendance[0].role).toBe(RoleType.ADMIN);
+      expect(userAttendance[0].role).toBe(RoleType.MASTER);
       expect(userAttendance[0].attendanceId).toBe(createdAttendanceId.id);
     });
   });
@@ -123,20 +101,9 @@ describe('AttendancesService', () => {
       const user_2 = new User();
       user_2.id = 'user id 2';
 
-      const createAttendanceDto_1 = new CreateAttendanceDto();
-      createAttendanceDto_1.title = 'test title 1';
-      createAttendanceDto_1.description = 'test description';
-      createAttendanceDto_1.type = AttendanceType.WEEKDAY;
-
-      const createAttendanceDto_2 = new CreateAttendanceDto();
-      createAttendanceDto_2.title = 'test title 2';
-      createAttendanceDto_2.description = 'test description';
-      createAttendanceDto_2.type = AttendanceType.WEEKDAY;
-
-      const createAttendanceDto_3 = new CreateAttendanceDto();
-      createAttendanceDto_3.title = 'test title 3';
-      createAttendanceDto_3.description = 'test description';
-      createAttendanceDto_3.type = AttendanceType.WEEKDAY;
+      const createAttendanceDto_1 = createAttendanceDto('test title 1','test description',AttendanceType.WEEKDAY);
+      const createAttendanceDto_2 = createAttendanceDto('test title 2','test description',AttendanceType.WEEKDAY);
+      const createAttendanceDto_3 = createAttendanceDto('test title 3','test description',AttendanceType.WEEKDAY);
 
       await service.create(createAttendanceDto_1, user_1);
       await service.create(createAttendanceDto_2, user_1);
@@ -152,4 +119,42 @@ describe('AttendancesService', () => {
       });
     });
   });
+
+  async function setupTest() {
+    await userRepository.query(
+        `INSERT INTO user SET 
+        id = 'user id 1' , 
+        username = 'test id',
+        password = 'testPWD',
+        mobileNumber = '010-8098-1398',
+        name = 'test name',
+        createId ='user id'`,
+    );
+
+    await userRepository.query(
+        `INSERT INTO user SET 
+        id = 'user id 2' , 
+        username = 'test id',
+        password = 'testPWD',
+        mobileNumber = '010-8098-1398',
+        name = 'test name',
+        createId ='user id'`,
+    );
+  }
+
+  async function clear() {
+    await userAttendanceRepository.query('DELETE FROM user_attendance;');
+    await attendanceRepository.query('DELETE FROM attendance;');
+    await userRepository.query(`DELETE FROM user;`);
+  }
+
+
 });
+
+function createAttendanceDto(title,description,type):CreateAttendanceDto {
+  const createAttendanceDto = new CreateAttendanceDto();
+  createAttendanceDto.title = title;
+  createAttendanceDto.description = description;
+  createAttendanceDto.type = type;
+  return createAttendanceDto;
+}
