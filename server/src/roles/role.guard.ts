@@ -26,7 +26,7 @@ export class RoleGuard implements CanActivate {
       return false;
     }
 
-    // 사용자의 역할 중에서 출석부에 설정된 역할이 있는지 확인
+    // 사용자의 출석부 중 attendanceId와 일치하는 출석부가 있는지 검증
     const userRoleForAttendance = user.userAttendance.filter(
       (data) => data.attendanceId === attendanceId,
     );
@@ -38,6 +38,7 @@ export class RoleGuard implements CanActivate {
     }
 
     // 출석부에 설정된 역할 중에서 하나라도 허용된 역할이 있는지 확인
+    // 한 개의 attendanceId에 대해 반드시 한 개의 userAttendance만 가진다.
     return roles.includes(userRoleForAttendance[0].role);
   }
 }
