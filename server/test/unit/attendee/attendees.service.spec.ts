@@ -126,7 +126,6 @@ describe('AttendeesService', () => {
       expect(updatedAttendee.age).toBe(99)
     })
   })
-
   async function setupTest() {
     await attendanceRepository.query('DELETE FROM attendance;');
     await userRepository.query(`DELETE FROM user;`);

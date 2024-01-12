@@ -10,6 +10,7 @@ import { Role } from './roles/entities/role.entity';
 import { AttendancesModule } from './attendances/attendances.module';
 import { UserAttendance } from './attendances/entities/user-attendance.entity';
 import { AttendeesModule } from './attendees/attendees.module';
+import { SchedulesModule } from './schedules/schedules.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { AttendeesModule } from './attendees/attendees.module';
     RolesModule,
     AttendancesModule,
     AttendeesModule,
+    SchedulesModule,
   ],
 })
 export class AppModule {}
