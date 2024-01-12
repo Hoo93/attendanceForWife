@@ -1,7 +1,6 @@
 import {Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
 import {BaseTimeEntity} from "../../BaseTimeEntity";
 import {ApiProperty} from "@nestjs/swagger";
-import {Attendance} from "../../attendances/entities/attendance.entity";
 import {Attendee} from "../../attendees/entities/attendee.entity";
 
 @Entity()
