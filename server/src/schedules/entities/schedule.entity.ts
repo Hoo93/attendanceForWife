@@ -1,6 +1,8 @@
-import {Column, Entity, PrimaryGeneratedColumn} from "typeorm";
+import {Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
 import {BaseTimeEntity} from "../../BaseTimeEntity";
 import {ApiProperty} from "@nestjs/swagger";
+import {Attendance} from "../../attendances/entities/attendance.entity";
+import {Attendee} from "../../attendees/entities/attendee.entity";
 
 @Entity()
 export class Schedule extends BaseTimeEntity {
@@ -19,4 +21,9 @@ export class Schedule extends BaseTimeEntity {
     @Column({ comment: '출석 시간', type: 'varchar' })
     @ApiProperty({ description: '출석 시간', type: 'string' })
     time: string;
+
+    @ManyToOne(() => Attendee, (attendee) => attendee.schedules)
+    @JoinColumn({ name: 'attendeeId', referencedColumnName: 'id' })
+    @ApiProperty({ type: () => Attendee })
+    attendee: Attendee;
 }
