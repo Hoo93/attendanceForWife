@@ -30,6 +30,15 @@ describe('SchedulesService', () => {
     userRepository = module.get(getRepositoryToken(User));
   });
 
+  beforeEach(async () => {
+    await setupTest();
+  });
+
+  afterEach(async () => {
+    // Delete tables after each test
+    await clear();
+  });
+
   afterAll(async () => {
     await module.close();
   });
