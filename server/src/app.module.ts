@@ -11,12 +11,13 @@ import { AttendancesModule } from './attendances/attendances.module';
 import { UserAttendance } from './attendances/entities/user-attendance.entity';
 import { AttendeesModule } from './attendees/attendees.module';
 import { SchedulesModule } from './schedules/schedules.module';
+import { Schedule } from './schedules/entities/schedule.entity';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot({
       ...ormConfigDevelopment,
-      entities: [User, Role, Attendance, UserAttendance],
+      entities: [User, Role, Attendance, UserAttendance, Schedule],
     }),
     UsersModule,
     AuthModule,
