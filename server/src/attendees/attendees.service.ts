@@ -5,7 +5,6 @@ import { User } from '../users/entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Attendee } from './entities/attendee.entity';
 import { Repository } from 'typeorm';
-import { Attendance } from '../attendances/entities/attendance.entity';
 
 @Injectable()
 export class AttendeesService {
@@ -37,9 +36,12 @@ export class AttendeesService {
     return this.attendeeRepository.findOneBy({ id });
   }
 
-  async update(id: string, updateAttendeeDto: UpdateAttendeeDto):Promise<Attendee> {
-    await this.attendeeRepository.update({id},updateAttendeeDto);
-    return this.findOneById(id)
+  async update(
+    id: string,
+    updateAttendeeDto: UpdateAttendeeDto,
+  ): Promise<Attendee> {
+    await this.attendeeRepository.update({ id }, updateAttendeeDto);
+    return this.findOneById(id);
   }
 
   remove(id: number) {
