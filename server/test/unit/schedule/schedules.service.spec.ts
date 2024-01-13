@@ -55,7 +55,7 @@ describe('SchedulesService', () => {
       user.id = 'user id 1';
 
       const scheduleDto = new CreateScheduleDto();
-      scheduleDto.attendeeId = 'Attendee Name 1';
+      scheduleDto.attendeeId = 'Attendee Id 1';
       scheduleDto.day = DayType.MONDAY;
       scheduleDto.time = '1000';
 
@@ -63,7 +63,7 @@ describe('SchedulesService', () => {
       const sut = await service.create(scheduleDto, user);
 
       // Then
-      expect(sut.attendeeId).toBe('Attendee Name 1');
+      expect(sut.attendeeId).toBe('Attendee Id 1');
       expect(sut.day).toBe('MONDAY');
       expect(sut.time).toBe('1000');
     });
@@ -103,6 +103,7 @@ describe('SchedulesService', () => {
     await attendanceRepository.save(attendance_2);
 
     const attendee_1 = new Attendee();
+    attendee_1.id = 'Attendee Id 1';
     attendee_1.name = 'Attendee Name 1';
     attendee_1.attendanceId = attendance_1.id;
     attendee_1.description = 'Attendee 1 description';
@@ -110,6 +111,7 @@ describe('SchedulesService', () => {
     attendee_1.createId = user_1.id;
 
     const attendee_2 = new Attendee();
+    attendee_2.id = 'Attendee Id 2';
     attendee_2.name = 'Attendee Name 2';
     attendee_2.attendanceId = attendance_2.id;
     attendee_2.description = 'Attendee 2 description';
@@ -123,7 +125,7 @@ describe('SchedulesService', () => {
   async function clear() {
     await scheduleRepository.query('DELETE FROM schedule;');
     await attendeeRepository.query('DELETE FROM attendee;');
-    await attendanceRepository.query('DELETE FROM attendance');
+    await attendanceRepository.query('DELETE FROM attendance;');
     await userRepository.query(`DELETE FROM user;`);
   }
 });
