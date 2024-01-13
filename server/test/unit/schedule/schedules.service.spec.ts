@@ -4,10 +4,11 @@ import { TestModule } from '../../../src/test.module';
 import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm';
 import { Attendee } from '../../../src/attendees/entities/attendee.entity';
 import { User } from '../../../src/users/entities/user.entity';
-import { AttendeesService } from '../../../src/attendees/attendees.service';
 import { Attendance } from '../../../src/attendances/entities/attendance.entity';
 import { Schedule } from '../../../src/schedules/entities/schedule.entity';
 import { AttendanceType } from '../../../src/attendances/const/attendance-type.enum';
+import { DayType } from '../../../src/schedules/const/day-type.enum';
+import { CreateScheduleDto } from '../../../src/schedules/dto/create-schedule.dto';
 
 describe('SchedulesService', () => {
   let module: TestingModule;
@@ -48,7 +49,24 @@ describe('SchedulesService', () => {
   });
 
   describe('Create Schedules Test', () => {
-    it('선택한 요일과 시간으로 출석 대상의 스케쥴을 생성한다.', async () => {});
+    it('선택한 요일과 시간으로 출석 대상의 스케쥴을 생성한다.', async () => {
+      // Given
+      const user = new User();
+      user.id = 'user id 1';
+
+      const scheduleDto = new CreateScheduleDto();
+      scheduleDto.attendeeId = 'Attendee Name 1';
+      scheduleDto.day = DayType.MONDAY;
+      scheduleDto.time = '1000';
+
+      // When
+      const sut = await service.create(scheduleDto, user);
+
+      // Then
+      expect(sut.attendeeId).toBe('Attendee Name 1');
+      expect(sut.day).toBe('MONDAY');
+      expect(sut.time).toBe('1000');
+    });
   });
 
   async function setupTest() {
