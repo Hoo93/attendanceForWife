@@ -10,14 +10,18 @@ import { User } from '../users/entities/user.entity';
 export class SchedulesService {
   constructor(
     @InjectRepository(Schedule)
-    scheduleRepository: Repository<Schedule>,
+    private scheduleRepository: Repository<Schedule>,
   ) {}
 
   async create(
     createScheduleDto: CreateScheduleDto,
     user: User,
   ): Promise<Schedule> {
-    return new Schedule();
+    const schedule = createScheduleDto.toEntity(user.id);
+
+    const createdSchedule = await this.scheduleRepository.save(schedule);
+
+    return createdSchedule;
   }
 
   findAll() {
