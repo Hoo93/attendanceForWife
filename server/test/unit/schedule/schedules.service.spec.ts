@@ -9,6 +9,7 @@ import { Schedule } from '../../../src/schedules/entities/schedule.entity';
 import { AttendanceType } from '../../../src/attendances/const/attendance-type.enum';
 import { DayType } from '../../../src/schedules/const/day-type.enum';
 import { CreateScheduleDto } from '../../../src/schedules/dto/create-schedule.dto';
+import { BadRequestException } from '@nestjs/common';
 
 describe('SchedulesService', () => {
   let module: TestingModule;
@@ -76,13 +77,15 @@ describe('SchedulesService', () => {
       const scheduleDto = new CreateScheduleDto();
       scheduleDto.attendeeId = 'Attendee Id 1';
       scheduleDto.day = DayType.MONDAY;
+      // INVALID TIME FORMAT
       scheduleDto.time = '4500';
 
-      // When
-      const sut = await service.create(scheduleDto, user);
-
       // Then
-      expect(sut).toBeInstanceOf(Error);
+      await expect(async () => {
+        await service.create(scheduleDto, user);
+      }).rejects.toThrowError(
+        new BadRequestException('유효하지 않은 시간 포맷입니다.'),
+      );
     });
   });
 
