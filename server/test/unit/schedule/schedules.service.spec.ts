@@ -67,6 +67,23 @@ describe('SchedulesService', () => {
       expect(sut.day).toBe('MONDAY');
       expect(sut.time).toBe('1000');
     });
+
+    it('입력한 시간이 적절하지 않으면 오류를 일으킨다.', async () => {
+      // Given
+      const user = new User();
+      user.id = 'user id 1';
+
+      const scheduleDto = new CreateScheduleDto();
+      scheduleDto.attendeeId = 'Attendee Id 1';
+      scheduleDto.day = DayType.MONDAY;
+      scheduleDto.time = '4500';
+
+      // When
+      const sut = await service.create(scheduleDto, user);
+
+      // Then
+      expect(sut).toBeInstanceOf(Error);
+    });
   });
 
   async function setupTest() {
