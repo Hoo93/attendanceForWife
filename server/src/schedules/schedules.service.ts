@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateScheduleDto } from './dto/create-schedule.dto';
 import { UpdateScheduleDto } from './dto/update-schedule.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -20,6 +20,9 @@ export class SchedulesService {
   ): Promise<Schedule> {
     const schedule = createScheduleDto.toEntity(user.id);
 
+    if (!this.verifyAttendTime(schedule.time)) {
+      throw new BadRequestException('유효하지 않은 시간 포맷입니다.');
+    }
     const createdSchedule = await this.scheduleRepository.save(schedule);
 
     return createdSchedule;
@@ -42,7 +45,7 @@ export class SchedulesService {
   }
 
   private verifyAttendTime(time: string) {
-    if (typeof time !== 'string' || time.length > 4) {
+    if (typeof time !== 'string' || time.length !== 4) {
       return false;
     }
     const hour = time.slice(0, time.length - 2);
