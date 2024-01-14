@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Schedule } from './entities/schedule.entity';
 import { Repository } from 'typeorm';
 import { User } from '../users/entities/user.entity';
+import { isNumber } from 'class-validator';
 
 @Injectable()
 export class SchedulesService {
@@ -38,5 +39,15 @@ export class SchedulesService {
 
   remove(id: number) {
     return `This action removes a #${id} schedule`;
+  }
+
+  private verifyAttendTime(time: string) {
+    if (typeof time !== 'string' || time.length > 4) {
+      return false;
+    }
+    const hour = time.slice(0, time.length - 2);
+    const minute = time.slice(time.length - 2);
+
+    return !(parseInt(hour) >= 24 || parseInt(minute) >= 60);
   }
 }
