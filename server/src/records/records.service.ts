@@ -1,11 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { CreateRecordDto } from './dto/create-record.dto';
 import { UpdateRecordDto } from './dto/update-record.dto';
+import { User } from '../users/entities/user.entity';
+import { Record } from './entities/record.entity';
 
 @Injectable()
 export class RecordsService {
-  create(createRecordDto: CreateRecordDto) {
-    return 'This action adds a new record';
+  async create(createRecordDto: CreateRecordDto, user: User): Promise<Record> {
+    return;
   }
 
   findAll() {

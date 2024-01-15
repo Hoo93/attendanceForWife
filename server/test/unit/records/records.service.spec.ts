@@ -4,11 +4,13 @@ import { User } from '../../../src/users/entities/user.entity';
 import { Attendance } from '../../../src/attendances/entities/attendance.entity';
 import { AttendanceType } from '../../../src/attendances/const/attendance-type.enum';
 import { Attendee } from '../../../src/attendees/entities/attendee.entity';
-import { SchedulesService } from '../../../src/schedules/schedules.service';
 import { TestModule } from '../../../src/test.module';
 import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm';
 import { Schedule } from '../../../src/schedules/entities/schedule.entity';
 import { Record } from '../../../src/records/entities/record.entity';
+import { CreateRecordDto } from '../../../src/records/dto/create-record.dto';
+import { DayType } from '../../../src/schedules/const/day-type.enum';
+import { AttendanceStatus } from '../../../src/records/record-type.enum';
 
 describe('RecordsService', () => {
   let module: TestingModule;
@@ -46,6 +48,29 @@ describe('RecordsService', () => {
 
   it('should be defined', () => {
     expect(service).toBeDefined();
+  });
+
+  describe('Create Record Test', () => {
+    it('입력한 값으로 출석기록을 생성한다.', async () => {
+      const user = new User();
+      user.id = 'user id 1';
+
+      const attendee = new Attendee();
+      attendee.id = 'Attendee Id 1';
+
+      const recordDto = new CreateRecordDto();
+      recordDto.datetime = '2024-01-15 12:30:00';
+      recordDto.day = DayType.MONDAY;
+      recordDto.status = AttendanceStatus.PRESENT;
+      recordDto.attendeeId = attendee.id;
+
+      const sut = await service.create(recordDto, user);
+
+      expect(sut.attendeeId).toBe('Attendee Id 1');
+      expect(sut.datetime).toBe('2024-01-15 12:30:00');
+      expect(sut.day).toBe('MONDAY');
+      expect(sut.status).toBe('Present');
+    });
   });
 
   async function setupTest() {
