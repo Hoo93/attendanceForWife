@@ -13,14 +13,23 @@ import { CreateRecordDto } from './dto/create-record.dto';
 import { UpdateRecordDto } from './dto/update-record.dto';
 import { User } from '../users/entities/user.entity';
 import { GetUser } from '../common/user.decorator';
-import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { Attendee } from '../attendees/entities/attendee.entity';
 import { Record } from './entities/record.entity';
 import { RoleGuard } from '../roles/role.guard';
 import { Roles } from '../roles/role.decorator';
 import { RoleType } from '../roles/entities/role-type.enum';
+import { AuthGuard } from '@nestjs/passport';
 
+@UseGuards(AuthGuard('jwt'))
 @Controller('records')
+@ApiTags('출석기록')
+@ApiBearerAuth('token')
 export class RecordsController {
   constructor(private readonly recordsService: RecordsService) {}
 
@@ -35,7 +44,7 @@ export class RecordsController {
     type: Record,
   })
   @UseGuards(RoleGuard)
-  @Roles(RoleType.MASTER, RoleType.GENERAL, RoleType.MANAGER)
+  @Roles(RoleType.MASTER, RoleType.MANAGER, RoleType.GENERAL)
   async createRecord(
     @Body() createRecordDto: CreateRecordDto,
     @GetUser() user: User,
