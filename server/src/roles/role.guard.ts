@@ -31,7 +31,6 @@ export class RoleGuard implements CanActivate {
       (data) => data.attendanceId === attendanceId,
     );
 
-
     if (userRoleForAttendance.length === 0) {
       // 사용자가 해당 출석부에 대한 역할이 없는 경우 거부
       return false;

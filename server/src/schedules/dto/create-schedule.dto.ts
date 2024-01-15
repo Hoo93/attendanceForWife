@@ -9,13 +9,33 @@ import { share } from 'rxjs';
 export class CreateScheduleDto {
   @IsString()
   @IsNotEmpty()
+  @ApiProperty({
+    description: '출석부 PK',
+    type: 'string',
+    example: 'uuid-1234-uuid',
+  })
+  attendanceId: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({
+    description: '출석 대상 ID',
+    type: 'string',
+    example: 'uuid-1234-uuid',
+  })
   attendeeId: string;
 
   @IsEnum(DayType)
+  @ApiProperty({ description: '출석 요일', type: 'enum', enum: DayType })
   day: DayType;
 
   @IsString()
   @Matches(/^\d{4}$/)
+  @ApiProperty({
+    description: '출석 시간',
+    type: 'string',
+    example: '0930',
+  })
   time: string;
 
   toEntity(createId: string) {
