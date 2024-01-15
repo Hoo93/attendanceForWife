@@ -40,6 +40,10 @@ export class CreateAttendeeDto {
   })
   description: string;
 
+  createId: string;
+
+  createdAt: string;
+
   toEntity() {
     const attendee = new Attendee();
     attendee.name = this.name;
