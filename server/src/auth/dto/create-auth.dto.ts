@@ -22,7 +22,7 @@ import {
 } from '../const/error-message';
 import { User } from '../../users/entities/user.entity';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import {MobileNumberTransform} from "../../common/phoneNumber.decorator";
+import { MobileNumberTransform } from '../../common/phoneNumber.decorator';
 
 export class CreateAuthDto {
   @IsString()
@@ -61,13 +61,14 @@ export class CreateAuthDto {
   name: string;
 
   @IsString()
-  @Matches(/^01[01]{1}-\d{3,4}-\d{4}$/, {
+  @Matches(/^01[01]{1}\d{7,8}$/, {
     message: INVALID_MOBILENUMBER_MESSAGE,
   })
+  @MobileNumberTransform()
   @ApiProperty({
     description: '회원 전화번호',
     type: 'string',
-    example: '010-1234-5678',
+    example: '01012345678',
   })
   mobileNumber: string;
 

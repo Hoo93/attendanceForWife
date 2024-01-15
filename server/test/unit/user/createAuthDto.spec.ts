@@ -137,15 +137,15 @@ describe('create-auth.dto TEST', () => {
     );
   });
 
-  it('핸드폰 번호는 01X-XXXX-XXXX 형식이어야 합니다.', async () => {
-    const invalidMobileNumber = '01080981398';
+  it('휴대폰 번호의 공백과 - 을 제거한다.', async () => {
+    const invalidMobileNumber = '010-8098- 1398';
     createAuthDto.mobileNumber = invalidMobileNumber;
+
+    createAuthDto = plainToInstance(CreateAuthDto, createAuthDto);
 
     const validationErrors = await validate(createAuthDto);
 
-    expect(validationErrors[0].constraints.matches).toBe(
-      INVALID_MOBILENUMBER_MESSAGE,
-    );
+    expect(validationErrors).toHaveLength(0);
   });
 
   it('이메일주소는 XXXX@XXXX.XXX 형식이어야 합니다.', async () => {
