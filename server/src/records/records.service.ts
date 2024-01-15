@@ -3,11 +3,19 @@ import { CreateRecordDto } from './dto/create-record.dto';
 import { UpdateRecordDto } from './dto/update-record.dto';
 import { User } from '../users/entities/user.entity';
 import { Record } from './entities/record.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class RecordsService {
+  constructor(
+    @InjectRepository(Record)
+    private recordRepository: Repository<Record>,
+  ) {}
   async create(createRecordDto: CreateRecordDto, user: User): Promise<Record> {
-    return;
+    const record = createRecordDto.toEntity(user.id);
+
+    return await this.recordRepository.save(record);
   }
 
   findAll() {
