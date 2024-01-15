@@ -31,7 +31,7 @@ export class Record extends BaseTimeEntity {
 
   @Column({ comment: '출석 날짜', type: 'datetime' })
   @ApiProperty({ description: '출석 날짜', type: 'datetime' })
-  date: Date;
+  datetime: string;
 
   @Column({ comment: '출석 요일', type: 'enum', enum: DayType })
   @ApiProperty({
