@@ -10,6 +10,7 @@ import { AttendanceType } from '../../../src/attendances/const/attendance-type.e
 import { DayType } from '../../../src/schedules/const/day-type.enum';
 import { CreateScheduleDto } from '../../../src/schedules/dto/create-schedule.dto';
 import { BadRequestException } from '@nestjs/common';
+import { CreateAttendeeDto } from '../../../src/attendees/dto/create-attendee.dto';
 
 describe('SchedulesService', () => {
   let module: TestingModule;
@@ -55,10 +56,11 @@ describe('SchedulesService', () => {
       const user = new User();
       user.id = 'user id 1';
 
-      const scheduleDto = new CreateScheduleDto();
-      scheduleDto.attendeeId = 'Attendee Id 1';
-      scheduleDto.day = DayType.MONDAY;
-      scheduleDto.time = '1000';
+      const scheduleDto = generateCreateScheduleDto(
+        'Attendee Id 1',
+        DayType.MONDAY,
+        '1000',
+      );
 
       // When
       const sut = await service.create(scheduleDto, user);
@@ -74,11 +76,11 @@ describe('SchedulesService', () => {
       const user = new User();
       user.id = 'user id 1';
 
-      const scheduleDto = new CreateScheduleDto();
-      scheduleDto.attendeeId = 'Attendee Id 1';
-      scheduleDto.day = DayType.MONDAY;
-      // INVALID TIME FORMAT
-      scheduleDto.time = '4500';
+      const scheduleDto = generateCreateScheduleDto(
+        'Attendee Id 1',
+        DayType.MONDAY,
+        '4500',
+      );
 
       // Then
       await expect(async () => {
@@ -149,3 +151,15 @@ describe('SchedulesService', () => {
     await userRepository.query(`DELETE FROM user;`);
   }
 });
+
+function generateCreateScheduleDto(
+  attendeeId: string,
+  day: DayType,
+  time: string,
+) {
+  const createScheduleDto = new CreateScheduleDto();
+  createScheduleDto.attendeeId = attendeeId;
+  createScheduleDto.day = day;
+  createScheduleDto.time = time;
+  return createScheduleDto;
+}
