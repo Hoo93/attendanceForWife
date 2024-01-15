@@ -58,11 +58,12 @@ describe('RecordsService', () => {
       const attendee = new Attendee();
       attendee.id = 'Attendee Id 1';
 
-      const recordDto = new CreateRecordDto();
-      recordDto.datetime = '2024-01-15 12:30:00';
-      recordDto.day = DayType.MONDAY;
-      recordDto.status = AttendanceStatus.PRESENT;
-      recordDto.attendeeId = attendee.id;
+      const recordDto = createRecordDto(
+        '2024-01-15 12:30:00',
+        DayType.MONDAY,
+        AttendanceStatus.PRESENT,
+        attendee.id,
+      );
 
       const sut = await service.create(recordDto, user);
 
@@ -133,3 +134,17 @@ describe('RecordsService', () => {
     await userRepository.query(`DELETE FROM user;`);
   }
 });
+
+function createRecordDto(
+  datetime,
+  day: DayType,
+  status: AttendanceStatus,
+  attendeeId,
+) {
+  const recordDto = new CreateRecordDto();
+  recordDto.datetime = datetime;
+  recordDto.day = day;
+  recordDto.status = status;
+  recordDto.attendeeId = attendeeId;
+  return recordDto;
+}
