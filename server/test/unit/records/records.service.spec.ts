@@ -72,6 +72,30 @@ describe('RecordsService', () => {
       expect(sut.day).toBe('MONDAY');
       expect(sut.status).toBe('Present');
     });
+
+    it('출석부 생성 시 createId, createdAt을 기록한다.', async () => {
+      // Given
+      const user = new User();
+      user.id = 'user id 1';
+
+      const attendee = new Attendee();
+      attendee.id = 'Attendee Id 1';
+
+      const now = new Date();
+
+      const recordDto = createRecordDto(
+        '2024-01-15 12:30:00',
+        DayType.MONDAY,
+        AttendanceStatus.PRESENT,
+        attendee.id,
+      );
+      recordDto.createdAt = now;
+
+      const sut = await service.create(recordDto, user);
+
+      expect(sut.createdAt).toStrictEqual(now);
+      expect(sut.createId).toBe('user id 1');
+    });
   });
 
   async function setupTest() {
