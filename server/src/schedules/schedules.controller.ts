@@ -14,7 +14,16 @@ import { UpdateScheduleDto } from './dto/update-schedule.dto';
 import { GetUser } from '../common/user.decorator';
 import { User } from '../users/entities/user.entity';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
+import { Attendee } from '../attendees/entities/attendee.entity';
+import { CreateAttendeeDto } from '../attendees/dto/create-attendee.dto';
+import { Schedule } from './entities/schedule.entity';
 
 @Controller('schedules')
 @UseGuards(AuthGuard('jwt'))
@@ -24,6 +33,16 @@ export class SchedulesController {
   constructor(private readonly schedulesService: SchedulesService) {}
 
   @Post()
+  @ApiOperation({ summary: '출석 스케쥴 생성' })
+  @ApiResponse({
+    status: 200,
+    description: '출석 스케쥴 생성',
+    type: Schedule,
+  })
+  @ApiBody({
+    type: CreateScheduleDto,
+    description: '출석 스케쥴 생성 DTO',
+  })
   create(@Body() createScheduleDto: CreateScheduleDto, @GetUser() user: User) {
     return this.schedulesService.create(createScheduleDto, user);
   }

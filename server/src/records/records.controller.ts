@@ -15,6 +15,7 @@ import { User } from '../users/entities/user.entity';
 import { GetUser } from '../common/user.decorator';
 import {
   ApiBearerAuth,
+  ApiBody,
   ApiOperation,
   ApiResponse,
   ApiTags,
@@ -25,6 +26,7 @@ import { RoleGuard } from '../roles/role.guard';
 import { Roles } from '../roles/role.decorator';
 import { RoleType } from '../roles/entities/role-type.enum';
 import { AuthGuard } from '@nestjs/passport';
+import { CreateAttendeeDto } from '../attendees/dto/create-attendee.dto';
 
 @UseGuards(AuthGuard('jwt'))
 @Controller('records')
@@ -37,6 +39,10 @@ export class RecordsController {
   @ApiOperation({
     description: '출석기록 생성',
     summary: '출석기록 생성 요약',
+  })
+  @ApiBody({
+    type: CreateRecordDto,
+    description: '출석기록 생성 DTO',
   })
   @ApiResponse({
     status: 200,
