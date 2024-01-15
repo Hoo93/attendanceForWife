@@ -3,12 +3,14 @@ import {
   Column,
   Entity,
   JoinColumn,
-  ManyToOne, OneToMany,
+  ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { Attendance } from '../../attendances/entities/attendance.entity';
-import {Schedule} from "../../schedules/entities/schedule.entity";
+import { Schedule } from '../../schedules/entities/schedule.entity';
+import { Record } from '../../records/entities/record.entity';
 
 @Entity()
 export class Attendee extends BaseTimeEntity {
@@ -40,4 +42,8 @@ export class Attendee extends BaseTimeEntity {
   @OneToMany(() => Schedule, (schedule) => schedule.attendee)
   @ApiProperty({ type: () => Schedule })
   schedules: Schedule[];
+
+  @OneToMany(() => Record, (record) => record.attendee)
+  @ApiProperty({ type: () => Record })
+  records: Record[];
 }
