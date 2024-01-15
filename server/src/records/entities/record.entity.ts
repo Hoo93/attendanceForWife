@@ -16,11 +16,11 @@ export class Record extends BaseTimeEntity {
     type: 'enum',
     enum: AttendanceStatus,
   })
-  attendanceStatus: AttendanceStatus;
+  status: AttendanceStatus;
 
   @Column({ comment: '출석 날짜', type: 'datetime' })
   @ApiProperty({ description: '출석 날짜', type: 'datetime' })
-  attendanceDate: Date;
+  date: Date;
 
   @Column({ comment: '출석 요일', type: 'enum', enum: DayType })
   @ApiProperty({
@@ -28,7 +28,7 @@ export class Record extends BaseTimeEntity {
     type: 'enum',
     enum: DayType,
   })
-  attendanceDay: DayType;
+  day: DayType;
 
   @Column({ comment: '지각사유', type: 'varchar', nullable: true })
   @ApiProperty({ description: '지각사유', type: 'string', nullable: true })
