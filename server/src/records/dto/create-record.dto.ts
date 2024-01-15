@@ -22,6 +22,8 @@ export class CreateRecordDto {
   @IsString()
   lateReason: string;
 
+  createdAt: Date;
+
   toEntity(createId: string) {
     const record = new Record();
     record.status = this.status;
@@ -30,6 +32,7 @@ export class CreateRecordDto {
     record.attendeeId = this.attendeeId;
     record.createId = createId;
     record.lateReason = this?.lateReason;
+    record.createdAt = this.createdAt ?? new Date();
     return record;
   }
 }
