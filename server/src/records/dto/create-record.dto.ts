@@ -13,7 +13,7 @@ export class CreateRecordDto {
   attendeeId: string;
 
   @IsDate()
-  datetime: string;
+  datetime: Date;
 
   @IsEnum(DayType)
   day: DayType;
