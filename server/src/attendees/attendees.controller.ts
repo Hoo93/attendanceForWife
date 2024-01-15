@@ -28,8 +28,8 @@ import { RoleGuard } from '../roles/role.guard';
 import { Roles } from '../roles/role.decorator';
 import { RoleType } from '../roles/entities/role-type.enum';
 
-@UseGuards(AuthGuard('jwt'))
 @Controller('attendees')
+@UseGuards(AuthGuard('jwt'))
 @ApiTags('출석 대상')
 @ApiBearerAuth('token')
 export class AttendeesController {
