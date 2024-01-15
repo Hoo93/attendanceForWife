@@ -1,11 +1,15 @@
 import { BaseTimeEntity } from '../../BaseTimeEntity';
-import { Column, Entity } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { AttendanceStatus } from '../record-type.enum';
 import { DayType } from '../../schedules/const/day-type.enum';
 
 @Entity()
 export class Record extends BaseTimeEntity {
+  @PrimaryGeneratedColumn('increment', { comment: '출석 기록 PK', type: 'int' })
+  @ApiProperty({ description: '출석 기록 PK', type: 'int' })
+  id: number;
+
   @Column({ comment: '출석 상태', type: 'enum', enum: AttendanceStatus })
   @ApiProperty({
     description: '출석 상태',
