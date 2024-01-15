@@ -140,6 +140,8 @@ describe('AttendeesService', () => {
       const createdAttendee = await attendeeRepository.save(attendee);
 
       // When
+      const now = new Date();
+
       const updateDto = new UpdateAttendeeDto();
       updateDto.name = '수정된';
       updateDto.description = '수정되었습니다';
@@ -154,6 +156,44 @@ describe('AttendeesService', () => {
       expect(updatedAttendee.name).toBe('수정된');
       expect(updatedAttendee.description).toBe('수정되었습니다');
       expect(updatedAttendee.age).toBe(99);
+    });
+
+    it('수정한 회원의 Id 와 수정 시간이 기록된다.', async () => {
+      // Given
+      const attendance = new Attendance();
+      attendance.id = 'testAttendanceId';
+
+      const user_1 = new User();
+      user_1.id = 'user id 1';
+
+      const attendee = createAttendee(
+        '가나다',
+        'testAttendanceId',
+        '가나다 학생',
+        3,
+        user_1.id,
+      );
+
+      const createdAttendee = await attendeeRepository.save(attendee);
+
+      // When
+      const now = new Date();
+
+      const updateDto = new UpdateAttendeeDto();
+      updateDto.updateId = user_1.id;
+      updateDto.updatedAt = now;
+
+      const updatedAttendee = await service.update(
+        createdAttendee.id,
+        updateDto,
+      );
+
+      // Then
+      expect(updatedAttendee.name).toBe('가나다');
+      expect(updatedAttendee.description).toBe('가나다 학생');
+      expect(updatedAttendee.age).toBe(3);
+      expect(updatedAttendee.updateId).toBe('user id 1');
+      expect(updatedAttendee.updatedAt).toStrictEqual(now);
     });
   });
   async function setupTest() {
