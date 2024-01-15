@@ -56,12 +56,12 @@ export class AttendeesController {
   @Get('attendanceId/:attendanceId')
   @ApiOperation({ summary: '로그인한 회원의 출석부 출석 대상 조회' })
   @ApiResponse({
-    status:200,
+    status: 200,
     description: '해당 출석부의 출석 대상 조회',
-    type:Attendee
+    type: Attendee,
   })
   @UseGuards(RoleGuard)
-  @Roles(RoleType.MASTER,RoleType.GENERAL)
+  @Roles(RoleType.MASTER, RoleType.GENERAL, RoleType.MANAGER, RoleType.READER)
   async findAllByAttendanceId(@Param('attendanceId') attendanceId: string) {
     return this.attendeesService.findAllByAttendanceId(attendanceId);
   }
@@ -72,7 +72,15 @@ export class AttendeesController {
   }
 
   @Patch(':id')
-  update(
+  @ApiOperation({ summary: '출석대상 수정' })
+  @ApiResponse({
+    status: 200,
+    description: '출석대상 수정',
+    type: Attendee,
+  })
+  @UseGuards(RoleGuard)
+  @Roles(RoleType.MASTER, RoleType.GENERAL, RoleType.MANAGER)
+  async update(
     @Param('id') id: string,
     @Body() updateAttendeeDto: UpdateAttendeeDto,
   ) {
