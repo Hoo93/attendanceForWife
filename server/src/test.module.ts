@@ -11,21 +11,32 @@ import { AttendancesModule } from './attendances/attendances.module';
 import { UserAttendance } from './attendances/entities/user-attendance.entity';
 import { Attendee } from './attendees/entities/attendee.entity';
 import { AttendeesModule } from './attendees/attendees.module';
-import {SchedulesModule} from "./schedules/schedules.module";
-import {Schedule} from "./schedules/entities/schedule.entity";
+import { SchedulesModule } from './schedules/schedules.module';
+import { Schedule } from './schedules/entities/schedule.entity';
+import { Record } from './records/entities/record.entity';
+import { RecordsModule } from './records/records.module';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot({
       ...ormConfigTest,
-      entities: [User, Role, Attendance, UserAttendance, Attendee, Schedule],
+      entities: [
+        User,
+        Role,
+        Attendance,
+        UserAttendance,
+        Attendee,
+        Schedule,
+        Record,
+      ],
     }),
     UsersModule,
     AuthModule,
     RolesModule,
     AttendancesModule,
     AttendeesModule,
-    SchedulesModule
+    SchedulesModule,
+    RecordsModule,
   ],
 })
 export class TestModule {}

@@ -12,12 +12,14 @@ import { UserAttendance } from './attendances/entities/user-attendance.entity';
 import { AttendeesModule } from './attendees/attendees.module';
 import { SchedulesModule } from './schedules/schedules.module';
 import { Schedule } from './schedules/entities/schedule.entity';
+import { RecordsModule } from './records/records.module';
+import { Record } from './records/entities/record.entity';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot({
       ...ormConfigDevelopment,
-      entities: [User, Role, Attendance, UserAttendance, Schedule],
+      entities: [User, Role, Attendance, UserAttendance, Schedule, Record],
     }),
     UsersModule,
     AuthModule,
@@ -25,6 +27,7 @@ import { Schedule } from './schedules/entities/schedule.entity';
     AttendancesModule,
     AttendeesModule,
     SchedulesModule,
+    RecordsModule,
   ],
 })
 export class AppModule {}
