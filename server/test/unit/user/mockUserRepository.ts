@@ -43,7 +43,7 @@ export class MockUserRepository {
   }
 
   public async findOne(options) {
-    const property = Object.keys(options)[0];
+    const property = Object.keys(options.where)[0];
 
     const user: User = this.users.find(
       (user) => user[property] === options.where[property],
