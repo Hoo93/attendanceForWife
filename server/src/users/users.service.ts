@@ -30,6 +30,12 @@ export class UsersService {
     return this.userRepository.findOne({ where: { id } });
   }
 
+  async findOneByMobileNumber(mobileNumber: string) {
+    return this.userRepository.findOne({
+      where: { mobileNumber: mobileNumber },
+    });
+  }
+
   async update(id: number, updateUserDto: UpdateUserDto) {
     return `This action updates a #${id} user`;
   }
