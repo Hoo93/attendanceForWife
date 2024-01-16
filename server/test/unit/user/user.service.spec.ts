@@ -37,7 +37,15 @@ describe('UserService Test', function () {
     expect(userRepository).toBeDefined();
   });
 
-  it('findOneById should returns exact user', async () => {
+  it('findOneByMobilNumber should returns exact user', async () => {
+    const mobileNumber = '010-1234-1398';
+
+    const user = await service.findOneByMobileNumber(mobileNumber);
+
+    expect(user.mobileNumber).toBe(mobileNumber);
+  });
+
+  it('findOneByMobileNumber should returns exact user', async () => {
     const id = 'TEST_1';
 
     const user = await service.findOneById(id);
