@@ -42,7 +42,7 @@ describe('UserService Test', function () {
 
     const user = await service.findOneByMobileNumber(mobileNumber);
 
-    expect(user.mobileNumber).toBe(mobileNumber);
+    expect(user.mobileNumber).toBe('01012341398');
   });
 
   it('findOneByMobileNumber should returns exact user', async () => {

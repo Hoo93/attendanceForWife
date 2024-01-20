@@ -12,7 +12,7 @@ export class MockUserRepository {
       password: 'pwd123!@#',
       email: 'email@gmail.com',
       birthday: '931117',
-      mobileNumber: '010-8098-1398',
+      mobileNumber: '01080981398',
     }),
     plainToClass(User, {
       id: 'TEST_2',
@@ -20,7 +20,7 @@ export class MockUserRepository {
       password: 'pwd123!@#',
       email: 'test@gmail.com',
       birthday: '930519',
-      mobileNumber: '010-1234-1398',
+      mobileNumber: '01012341398',
     }),
     plainToClass(User, {
       id: 'TEST_3',
@@ -28,7 +28,7 @@ export class MockUserRepository {
       password: 'pwd123!@#',
       email: 'default@gmail.com',
       birthday: '890222',
-      mobileNumber: '010-5678-1398',
+      mobileNumber: '01056781398',
     }),
   ];
 
