@@ -19,6 +19,7 @@ import {
 import { Pagination } from '../common/pagination';
 import { AuthGuard } from '@nestjs/passport';
 import { User } from './entities/user.entity';
+import { MobileNumberTransform } from '../common/phoneNumber.decorator';
 
 @Controller('users')
 @ApiTags('회원')
@@ -38,6 +39,18 @@ export class UsersController {
     return this.usersService.findAll(pagination);
   }
 
+  @Get('/mobile/:mobileNumber')
+  @ApiOperation({ summary: '휴대전화 번호로 회원 검색' })
+  @ApiResponse({
+    status: 201,
+    description: '휴대전화 번호로 회원 검색',
+    type: User,
+  })
+  @MobileNumberTransform()
+  findOneByMobileNumber(@Param('mobileNumber') mobileNumber: string) {
+    return this.usersService.findOneByMobileNumber(mobileNumber);
+  }
+
   @Get(':id')
   @ApiOperation({ summary: 'ID로 회원 검색' })
   @ApiResponse({
@@ -45,7 +58,7 @@ export class UsersController {
     description: '회원 검색',
     type: User,
   })
-  findOne(@Param('id') id: string) {
+  findOneId(@Param('id') id: string) {
     return this.usersService.findOne(+id);
   }
 
