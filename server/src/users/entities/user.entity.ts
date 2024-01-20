@@ -45,9 +45,7 @@ export class User extends BaseTimeEntity {
   @ApiPropertyOptional({ description: '회원 이메일', type: 'string' })
   email?: string;
 
-  @OneToMany(() => UserAttendance, (userAttendance) => userAttendance.user, {
-    eager: true,
-  })
+  @OneToMany(() => UserAttendance, (userAttendance) => userAttendance.user)
   @ApiProperty({ type: () => UserAttendance })
   userAttendance: UserAttendance[];
 
