@@ -45,8 +45,11 @@ export class AttendancesService {
     return this.attendanceRepository.findOneBy({ id });
   }
 
-  update(id: number, updateAttendanceDto: UpdateAttendanceDto) {
-    return `This action updates a #${id} attendance`;
+  async update(
+    id: string,
+    updateAttendanceDto: UpdateAttendanceDto,
+  ): Promise<Attendance> {
+    return;
   }
 
   remove(id: number) {

@@ -3,15 +3,15 @@ import { AttendancesService } from '../../../src/attendances/attendances.service
 import { Attendance } from '../../../src/attendances/entities/attendance.entity';
 import { UserAttendance } from '../../../src/attendances/entities/user-attendance.entity';
 import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm';
-import { AppModule } from '../../../src/app.module';
 import { CreateAttendanceDto } from '../../../src/attendances/dto/create-attendance.dto';
 import { User } from '../../../src/users/entities/user.entity';
 import { AttendanceType } from '../../../src/attendances/const/attendance-type.enum';
 import { TestModule } from '../../../src/test.module';
-import {RoleType} from "../../../src/roles/entities/role-type.enum";
+import { RoleType } from '../../../src/roles/entities/role-type.enum';
+import { UpdateAttendanceDto } from '../../../src/attendances/dto/update-attendance.dto';
 
 describe('AttendancesService', () => {
-  let module: TestingModule
+  let module: TestingModule;
   let service: AttendancesService;
   let attendanceRepository;
   let userAttendanceRepository;
@@ -31,7 +31,7 @@ describe('AttendancesService', () => {
     attendanceRepository = module.get(getRepositoryToken(Attendance));
     userAttendanceRepository = module.get(getRepositoryToken(UserAttendance));
     userRepository = module.get(getRepositoryToken(User));
-  })
+  });
 
   beforeEach(async () => {
     await setupTest();
@@ -43,8 +43,8 @@ describe('AttendancesService', () => {
   });
 
   afterAll(async () => {
-    await module.close()
-  })
+    await module.close();
+  });
 
   it('should be defined', () => {
     expect(service).toBeDefined();
@@ -53,16 +53,17 @@ describe('AttendancesService', () => {
   describe('createAttendance Test', () => {
     it('출석부 테이블에 출석부를 생성한다.', async () => {
       // given
-      const attendanceDto = createAttendanceDto('test title','test description',AttendanceType.WEEKDAY)
+      const attendanceDto = createAttendanceDto(
+        'test title',
+        'test description',
+        AttendanceType.WEEKDAY,
+      );
 
       const user = new User();
       user.id = 'user id 1';
 
       // when
-      const createdAttendanceId = await service.create(
-        attendanceDto,
-        user,
-      );
+      const createdAttendanceId = await service.create(attendanceDto, user);
 
       const newAttendance = await service.findOneById(createdAttendanceId.id);
 
@@ -74,15 +75,21 @@ describe('AttendancesService', () => {
 
     it('UserAttendance 테이블에 Admin 권한으로 데이터가 생성된다.', async () => {
       // given
-      const attendanceDto = createAttendanceDto('test title 1','test description',AttendanceType.WEEKDAY);
+      const attendanceDto = createAttendanceDto(
+        'test title 1',
+        'test description',
+        AttendanceType.WEEKDAY,
+      );
 
       const user = new User();
       user.id = 'user id 1';
 
       // when
-      const createdAttendanceId = await service.create(attendanceDto, user,);
+      const createdAttendanceId = await service.create(attendanceDto, user);
 
-      const userAttendance = await userAttendanceRepository.findBy({userId:'user id 1'})
+      const userAttendance = await userAttendanceRepository.findBy({
+        userId: 'user id 1',
+      });
 
       // then
       expect(userAttendance[0].role).toBe(RoleType.MASTER);
@@ -99,9 +106,21 @@ describe('AttendancesService', () => {
       const user_2 = new User();
       user_2.id = 'user id 2';
 
-      const createAttendanceDto_1 = createAttendanceDto('test title 1','test description',AttendanceType.WEEKDAY);
-      const createAttendanceDto_2 = createAttendanceDto('test title 2','test description',AttendanceType.WEEKDAY);
-      const createAttendanceDto_3 = createAttendanceDto('test title 3','test description',AttendanceType.WEEKDAY);
+      const createAttendanceDto_1 = createAttendanceDto(
+        'test title 1',
+        'test description',
+        AttendanceType.WEEKDAY,
+      );
+      const createAttendanceDto_2 = createAttendanceDto(
+        'test title 2',
+        'test description',
+        AttendanceType.WEEKDAY,
+      );
+      const createAttendanceDto_3 = createAttendanceDto(
+        'test title 3',
+        'test description',
+        AttendanceType.WEEKDAY,
+      );
 
       await service.create(createAttendanceDto_1, user_1);
       await service.create(createAttendanceDto_2, user_1);
@@ -118,9 +137,38 @@ describe('AttendancesService', () => {
     });
   });
 
+  describe('update Test', () => {
+    it('선택한 출석부 id의 정보를 수정한다.', async () => {
+      // Given
+      const user_1 = new User();
+      user_1.id = 'user id 1';
+
+      const createAttendanceDto_1 = createAttendanceDto(
+        'test title 1',
+        'test description',
+        AttendanceType.WEEKDAY,
+      );
+
+      const attendance = await service.create(createAttendanceDto_1, user_1);
+
+      const updateAttendanceDto = new UpdateAttendanceDto();
+      updateAttendanceDto.title = 'updated Title';
+      updateAttendanceDto.description = 'updated description';
+      updateAttendanceDto.type = AttendanceType.WEEKEND;
+
+      // When
+      const sut = await service.update(attendance.id, updateAttendanceDto);
+
+      // Then
+      expect(sut.title).toBe('updated Title');
+      expect(sut.description).toBe('updated description');
+      expect(sut.type).toBe(AttendanceType.WEEKEND);
+    });
+  });
+
   async function setupTest() {
     await userRepository.query(
-        `INSERT INTO user SET 
+      `INSERT INTO user SET 
         id = 'user id 1' , 
         username = 'test id',
         password = 'testPWD',
@@ -130,7 +178,7 @@ describe('AttendancesService', () => {
     );
 
     await userRepository.query(
-        `INSERT INTO user SET 
+      `INSERT INTO user SET 
         id = 'user id 2' , 
         username = 'test id',
         password = 'testPWD',
@@ -145,11 +193,9 @@ describe('AttendancesService', () => {
     await attendanceRepository.query('DELETE FROM attendance;');
     await userRepository.query(`DELETE FROM user;`);
   }
-
-
 });
 
-function createAttendanceDto(title,description,type):CreateAttendanceDto {
+function createAttendanceDto(title, description, type): CreateAttendanceDto {
   const createAttendanceDto = new CreateAttendanceDto();
   createAttendanceDto.title = title;
   createAttendanceDto.description = description;

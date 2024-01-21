@@ -70,7 +70,7 @@ export class AttendancesController {
     @Param('id') id: string,
     @Body() updateAttendanceDto: UpdateAttendanceDto,
   ) {
-    return this.attendancesService.update(+id, updateAttendanceDto);
+    return this.attendancesService.update(id, updateAttendanceDto);
   }
 
   @Delete(':id')
