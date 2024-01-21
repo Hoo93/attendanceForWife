@@ -71,7 +71,7 @@ describe('SchedulesService', () => {
       expect(sut.time).toBe('1000');
     });
 
-    it('입력한 시간이 적절하지 않으면 오류를 일으킨다.', async () => {
+    it('입력한 시간이 0000~2400 범위에 있지 않으면 오류를 일으킨다.', async () => {
       // Given
       const user = new User();
       user.id = 'user id 1';
