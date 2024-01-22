@@ -183,7 +183,7 @@ describe('AttendancesService', () => {
       const attendance = await service.create(createAttendanceDto_1, user_1);
 
       // When
-      await service.delete(attendance.id);
+      await service.delete(attendance.id, user_1.id);
 
       const sut = await attendanceRepository.query(`
       SELECT * FROM attendance WHERE id = '${attendance.id}'`);
@@ -206,7 +206,7 @@ describe('AttendancesService', () => {
       const attendance = await service.create(createAttendanceDto_1, user_1);
 
       // When
-      await service.delete(attendance.id);
+      await service.delete(attendance.id, user_1.id);
 
       const sut = await userAttendanceRepository.query(`
       SELECT * FROM user_attendance WHERE attendanceId = '${attendance.id}' AND userId = '${user_1.id}'`);
