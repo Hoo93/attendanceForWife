@@ -27,7 +27,7 @@ import { UserAttendance } from './entities/user-attendance.entity';
 import { RoleGuard } from '../roles/role.guard';
 import { RoleType } from '../roles/entities/role-type.enum';
 import { Roles } from '../roles/role.decorator';
-import { UpdateResult } from 'typeorm';
+import { DeleteResult, UpdateResult } from 'typeorm';
 
 @UseGuards(AuthGuard('jwt'))
 @Controller('attendances')
@@ -80,6 +80,7 @@ export class AttendancesController {
     type: UpdateResult,
   })
   update(
+    // RoleGuard 적용을 위해 attendanceId로 parameter 이름 지정
     @Param('attendanceId') id: string,
     @Body() updateAttendanceDto: UpdateAttendanceDto,
   ) {
@@ -87,7 +88,9 @@ export class AttendancesController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.attendancesService.remove(+id);
+  @UseGuards(RoleGuard)
+  @Roles(RoleType.MASTER)
+  remove(@Param('attendanceId') id: string): Promise<Attendance> {
+    return this.attendancesService.remove(id);
   }
 }
