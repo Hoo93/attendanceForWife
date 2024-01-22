@@ -196,6 +196,41 @@ describe('AttendeesService', () => {
       expect(updatedAttendee.updatedAt).toStrictEqual(now);
     });
   });
+
+  describe('findOneById TEST', () => {
+    it('수정한 회원의 Id 와 수정 시간이 기록된다.', async () => {
+      // Given
+      const attendance = new Attendance();
+      attendance.id = 'testAttendanceId';
+
+      const user_1 = new User();
+      user_1.id = 'user id 1';
+
+      const now = new Date();
+
+      const attendee = createAttendee(
+        '가나다',
+        'testAttendanceId',
+        '가나다 학생',
+        3,
+        user_1.id,
+      );
+      attendee.createdAt = now;
+
+      const createdAttendee = await attendeeRepository.save(attendee);
+
+      // When
+      const sut = await service.findOneById(createdAttendee.id);
+
+      // Then
+      expect(sut.name).toBe('가나다');
+      expect(sut.attendanceId).toBe('testAttendanceId');
+      expect(sut.description).toBe('가나다 학생');
+      expect(sut.age).toBe(3);
+      expect(sut.createId).toBe(user_1.id);
+      expect(sut.createdAt).toStrictEqual(now);
+    });
+  });
   async function setupTest() {
     await attendanceRepository.query('DELETE FROM attendance;');
     await userRepository.query(`DELETE FROM user;`);
