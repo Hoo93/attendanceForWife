@@ -70,7 +70,7 @@ export class AttendancesController {
     return this.attendancesService.findOneById(id);
   }
 
-  @Patch(':id')
+  @Patch(':attendanceId')
   @UseGuards(RoleGuard)
   @Roles(RoleType.MASTER, RoleType.MANAGER)
   @ApiOperation({ summary: '출석부 정보 수정' })
@@ -81,16 +81,19 @@ export class AttendancesController {
   })
   update(
     // RoleGuard 적용을 위해 attendanceId로 parameter 이름 지정
-    @Param('attendanceId') id: string,
+    @Param('attendanceId') attendanceId: string,
     @Body() updateAttendanceDto: UpdateAttendanceDto,
   ) {
-    return this.attendancesService.update(id, updateAttendanceDto);
+    console.log(attendanceId);
+    console.log(updateAttendanceDto);
+
+    return this.attendancesService.update(attendanceId, updateAttendanceDto);
   }
 
-  @Delete(':id')
+  @Delete(':attendanceId')
   @UseGuards(RoleGuard)
   @Roles(RoleType.MASTER)
-  remove(@Param('attendanceId') id: string): Promise<Attendance> {
-    return this.attendancesService.remove(id);
+  delete(@Param('attendanceId') attendanceId: string): Promise<DeleteResult> {
+    return this.attendancesService.delete(attendanceId);
   }
 }
