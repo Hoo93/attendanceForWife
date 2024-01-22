@@ -65,9 +65,17 @@ export class AttendancesController {
     return this.attendancesService.findAllByUserId(user.id);
   }
 
-  @Get(':id')
-  findOneById(@Param('id') id: string) {
-    return this.attendancesService.findOneById(id);
+  @Get(':attendanceId')
+  @UseGuards(RoleGuard)
+  @Roles(RoleType.MASTER, RoleType.MANAGER, RoleType.GENERAL, RoleType.READER)
+  @ApiOperation({ summary: '출석부 상세 조회' })
+  @ApiOkResponse({
+    status: 200,
+    description: '출석부 정보 수정',
+    type: Attendance,
+  })
+  findOneById(@Param('attendanceId') attendanceId: string) {
+    return this.attendancesService.findOneById(attendanceId);
   }
 
   @Patch(':attendanceId')
@@ -91,7 +99,7 @@ export class AttendancesController {
   @UseGuards(RoleGuard)
   @Roles(RoleType.MASTER)
   @ApiOperation({ summary: '출석부 삭제' })
-  @ApiOkResponse({
+  @ApiResponse({
     status: 204,
     description: '삭제 후 No Content 값 전달',
     type: null,
