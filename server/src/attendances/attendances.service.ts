@@ -56,7 +56,9 @@ export class AttendancesService {
     return result;
   }
 
-  async delete(id: string) {
-    return this.attendanceRepository.softDelete(id);
+  async delete(attendanceId: string, userId: string) {
+    await this.attendanceRepository.softDelete(attendanceId);
+    await this.userAttendanceRepository.softDelete({ attendanceId, userId });
+    return;
   }
 }
