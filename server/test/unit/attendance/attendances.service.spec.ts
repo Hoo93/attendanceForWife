@@ -183,7 +183,7 @@ describe('AttendancesService', () => {
       const attendance = await service.create(createAttendanceDto_1, user_1);
 
       // When
-      await service.remove(attendance.id);
+      await service.delete(attendance.id);
 
       const sut = await attendanceRepository.query(`
       SELECT * FROM attendance WHERE id = '${attendance.id}'`);
