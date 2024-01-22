@@ -157,12 +157,14 @@ describe('AttendancesService', () => {
       updateAttendanceDto.type = AttendanceType.WEEKEND;
 
       // When
-      const sut = await service.update(attendance.id, updateAttendanceDto);
+      await service.update(attendance.id, updateAttendanceDto);
+
+      const sut = await service.findOneById(attendance.id);
 
       // Then
-      expect(sut.title).toBe('updated Title');
-      expect(sut.description).toBe('updated description');
-      expect(sut.type).toBe(AttendanceType.WEEKEND);
+      expect(sut?.title).toBe('updated Title');
+      expect(sut?.description).toBe('updated description');
+      expect(sut?.type).toBe(AttendanceType.WEEKEND);
     });
   });
 
