@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CreateAttendanceDto } from './dto/create-attendance.dto';
 import { UpdateAttendanceDto } from './dto/update-attendance.dto';
-import { Repository } from 'typeorm';
+import { Repository, UpdateResult } from 'typeorm';
 import { Attendance } from './entities/attendance.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../users/entities/user.entity';
@@ -48,8 +48,13 @@ export class AttendancesService {
   async update(
     id: string,
     updateAttendanceDto: UpdateAttendanceDto,
-  ): Promise<Attendance> {
-    return;
+  ): Promise<UpdateResult> {
+    const result = await this.attendanceRepository.update(
+      id,
+      updateAttendanceDto,
+    );
+    console.log(result);
+    return result;
   }
 
   remove(id: number) {
