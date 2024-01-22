@@ -15,6 +15,7 @@ import { AuthGuard } from '@nestjs/passport';
 import {
   ApiBearerAuth,
   ApiBody,
+  ApiOkResponse,
   ApiOperation,
   ApiResponse,
   ApiTags,
@@ -23,6 +24,10 @@ import { User } from '../users/entities/user.entity';
 import { GetUser } from '../common/user.decorator';
 import { Attendance } from './entities/attendance.entity';
 import { UserAttendance } from './entities/user-attendance.entity';
+import { RoleGuard } from '../roles/role.guard';
+import { RoleType } from '../roles/entities/role-type.enum';
+import { Roles } from '../roles/role.decorator';
+import { UpdateResult } from 'typeorm';
 
 @UseGuards(AuthGuard('jwt'))
 @Controller('attendances')
@@ -51,7 +56,7 @@ export class AttendancesController {
 
   @Get()
   @ApiOperation({ summary: '로그인한 회원의 출석부 목록 조회' })
-  @ApiResponse({
+  @ApiOkResponse({
     status: 200,
     description: '로그인한 회원의 출석부 목록 조회',
     type: UserAttendance,
@@ -66,8 +71,16 @@ export class AttendancesController {
   }
 
   @Patch(':id')
+  @UseGuards(RoleGuard)
+  @Roles(RoleType.MASTER, RoleType.MANAGER)
+  @ApiOperation({ summary: '출석부 정보 수정' })
+  @ApiOkResponse({
+    status: 200,
+    description: '출석부 정보 수정',
+    type: UpdateResult,
+  })
   update(
-    @Param('id') id: string,
+    @Param('attendanceId') id: string,
     @Body() updateAttendanceDto: UpdateAttendanceDto,
   ) {
     return this.attendancesService.update(id, updateAttendanceDto);

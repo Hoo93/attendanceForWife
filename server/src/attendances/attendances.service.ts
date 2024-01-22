@@ -53,7 +53,6 @@ export class AttendancesService {
       id,
       updateAttendanceDto,
     );
-    console.log(result);
     return result;
   }
 
