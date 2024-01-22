@@ -84,9 +84,6 @@ export class AttendancesController {
     @Param('attendanceId') attendanceId: string,
     @Body() updateAttendanceDto: UpdateAttendanceDto,
   ) {
-    console.log(attendanceId);
-    console.log(updateAttendanceDto);
-
     return this.attendancesService.update(attendanceId, updateAttendanceDto);
   }
 

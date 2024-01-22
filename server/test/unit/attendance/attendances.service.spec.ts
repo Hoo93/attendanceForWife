@@ -189,7 +189,30 @@ describe('AttendancesService', () => {
       SELECT * FROM attendance WHERE id = '${attendance.id}'`);
 
       // Then
-      expect(sut.deletedAt).not.toBeNull();
+      expect(sut[0].deletedAt).not.toBeNull();
+    });
+
+    it('출석부를 삭제하면 user_attendance 테이블에서도 soft delete 된다.', async () => {
+      // Given
+      const user_1 = new User();
+      user_1.id = 'user id 1';
+
+      const createAttendanceDto_1 = createAttendanceDto(
+        'test title 1',
+        'test description',
+        AttendanceType.WEEKDAY,
+      );
+
+      const attendance = await service.create(createAttendanceDto_1, user_1);
+
+      // When
+      await service.delete(attendance.id);
+
+      const sut = await userAttendanceRepository.query(`
+      SELECT * FROM user_attendance WHERE attendanceId = '${attendance.id}' AND userId = '${user_1.id}'`);
+
+      // Then
+      expect(sut[0].deletedAt).not.toBeNull();
     });
   });
 
