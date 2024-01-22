@@ -168,6 +168,31 @@ describe('AttendancesService', () => {
     });
   });
 
+  describe('delete Test', () => {
+    it('선택한 출석부를 soft delete 한다.', async () => {
+      // Given
+      const user_1 = new User();
+      user_1.id = 'user id 1';
+
+      const createAttendanceDto_1 = createAttendanceDto(
+        'test title 1',
+        'test description',
+        AttendanceType.WEEKDAY,
+      );
+
+      const attendance = await service.create(createAttendanceDto_1, user_1);
+
+      // When
+      await service.remove(attendance.id);
+
+      const sut = await attendanceRepository.query(`
+      SELECT * FROM attendance WHERE id = '${attendance.id}'`);
+
+      // Then
+      expect(sut.deletedAt).not.toBeNull();
+    });
+  });
+
   async function setupTest() {
     await userRepository.query(
       `INSERT INTO user SET 
