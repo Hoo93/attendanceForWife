@@ -90,7 +90,13 @@ export class AttendancesController {
   @Delete(':attendanceId')
   @UseGuards(RoleGuard)
   @Roles(RoleType.MASTER)
-  delete(@Param('attendanceId') attendanceId: string): Promise<DeleteResult> {
-    return this.attendancesService.delete(attendanceId);
+  @ApiOperation({ summary: '출석부 삭제' })
+  @ApiOkResponse({
+    status: 204,
+    description: '삭제 후 No Content 값 전달',
+    type: null,
+  })
+  delete(@Param('attendanceId') attendanceId: string, @GetUser() user: User) {
+    return this.attendancesService.delete(attendanceId, user.id);
   }
 }
