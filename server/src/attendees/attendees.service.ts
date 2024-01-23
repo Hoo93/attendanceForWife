@@ -1,10 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateAttendeeDto } from './dto/create-attendee.dto';
 import { UpdateAttendeeDto } from './dto/update-attendee.dto';
 import { User } from '../users/entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Attendee } from './entities/attendee.entity';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { DeleteAttendeeDto } from './dto/delete-attendee.dto';
 
 @Injectable()
@@ -46,6 +46,22 @@ export class AttendeesService {
   }
 
   async deleteAll(deleteAttendeeDto: DeleteAttendeeDto) {
+    const found = await this.attendeeRepository.count({
+      where: {
+        id: In(deleteAttendeeDto.ids),
+        attendanceId: deleteAttendeeDto.attendanceId,
+      },
+    });
+    if (found !== deleteAttendeeDto.ids.length) {
+      throw new BadRequestException(
+        'Attendance에 속한 Attendee만 삭제할 수 있습니다.',
+      );
+    }
+
+    await this.attendeeRepository.softDelete({
+      id: In(deleteAttendeeDto.ids),
+      attendanceId: deleteAttendeeDto.attendanceId,
+    });
     return;
   }
 
