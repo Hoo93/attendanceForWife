@@ -34,7 +34,9 @@ export class SchedulesService {
   }
 
   async findByAttendeeId(attendeeId: string): Promise<Schedule[]> {
-    return;
+    return await this.scheduleRepository.findBy({
+      attendeeId,
+    });
   }
 
   findOne(id: number) {
