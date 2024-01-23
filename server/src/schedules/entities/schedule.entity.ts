@@ -9,8 +9,10 @@ import { BaseTimeEntity } from '../../BaseTimeEntity';
 import { ApiProperty } from '@nestjs/swagger';
 import { Attendee } from '../../attendees/entities/attendee.entity';
 import { DayType } from '../const/day-type.enum';
+import { Unique } from 'typeorm/browser';
 
 @Entity()
+@Unique(['attendeeId', 'day', 'time'])
 export class Schedule extends BaseTimeEntity {
   @PrimaryGeneratedColumn('increment')
   @ApiProperty({ description: '출석대상의 출석 스케쥴' })
