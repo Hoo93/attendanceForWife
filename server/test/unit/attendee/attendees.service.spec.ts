@@ -278,7 +278,7 @@ describe('AttendeesService', () => {
       expect(sut).toHaveLength(0);
     });
 
-    it('배열에 입력한 모든 회원을 soft delete 한다.', async () => {
+    it('AttendanceId에 속하지 않은 Attendee를 삭제할 경우 에러를 발생시킨다.', async () => {
       // Given
       const attendance = new Attendance();
       attendance.id = 'testAttendanceId';
@@ -326,7 +326,9 @@ describe('AttendeesService', () => {
       deleteDto.attendanceId = 'testAttendanceId';
 
       // Then
-      expect(async () => await service.deleteAll(deleteDto)).toThrowError();
+      expect(
+        async () => await service.deleteAll(deleteDto),
+      ).rejects.toThrowError();
     });
   });
 
