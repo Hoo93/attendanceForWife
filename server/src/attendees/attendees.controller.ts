@@ -86,7 +86,7 @@ export class AttendeesController {
     type: Attendee,
   })
   @UseGuards(RoleGuard)
-  @Roles(RoleType.MASTER, RoleType.GENERAL, RoleType.MANAGER)
+  @Roles(RoleType.MASTER, RoleType.MANAGER, RoleType.GENERAL)
   async update(
     @Param('id') id: string,
     @Body() updateAttendeeDto: UpdateAttendeeDto,
@@ -95,6 +95,18 @@ export class AttendeesController {
   }
 
   @Delete('delete')
+  @ApiOperation({ summary: '출석대상 일괄 삭제' })
+  @ApiBody({
+    type: DeleteAttendeeDto,
+    description: '출석 대상 생성 DTO',
+  })
+  @ApiResponse({
+    status: 204,
+    description: '출석대상 일괄 삭제',
+    type: null,
+  })
+  @UseGuards(RoleGuard)
+  @Roles(RoleType.MASTER, RoleType.MANAGER, RoleType.GENERAL)
   remove(@Body() deleteAttendeeDto: DeleteAttendeeDto) {
     return this.attendeesService.deleteAll(deleteAttendeeDto);
   }
