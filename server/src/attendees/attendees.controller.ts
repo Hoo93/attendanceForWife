@@ -107,7 +107,7 @@ export class AttendeesController {
   })
   @UseGuards(RoleGuard)
   @Roles(RoleType.MASTER, RoleType.MANAGER, RoleType.GENERAL)
-  remove(@Body() deleteAttendeeDto: DeleteAttendeeDto) {
+  delete(@Body() deleteAttendeeDto: DeleteAttendeeDto) {
     return this.attendeesService.deleteAll(deleteAttendeeDto);
   }
 }

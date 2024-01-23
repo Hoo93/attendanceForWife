@@ -1,7 +1,15 @@
-import { IsInt, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import {
+  IsInt,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  Matches,
+} from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { Attendance } from '../../attendances/entities/attendance.entity';
 import { Attendee } from '../entities/attendee.entity';
+import { INVALID_MOBILENUMBER_MESSAGE } from '../../auth/const/error-message';
+import { MobileNumberTransform } from '../../common/phoneNumber.decorator';
 
 export class CreateAttendeeDto {
   @IsString()
@@ -21,6 +29,32 @@ export class CreateAttendeeDto {
     example: 'attendanceId',
   })
   attendanceId: string;
+
+  @IsString()
+  @Matches(/^01[01]{1}\d{7,8}$/, {
+    message: INVALID_MOBILENUMBER_MESSAGE,
+  })
+  @MobileNumberTransform()
+  @IsOptional()
+  @ApiProperty({
+    description: '출석 대상 전화번호',
+    type: 'string',
+    example: '01012345678',
+  })
+  mobileNumber: string;
+
+  @IsString()
+  @Matches(/^01[01]{1}\d{7,8}$/, {
+    message: INVALID_MOBILENUMBER_MESSAGE,
+  })
+  @MobileNumberTransform()
+  @IsOptional()
+  @ApiProperty({
+    description: '출석 대상 비상 전화번호',
+    type: 'string',
+    example: '01012345678',
+  })
+  subMobileNumber: string;
 
   @IsInt()
   @IsOptional()

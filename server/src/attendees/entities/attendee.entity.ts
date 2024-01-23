@@ -26,6 +26,18 @@ export class Attendee extends BaseTimeEntity {
   @ApiProperty({ description: '출석 대상자 이름', type: 'string' })
   name: string;
 
+  @Column({ nullable: true, comment: '출석 대상자 전화번호', type: 'varchar' })
+  @ApiProperty({ description: '출석 대상자 전화번호', type: 'string' })
+  mobileNumber: string;
+
+  @Column({
+    nullable: true,
+    comment: '출석 대상자 비상 전화번호',
+    type: 'varchar',
+  })
+  @ApiProperty({ description: '출석 대상자 비상 전화번호', type: 'string' })
+  subMobileNumber: string;
+
   @Column({ comment: '출석 대상자 나이', type: 'int', nullable: true })
   @ApiProperty({ description: '출석 대상자 나이', type: 'int' })
   age: number;
