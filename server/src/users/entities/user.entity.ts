@@ -15,7 +15,9 @@ import { Attendance } from '../../attendances/entities/attendance.entity';
 import { UserAttendance } from '../../attendances/entities/user-attendance.entity';
 
 @Entity()
-@Unique(['id'])
+@Unique(['mobileNumber'])
+@Unique(['username'])
+@Unique(['email'])
 export class User extends BaseTimeEntity {
   @PrimaryGeneratedColumn('uuid', { comment: '회원번호' })
   @ApiProperty({ description: '회원번호' })
