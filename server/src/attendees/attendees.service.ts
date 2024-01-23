@@ -5,6 +5,7 @@ import { User } from '../users/entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Attendee } from './entities/attendee.entity';
 import { Repository } from 'typeorm';
+import { DeleteAttendeeDto } from './dto/delete-attendee.dto';
 
 @Injectable()
 export class AttendeesService {
@@ -44,7 +45,11 @@ export class AttendeesService {
     return this.findOneById(id);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} attendee`;
+  async deleteAll(deleteAttendeeDto: DeleteAttendeeDto) {
+    return;
+  }
+
+  async delete(id: number) {
+    return;
   }
 }

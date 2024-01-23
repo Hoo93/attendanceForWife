@@ -27,6 +27,7 @@ import { Attendee } from './entities/attendee.entity';
 import { RoleGuard } from '../roles/role.guard';
 import { Roles } from '../roles/role.decorator';
 import { RoleType } from '../roles/entities/role-type.enum';
+import { DeleteAttendeeDto } from './dto/delete-attendee.dto';
 
 @Controller('attendees')
 @UseGuards(AuthGuard('jwt'))
@@ -67,6 +68,12 @@ export class AttendeesController {
   }
 
   @Get(':id')
+  @ApiOperation({ summary: '출석 대상 상세 조회' })
+  @ApiResponse({
+    status: 200,
+    description: '출석 대상 상세 조회',
+    type: Attendee,
+  })
   async findOne(@Param('id') id: string) {
     return this.attendeesService.findOneById(id);
   }
@@ -87,8 +94,8 @@ export class AttendeesController {
     return this.attendeesService.update(id, updateAttendeeDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.attendeesService.remove(+id);
+  @Delete('delete')
+  remove(@Body() deleteAttendeeDto: DeleteAttendeeDto) {
+    return this.attendeesService.deleteAll(deleteAttendeeDto);
   }
 }

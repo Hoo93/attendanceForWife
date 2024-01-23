@@ -11,16 +11,17 @@ import { Attendance } from '../../../src/attendances/entities/attendance.entity'
 import { User } from '../../../src/users/entities/user.entity';
 import { CreateAttendeeDto } from '../../../src/attendees/dto/create-attendee.dto';
 import { AttendanceType } from '../../../src/attendances/const/attendance-type.enum';
-import { DataSource } from 'typeorm';
+import { DataSource, In, Repository } from 'typeorm';
 import * as module from 'module';
 import { UpdateAttendeeDto } from '../../../src/attendees/dto/update-attendee.dto';
+import { DeleteAttendeeDto } from '../../../src/attendees/dto/delete-attendee.dto';
 
 describe('AttendeesService', () => {
   let module: TestingModule;
   let service: AttendeesService;
-  let attendeeRepository;
-  let attendanceRepository;
-  let userRepository;
+  let attendeeRepository: Repository<Attendee>;
+  let attendanceRepository: Repository<Attendance>;
+  let userRepository: Repository<User>;
 
   beforeAll(async () => {
     module = await Test.createTestingModule({
@@ -231,6 +232,104 @@ describe('AttendeesService', () => {
       expect(sut.createdAt).toStrictEqual(now);
     });
   });
+
+  describe('delete TEST', () => {
+    it('배열에 입력한 모든 회원을 soft delete 한다.', async () => {
+      // Given
+      const attendance = new Attendance();
+      attendance.id = 'testAttendanceId';
+
+      const user_1 = new User();
+      user_1.id = 'user id 1';
+
+      const now = new Date();
+
+      const attendee_1 = createAttendee(
+        '가나다',
+        'testAttendanceId',
+        '가나다 학생',
+        3,
+        user_1.id,
+      );
+
+      const attendee_2 = createAttendee(
+        '라마바',
+        'testAttendanceId',
+        '라마바 학생',
+        5,
+        user_1.id,
+      );
+
+      const createdAttendee_1 = await attendeeRepository.save(attendee_1);
+      const createdAttendee_2 = await attendeeRepository.save(attendee_2);
+
+      // When
+      const deleteDto = new DeleteAttendeeDto();
+      deleteDto.ids = [createdAttendee_1.id, createdAttendee_2.id];
+      deleteDto.attendanceId = 'testAttendanceId';
+
+      await service.deleteAll(deleteDto);
+
+      const sut = await attendeeRepository.findBy({
+        id: In(deleteDto.ids),
+      });
+
+      // Then
+      expect(sut).toHaveLength(0);
+    });
+
+    it('배열에 입력한 모든 회원을 soft delete 한다.', async () => {
+      // Given
+      const attendance = new Attendance();
+      attendance.id = 'testAttendanceId';
+
+      const user_1 = new User();
+      user_1.id = 'user id 1';
+
+      const now = new Date();
+
+      const attendee_1 = createAttendee(
+        '가나다',
+        'testAttendanceId',
+        '가나다 학생',
+        3,
+        user_1.id,
+      );
+
+      const attendee_2 = createAttendee(
+        '라마바',
+        'testAttendanceId',
+        '라마바 학생',
+        5,
+        user_1.id,
+      );
+
+      const attendee_3 = createAttendee(
+        '아자차',
+        'notTestAttendanceId',
+        '아자차 학생',
+        7,
+        user_1.id,
+      );
+
+      const createdAttendee_1 = await attendeeRepository.save(attendee_1);
+      const createdAttendee_2 = await attendeeRepository.save(attendee_2);
+      const createdAttendee_3 = await attendeeRepository.save(attendee_3);
+
+      // When
+      const deleteDto = new DeleteAttendeeDto();
+      deleteDto.ids = [
+        createdAttendee_1.id,
+        createdAttendee_2.id,
+        createdAttendee_3.id,
+      ];
+      deleteDto.attendanceId = 'testAttendanceId';
+
+      // Then
+      expect(async () => await service.deleteAll(deleteDto)).toThrowError();
+    });
+  });
+
   async function setupTest() {
     await attendanceRepository.query('DELETE FROM attendance;');
     await userRepository.query(`DELETE FROM user;`);
