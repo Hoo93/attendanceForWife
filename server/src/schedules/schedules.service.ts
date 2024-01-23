@@ -6,6 +6,7 @@ import { Schedule } from './entities/schedule.entity';
 import { Repository } from 'typeorm';
 import { User } from '../users/entities/user.entity';
 import { isNumber } from 'class-validator';
+import { Attendee } from '../attendees/entities/attendee.entity';
 
 @Injectable()
 export class SchedulesService {
@@ -30,6 +31,10 @@ export class SchedulesService {
 
   findAll() {
     return `This action returns all schedules`;
+  }
+
+  async findByAttendeeId(attendeeId: string): Promise<Schedule[]> {
+    return;
   }
 
   findOne(id: number) {

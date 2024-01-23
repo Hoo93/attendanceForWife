@@ -10,7 +10,6 @@ import { AttendanceType } from '../../../src/attendances/const/attendance-type.e
 import { DayType } from '../../../src/schedules/const/day-type.enum';
 import { CreateScheduleDto } from '../../../src/schedules/dto/create-schedule.dto';
 import { BadRequestException } from '@nestjs/common';
-import { CreateAttendeeDto } from '../../../src/attendees/dto/create-attendee.dto';
 
 describe('SchedulesService', () => {
   let module: TestingModule;
@@ -91,6 +90,37 @@ describe('SchedulesService', () => {
     });
   });
 
+  describe('findByAttendeeId Test.', () => {
+    it('출석 대상의 모든 스케쥴을 조사한다.', async () => {
+      // Given
+      const attendee_1 = new Attendee();
+      attendee_1.id = 'Attendee Id 1';
+
+      const schedule_1 = createSchedule(
+        'Attendee Id 1',
+        DayType.MONDAY,
+        '1230',
+      );
+      const schedule_2 = createSchedule(
+        'Attendee Id 1',
+        DayType.TUESDAY,
+        '1330',
+      );
+
+      await scheduleRepository.insert(schedule_1);
+      await scheduleRepository.insert(schedule_2);
+
+      // When
+      const sut = await service.findByAttendeeId(attendee_1.id);
+
+      // Then
+      expect(sut).toHaveLength(2);
+      sut.map((result) => {
+        expect(result.attendeeId).toBe('Attendee Id 1');
+      });
+    });
+  });
+
   async function setupTest() {
     await attendanceRepository.query('DELETE FROM attendance;');
     await userRepository.query(`DELETE FROM user;`);
@@ -162,4 +192,13 @@ function generateCreateScheduleDto(
   createScheduleDto.day = day;
   createScheduleDto.time = time;
   return createScheduleDto;
+}
+
+function createSchedule(attendeeId: string, day: DayType, time: string) {
+  const schedule = new Schedule();
+  schedule.attendeeId = attendeeId;
+  schedule.day = day;
+  schedule.time = time;
+  schedule.createId = 'user id 1';
+  return schedule;
 }
