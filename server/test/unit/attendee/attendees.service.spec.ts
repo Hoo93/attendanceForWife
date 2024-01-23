@@ -242,8 +242,6 @@ describe('AttendeesService', () => {
       const user_1 = new User();
       user_1.id = 'user id 1';
 
-      const now = new Date();
-
       const attendee_1 = createAttendee(
         '가나다',
         'testAttendanceId',
