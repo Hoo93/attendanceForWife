@@ -107,8 +107,15 @@ describe('SchedulesService', () => {
         '1330',
       );
 
+      const schedule_3 = createSchedule(
+        'Attendee Id 2',
+        DayType.TUESDAY,
+        '1330',
+      );
+
       await scheduleRepository.insert(schedule_1);
       await scheduleRepository.insert(schedule_2);
+      await scheduleRepository.insert(schedule_3);
 
       // When
       const sut = await service.findByAttendeeId(attendee_1.id);
