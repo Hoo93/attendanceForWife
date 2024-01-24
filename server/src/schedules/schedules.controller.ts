@@ -57,6 +57,17 @@ export class SchedulesController {
     return this.schedulesService.findOne(+id);
   }
 
+  @Get('/attendee/:attendeeId')
+  @ApiOperation({ summary: '출석대상의 스케쥴 조회' })
+  @ApiResponse({
+    status: 200,
+    description: '출석대상의 스케쥴 조회',
+    type: Array<Schedule>,
+  })
+  findByAttendeeId(@Param('attendeeId') attendeeId: string) {
+    return this.schedulesService.findByAttendeeId(attendeeId);
+  }
+
   @Patch(':id')
   update(
     @Param('id') id: string,
