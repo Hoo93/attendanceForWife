@@ -220,9 +220,9 @@ describe('AttendancesService', () => {
     await userRepository.query(
       `INSERT INTO user SET 
         id = 'user id 1' , 
-        username = 'test id',
+        username = 'test id 1',
         password = 'testPWD',
-        mobileNumber = '010-8098-1398',
+        mobileNumber = '01080981398',
         name = 'test name',
         createId ='user id'`,
     );
@@ -230,9 +230,9 @@ describe('AttendancesService', () => {
     await userRepository.query(
       `INSERT INTO user SET 
         id = 'user id 2' , 
-        username = 'test id',
+        username = 'test id 2',
         password = 'testPWD',
-        mobileNumber = '010-8098-1398',
+        mobileNumber = '01026478104',
         name = 'test name',
         createId ='user id'`,
     );
