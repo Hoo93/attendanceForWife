@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { SchedulesService } from './schedules.service';
 import { CreateScheduleDto } from './dto/create-schedule.dto';
@@ -24,6 +25,7 @@ import {
 import { Attendee } from '../attendees/entities/attendee.entity';
 import { CreateAttendeeDto } from '../attendees/dto/create-attendee.dto';
 import { Schedule } from './entities/schedule.entity';
+import { ScheduleFilterDto } from './dto/schedule-filter.dto';
 
 @Controller('schedules')
 @UseGuards(AuthGuard('jwt'))
@@ -68,6 +70,21 @@ export class SchedulesController {
     @Param('attendeeId') attendeeId: string,
   ): Promise<Schedule[]> {
     return this.schedulesService.findByAttendeeId(attendeeId);
+  }
+
+  @Get('/attendanceId/:attendanceId')
+  @ApiOperation({ summary: '출석부에 속한 모든 스케쥴 조회' })
+  @ApiResponse({
+    status: 200,
+    description: '출석부에 속한 모든 스케쥴 조회',
+    type: Array<Schedule>,
+  })
+  findByAttendanceId(
+    @Param('attendanceId') attendanceId: string,
+    @Query() scheduleFilterDto: ScheduleFilterDto,
+  ): Promise<Schedule[]> {
+    console.log(scheduleFilterDto);
+    return this.schedulesService.findByAttendanceId(attendanceId);
   }
 
   @Patch(':id')
