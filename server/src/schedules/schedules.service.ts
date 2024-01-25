@@ -8,6 +8,7 @@ import { User } from '../users/entities/user.entity';
 import { isNumber } from 'class-validator';
 import { Attendee } from '../attendees/entities/attendee.entity';
 import { ResponseScheduleDto } from './dto/response-schedule.dto';
+import { Attendance } from '../attendances/entities/attendance.entity';
 
 @Injectable()
 export class SchedulesService {
@@ -40,10 +41,22 @@ export class SchedulesService {
     });
   }
 
-  async findByAttendanceId(
-    attendanceId: string,
-  ): Promise<ResponseScheduleDto[]> {
-    return;
+  async findByAttendanceId(attendanceId: string): Promise<Schedule[]> {
+    return await this.scheduleRepository.find({
+      relations: {
+        attendee: true,
+      },
+      where: {
+        attendee: {
+          attendanceId: attendanceId,
+        },
+      },
+      select: {
+        attendee: {
+          attendanceId: true,
+        },
+      },
+    });
   }
 
   findOne(id: number) {
