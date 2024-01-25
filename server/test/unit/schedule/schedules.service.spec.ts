@@ -126,6 +126,65 @@ describe('SchedulesService', () => {
         expect(result.attendeeId).toBe('Attendee Id 1');
       });
     });
+
+    it('스케쥴이 없는 경우 빈 배열을 리턴한다.', async () => {
+      // Given
+      const attendee_1 = new Attendee();
+      attendee_1.id = 'Attendee Id 1';
+
+      // When
+      const sut = await service.findByAttendeeId(attendee_1.id);
+
+      // Then
+      expect(sut).toHaveLength(0);
+      expect(sut).toBeInstanceOf(Array);
+    });
+  });
+
+  describe('findByAttendanceId Test', () => {
+    it('출석부에 속한 모든 출석대상의 스케쥴을 리턴한다.', async () => {
+      // Given
+      const targetAttendanceId = 'testAttendanceId';
+
+      const attendee_1 = new Attendee();
+      attendee_1.id = 'Attendee Id 1';
+      attendee_1.attendanceId = targetAttendanceId;
+
+      const attendee_2 = new Attendee();
+      attendee_2.id = 'Attendee Id 2';
+      attendee_2.attendanceId = 'notTestAttendanceId';
+
+      const attendee_3 = new Attendee();
+      attendee_3.id = 'Attendee Id 3';
+      attendee_3.attendanceId = targetAttendanceId;
+
+      const schedule_1 = createSchedule(
+        'Attendee Id 1',
+        DayType.MONDAY,
+        '1230',
+      );
+      const schedule_2 = createSchedule(
+        'Attendee Id 2',
+        DayType.TUESDAY,
+        '1330',
+      );
+
+      const schedule_3 = createSchedule(
+        'Attendee Id 3',
+        DayType.WEDNESDAY,
+        '1430',
+      );
+      await scheduleRepository.insert([schedule_1, schedule_2, schedule_3]);
+
+      // When
+      const sut = await service.findByAttendanceId(targetAttendanceId);
+
+      // Then
+      expect(sut).toHaveLength(2);
+      sut.map((schedule) => {
+        expect(schedule.attendanceId).toBe(targetAttendanceId);
+      });
+    });
   });
 
   async function setupTest() {
@@ -177,8 +236,16 @@ describe('SchedulesService', () => {
     attendee_2.age = 20;
     attendee_2.createId = user_1.id;
 
-    await attendeeRepository.save(attendee_1);
-    await attendeeRepository.save(attendee_2);
+    const attendee_3 = new Attendee();
+    attendee_3.id = 'Attendee Id 3';
+    attendee_3.name = 'Attendee Name 2';
+    attendee_3.attendanceId = attendance_1.id;
+    attendee_3.description = 'Attendee 2 description';
+    attendee_3.age = 20;
+    attendee_3.createId = user_1.id;
+
+    // await attendeeRepository.save
+    await attendeeRepository.save([attendee_1, attendee_2, attendee_3]);
   }
 
   async function clear() {

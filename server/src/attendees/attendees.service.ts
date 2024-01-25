@@ -52,6 +52,7 @@ export class AttendeesService {
         attendanceId: deleteAttendeeDto.attendanceId,
       },
     });
+
     if (found !== deleteAttendeeDto.ids.length) {
       throw new BadRequestException(
         'Attendance에 속한 Attendee만 삭제할 수 있습니다.',

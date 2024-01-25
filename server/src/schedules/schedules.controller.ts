@@ -64,7 +64,9 @@ export class SchedulesController {
     description: '출석대상의 스케쥴 조회',
     type: Array<Schedule>,
   })
-  findByAttendeeId(@Param('attendeeId') attendeeId: string) {
+  findByAttendeeId(
+    @Param('attendeeId') attendeeId: string,
+  ): Promise<Schedule[]> {
     return this.schedulesService.findByAttendeeId(attendeeId);
   }
 

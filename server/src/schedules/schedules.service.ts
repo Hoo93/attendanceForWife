@@ -7,6 +7,7 @@ import { Repository } from 'typeorm';
 import { User } from '../users/entities/user.entity';
 import { isNumber } from 'class-validator';
 import { Attendee } from '../attendees/entities/attendee.entity';
+import { ResponseScheduleDto } from './dto/response-schedule.dto';
 
 @Injectable()
 export class SchedulesService {
@@ -37,6 +38,12 @@ export class SchedulesService {
     return await this.scheduleRepository.findBy({
       attendeeId,
     });
+  }
+
+  async findByAttendanceId(
+    attendanceId: string,
+  ): Promise<ResponseScheduleDto[]> {
+    return;
   }
 
   findOne(id: number) {
