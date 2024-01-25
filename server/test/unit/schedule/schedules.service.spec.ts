@@ -182,7 +182,7 @@ describe('SchedulesService', () => {
       // Then
       expect(sut).toHaveLength(2);
       sut.map((schedule) => {
-        expect(schedule.attendanceId).toBe(targetAttendanceId);
+        expect(schedule.attendee.attendanceId).toBe(targetAttendanceId);
       });
     });
   });
