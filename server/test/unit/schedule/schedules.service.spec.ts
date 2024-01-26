@@ -189,7 +189,7 @@ describe('SchedulesService', () => {
       });
     });
 
-    describe('delete TEST', () => {
+    describe('deleteAll TEST', () => {
       it('배열에 입력한 모든 스케쥴을 soft delete 한다.', async () => {
         // Given
         const attendee_1 = new Attendee();

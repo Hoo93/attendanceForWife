@@ -26,6 +26,7 @@ import { Attendee } from '../attendees/entities/attendee.entity';
 import { CreateAttendeeDto } from '../attendees/dto/create-attendee.dto';
 import { Schedule } from './entities/schedule.entity';
 import { ScheduleFilterDto } from './dto/schedule-filter.dto';
+import { DeleteScheduleDto } from './dto/delete-schedule.dto';
 
 @Controller('schedules')
 @UseGuards(AuthGuard('jwt'))
@@ -95,8 +96,14 @@ export class SchedulesController {
     return this.schedulesService.update(+id, updateScheduleDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.schedulesService.remove(+id);
+  @Delete('delete')
+  @ApiOperation({ summary: '스케쥴 일괄 삭제' })
+  @ApiResponse({
+    status: 200,
+    description: '스케쥴 일괄 삭제',
+    type: null,
+  })
+  deleteAll(@Body() deleteScheduleDto: DeleteScheduleDto) {
+    return this.schedulesService.deleteAll(deleteScheduleDto);
   }
 }
