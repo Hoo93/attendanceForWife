@@ -3,12 +3,14 @@ import { CreateScheduleDto } from './dto/create-schedule.dto';
 import { UpdateScheduleDto } from './dto/update-schedule.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Schedule } from './entities/schedule.entity';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { User } from '../users/entities/user.entity';
 import { isNumber } from 'class-validator';
 import { Attendee } from '../attendees/entities/attendee.entity';
 import { ResponseScheduleDto } from './dto/response-schedule.dto';
 import { Attendance } from '../attendances/entities/attendance.entity';
+import { DeleteAttendeeDto } from '../attendees/dto/delete-attendee.dto';
+import { DeleteScheduleDto } from './dto/delete-schedule.dto';
 
 @Injectable()
 export class SchedulesService {
@@ -69,6 +71,13 @@ export class SchedulesService {
 
   remove(id: number) {
     return `This action removes a #${id} schedule`;
+  }
+
+  async deleteAll(deleteScheduleDto: DeleteScheduleDto) {
+    await this.scheduleRepository.softDelete({
+      id: In(deleteScheduleDto.ids),
+    });
+    return;
   }
 
   private verifyAttendTime(time: string) {
