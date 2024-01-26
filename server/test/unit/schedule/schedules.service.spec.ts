@@ -10,6 +10,9 @@ import { AttendanceType } from '../../../src/attendances/const/attendance-type.e
 import { DayType } from '../../../src/schedules/const/day-type.enum';
 import { CreateScheduleDto } from '../../../src/schedules/dto/create-schedule.dto';
 import { BadRequestException } from '@nestjs/common';
+import { DeleteAttendeeDto } from '../../../src/attendees/dto/delete-attendee.dto';
+import { In } from 'typeorm';
+import { DeleteScheduleDto } from '../../../src/schedules/dto/delete-schedule.dto';
 
 describe('SchedulesService', () => {
   let module: TestingModule;
@@ -183,6 +186,43 @@ describe('SchedulesService', () => {
       expect(sut).toHaveLength(2);
       sut.map((schedule) => {
         expect(schedule.attendee.attendanceId).toBe(targetAttendanceId);
+      });
+    });
+
+    describe('delete TEST', () => {
+      it('배열에 입력한 모든 스케쥴을 soft delete 한다.', async () => {
+        // Given
+        const attendee_1 = new Attendee();
+        attendee_1.id = 'Attendee Id 1';
+
+        const schedule_1 = createSchedule(
+          'Attendee Id 1',
+          DayType.MONDAY,
+          '1230',
+        );
+        const schedule_2 = createSchedule(
+          'Attendee Id 1',
+          DayType.TUESDAY,
+          '1330',
+        );
+
+        const createdAttendee_1 = await attendeeRepository.save(attendee_1);
+
+        const createdSchedule_1 = await scheduleRepository.save(schedule_1);
+        const createdSchedule_2 = await scheduleRepository.save(schedule_2);
+
+        // When
+        const deleteDto = new DeleteScheduleDto();
+        deleteDto.ids = [schedule_2.id, schedule_2.id];
+
+        await service.deleteAll(deleteDto);
+
+        const sut = await attendeeRepository.findBy({
+          id: In(deleteDto.ids),
+        });
+
+        // Then
+        expect(sut).toHaveLength(0);
       });
     });
   });
