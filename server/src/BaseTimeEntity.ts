@@ -11,7 +11,7 @@ export abstract class BaseTimeEntity {
   @Column()
   createId: string;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
 
   @Column({ nullable: true })
