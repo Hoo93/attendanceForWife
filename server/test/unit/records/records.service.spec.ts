@@ -28,7 +28,7 @@ describe('RecordsService', () => {
     }).compile();
 
     service = module.get<RecordsService>(RecordsService);
-    recordRepository = module.get(getRepositoryToken(Schedule));
+    recordRepository = module.get(getRepositoryToken(Record));
     attendeeRepository = module.get(getRepositoryToken(Attendee));
     attendanceRepository = module.get(getRepositoryToken(Attendance));
     userRepository = module.get(getRepositoryToken(User));
@@ -60,7 +60,7 @@ describe('RecordsService', () => {
       attendee.id = 'Attendee Id 1';
 
       const recordDto = createRecordDto(
-        '2024-01-15 12:30:00',
+        '2024-01-15',
         DayType.MONDAY,
         AttendanceStatus.PRESENT,
         attendee.id,
@@ -69,7 +69,7 @@ describe('RecordsService', () => {
       const sut = await service.create(recordDto, user);
 
       expect(sut.attendeeId).toBe('Attendee Id 1');
-      expect(sut.date).toBe('2024-01-15 12:30:00');
+      expect(sut.date).toBe('2024-01-15');
       expect(sut.day).toBe('MONDAY');
       expect(sut.status).toBe('Present');
     });
@@ -85,7 +85,7 @@ describe('RecordsService', () => {
       const now = new Date();
 
       const recordDto = createRecordDto(
-        '2024-01-15 12:30:00',
+        '2024-01-15',
         DayType.MONDAY,
         AttendanceStatus.PRESENT,
         attendee.id,
@@ -122,23 +122,15 @@ describe('RecordsService', () => {
         attendee.id,
       );
 
-      await service.create(recordDto_2, user);
-
       // When
-      const sut = await recordRepository.find({
-        where: {
-          attendeeId: 'Attendee Id 1',
-          date: new Date('2024-01-15'),
-        },
-      });
+      const sut = await service.create(recordDto_2, user);
 
       // Then
-      expect(sut).toHaveLength(1);
-      expect(sut[0].attendeeId).toBe('Attendee Id 1');
-      expect(sut[0].date).toBe('2024-01-15');
-      expect(sut[0].day).toBe('MONDAY');
-      expect(sut[0].status).not.toBe('Present');
-      expect(sut[0].status).toBe('Absent');
+      expect(sut.attendeeId).toBe('Attendee Id 1');
+      expect(sut.date).toBe('2024-01-15');
+      expect(sut.day).toBe('MONDAY');
+      expect(sut.status).not.toBe('Present');
+      expect(sut.status).toBe('Absent');
     });
   });
 
