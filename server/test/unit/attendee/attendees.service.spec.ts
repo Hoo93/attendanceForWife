@@ -234,7 +234,7 @@ describe('AttendeesService', () => {
   });
 
   describe('delete TEST', () => {
-    it('배열에 입력한 모든 회원을 soft delete 한다.', async () => {
+    it('배열에 입력한 모든 출석대상을 soft delete 한다.', async () => {
       // Given
       const attendance = new Attendance();
       attendance.id = 'testAttendanceId';
