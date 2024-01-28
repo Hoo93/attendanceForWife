@@ -149,9 +149,7 @@ describe('RecordsService', () => {
 
       const attendee_1 = new Attendee();
       attendee_1.id = 'Attendee Id 1';
-
-      const attendee_2 = new Attendee();
-      attendee_2.id = 'Attendee Id 2';
+      attendee_1.attendanceId = attendance.id;
 
       const record_1 = createRecord(
         '2024-01-15',
@@ -162,10 +160,10 @@ describe('RecordsService', () => {
       );
 
       const record_2 = createRecord(
-        '2024-01-15',
+        '2024-01-16',
         DayType.MONDAY,
         AttendanceStatus.ABSENT,
-        attendee_2.id,
+        attendee_1.id,
         user_1.id,
       );
 
