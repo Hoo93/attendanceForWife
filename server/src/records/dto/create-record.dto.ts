@@ -42,12 +42,11 @@ export class CreateRecordDto {
 
   @IsDate()
   @ApiProperty({
-    description: '출석시간',
-    type: 'datetime',
-    example: '2024-12-03T00:00:12Z',
+    description: '출석날짜',
+    type: 'date',
+    example: '2024-12-03',
   })
-  @Transform(({ value }) => new Date(value))
-  datetime: Date;
+  date: Date;
 
   @IsEnum(DayType)
   @ApiProperty({
@@ -72,7 +71,7 @@ export class CreateRecordDto {
   toEntity(createId: string) {
     const record = new Record();
     record.status = this.status;
-    record.datetime = this.datetime;
+    record.date = this.date;
     record.day = this.day;
     record.attendeeId = this.attendeeId;
     record.createId = createId;
