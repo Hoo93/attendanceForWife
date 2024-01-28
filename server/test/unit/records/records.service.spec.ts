@@ -11,11 +11,12 @@ import { Record } from '../../../src/records/entities/record.entity';
 import { CreateRecordDto } from '../../../src/records/dto/create-record.dto';
 import { DayType } from '../../../src/schedules/const/day-type.enum';
 import { AttendanceStatus } from '../../../src/records/record-type.enum';
+import { Repository } from 'typeorm';
 
 describe('RecordsService', () => {
   let module: TestingModule;
   let service: RecordsService;
-  let recordRepository;
+  let recordRepository: Repository<Record>;
   let attendeeRepository;
   let attendanceRepository;
   let userRepository;
@@ -95,6 +96,49 @@ describe('RecordsService', () => {
 
       expect(sut.createdAt).toStrictEqual(now);
       expect(sut.createId).toBe('user id 1');
+    });
+
+    it('선택한 날짜에 선택한 출석대상의 출석내용이 이미 존재하는 경우 Update 한다.', async () => {
+      // Given
+      const user = new User();
+      user.id = 'user id 1';
+
+      const attendee = new Attendee();
+      attendee.id = 'Attendee Id 1';
+
+      const recordDto_1 = createRecordDto(
+        '2024-01-15',
+        DayType.MONDAY,
+        AttendanceStatus.PRESENT,
+        attendee.id,
+      );
+
+      await service.create(recordDto_1, user);
+
+      const recordDto_2 = createRecordDto(
+        '2024-01-15',
+        DayType.MONDAY,
+        AttendanceStatus.ABSENT,
+        attendee.id,
+      );
+
+      await service.create(recordDto_2, user);
+
+      // When
+      const sut = await recordRepository.find({
+        where: {
+          attendeeId: 'Attendee Id 1',
+          date: new Date('2024-01-15'),
+        },
+      });
+
+      // Then
+      expect(sut).toHaveLength(1);
+      expect(sut[0].attendeeId).toBe('Attendee Id 1');
+      expect(sut[0].date).toBe('2024-01-15');
+      expect(sut[0].day).toBe('MONDAY');
+      expect(sut[0].status).not.toBe('Present');
+      expect(sut[0].status).toBe('Absent');
     });
   });
 
