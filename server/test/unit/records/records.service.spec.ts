@@ -68,7 +68,7 @@ describe('RecordsService', () => {
       const sut = await service.create(recordDto, user);
 
       expect(sut.attendeeId).toBe('Attendee Id 1');
-      expect(sut.datetime).toBe('2024-01-15 12:30:00');
+      expect(sut.date).toBe('2024-01-15 12:30:00');
       expect(sut.day).toBe('MONDAY');
       expect(sut.status).toBe('Present');
     });
@@ -160,13 +160,13 @@ describe('RecordsService', () => {
 });
 
 function createRecordDto(
-  datetime,
+  date,
   day: DayType,
   status: AttendanceStatus,
   attendeeId,
 ) {
   const recordDto = new CreateRecordDto();
-  recordDto.datetime = datetime;
+  recordDto.date = date;
   recordDto.day = day;
   recordDto.status = status;
   recordDto.attendeeId = attendeeId;

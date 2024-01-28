@@ -5,13 +5,17 @@ import {
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
+  Unique,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { AttendanceStatus } from '../record-type.enum';
 import { DayType } from '../../schedules/const/day-type.enum';
 import { Attendee } from '../../attendees/entities/attendee.entity';
 
+// 출석 체크 방법
+//
 @Entity()
+@Unique(['id', 'date'])
 export class Record extends BaseTimeEntity {
   @PrimaryGeneratedColumn('increment', { comment: '출석 기록 PK', type: 'int' })
   @ApiProperty({ description: '출석 기록 PK', type: 'int' })
@@ -29,9 +33,9 @@ export class Record extends BaseTimeEntity {
   })
   status: AttendanceStatus;
 
-  @Column({ comment: '출석 날짜', type: 'datetime' })
-  @ApiProperty({ description: '출석 날짜', type: 'datetime' })
-  datetime: Date;
+  @Column({ comment: '출석 날짜', type: 'date' })
+  @ApiProperty({ description: '출석 날짜', type: 'date' })
+  date: Date;
 
   @Column({ comment: '출석 요일', type: 'enum', enum: DayType })
   @ApiProperty({
