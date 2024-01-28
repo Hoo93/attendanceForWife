@@ -27,6 +27,7 @@ import { Roles } from '../roles/role.decorator';
 import { RoleType } from '../roles/entities/role-type.enum';
 import { AuthGuard } from '@nestjs/passport';
 import { CreateAttendeeDto } from '../attendees/dto/create-attendee.dto';
+import { DeleteRecordDto } from './dto/delete-record.dto';
 
 @UseGuards(AuthGuard('jwt'))
 @Controller('records')
@@ -37,8 +38,8 @@ export class RecordsController {
 
   @Post()
   @ApiOperation({
-    description: '출석기록 생성',
-    summary: '출석기록 생성 요약',
+    description: '출석기록 생성 및 수정',
+    summary: '출석기록 생성 및 수정',
   })
   @ApiBody({
     type: CreateRecordDto,
@@ -64,17 +65,23 @@ export class RecordsController {
   }
 
   @Get(':id')
+  @ApiOperation({
+    description: '출석기록 조회',
+    summary: '출석기록 조회',
+  })
+  @ApiResponse({
+    status: 200,
+    description: '출석기록 조회',
+    type: Record,
+  })
   findOne(@Param('id') id: string) {
     return this.recordsService.findOneById(+id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateRecordDto: UpdateRecordDto) {
-    return this.recordsService.update(+id, updateRecordDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.recordsService.remove(+id);
+  @Delete()
+  @UseGuards(RoleGuard)
+  @Roles(RoleType.MASTER, RoleType.MANAGER)
+  deleteAll(@Body() deleteRecordDto: DeleteRecordDto) {
+    return this.recordsService.deleteAll(deleteRecordDto);
   }
 }

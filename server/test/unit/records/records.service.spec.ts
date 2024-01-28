@@ -1,3 +1,5 @@
+// @ts-ignore
+
 import { Test, TestingModule } from '@nestjs/testing';
 import { RecordsService } from '../../../src/records/records.service';
 import { User } from '../../../src/users/entities/user.entity';
@@ -11,7 +13,9 @@ import { Record } from '../../../src/records/entities/record.entity';
 import { CreateRecordDto } from '../../../src/records/dto/create-record.dto';
 import { DayType } from '../../../src/schedules/const/day-type.enum';
 import { AttendanceStatus } from '../../../src/records/record-type.enum';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
+import { DeleteAttendeeDto } from '../../../src/attendees/dto/delete-attendee.dto';
+import { DeleteRecordDto } from '../../../src/records/dto/delete-record.dto';
 
 describe('RecordsService', () => {
   let module: TestingModule;
@@ -134,6 +138,56 @@ describe('RecordsService', () => {
     });
   });
 
+  describe('deleteAll TEST', () => {
+    it('배열에 입력한 모든 출석기록을 soft delete 한다.', async () => {
+      // Given
+      const attendance = new Attendance();
+      attendance.id = 'testAttendanceId';
+
+      const user_1 = new User();
+      user_1.id = 'user id 1';
+
+      const attendee_1 = new Attendee();
+      attendee_1.id = 'Attendee Id 1';
+
+      const attendee_2 = new Attendee();
+      attendee_2.id = 'Attendee Id 2';
+
+      const record_1 = createRecord(
+        '2024-01-15',
+        DayType.MONDAY,
+        AttendanceStatus.ABSENT,
+        attendee_1.id,
+        user_1.id,
+      );
+
+      const record_2 = createRecord(
+        '2024-01-15',
+        DayType.MONDAY,
+        AttendanceStatus.ABSENT,
+        attendee_2.id,
+        user_1.id,
+      );
+
+      const createdRecord_1 = await recordRepository.save(record_1);
+      const createdRecord_2 = await recordRepository.save(record_2);
+
+      // When
+      const deleteDto = new DeleteRecordDto();
+      deleteDto.ids = [createdRecord_1.id, createdRecord_2.id];
+      deleteDto.attendanceId = 'testAttendanceId';
+
+      await service.deleteAll(deleteDto);
+
+      const sut = await recordRepository.findBy({
+        id: In(deleteDto.ids),
+      });
+
+      // Then
+      expect(sut).toHaveLength(0);
+    });
+  });
+
   async function setupTest() {
     await attendanceRepository.query('DELETE FROM attendance;');
     await userRepository.query(`DELETE FROM user;`);
@@ -194,7 +248,6 @@ describe('RecordsService', () => {
     await userRepository.query(`DELETE FROM user;`);
   }
 });
-
 function createRecordDto(
   date,
   day: DayType,
@@ -207,4 +260,20 @@ function createRecordDto(
   recordDto.status = status;
   recordDto.attendeeId = attendeeId;
   return recordDto;
+}
+
+function createRecord(
+  date,
+  day: DayType,
+  status: AttendanceStatus,
+  attendeeId,
+  userId,
+) {
+  const record = new Record();
+  record.date = date;
+  record.day = day;
+  record.status = status;
+  record.attendeeId = attendeeId;
+  record.createId = userId;
+  return record;
 }

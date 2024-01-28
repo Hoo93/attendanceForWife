@@ -5,6 +5,7 @@ import { User } from '../users/entities/user.entity';
 import { Record } from './entities/record.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { DeleteRecordDto } from './dto/delete-record.dto';
 
 @Injectable()
 export class RecordsService {
@@ -35,7 +36,7 @@ export class RecordsService {
     return `This action updates a #${id} record`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} record`;
+  deleteAll(deleteRecordDto: DeleteRecordDto) {
+    return;
   }
 }
