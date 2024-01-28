@@ -15,7 +15,7 @@ import { Attendee } from '../../attendees/entities/attendee.entity';
 // 출석 체크 방법
 //
 @Entity()
-@Unique(['id', 'date'])
+@Unique(['attendeeId', 'date'])
 export class Record extends BaseTimeEntity {
   @PrimaryGeneratedColumn('increment', { comment: '출석 기록 PK', type: 'int' })
   @ApiProperty({ description: '출석 기록 PK', type: 'int' })
