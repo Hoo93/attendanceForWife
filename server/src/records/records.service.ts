@@ -12,18 +12,23 @@ export class RecordsService {
     @InjectRepository(Record)
     private recordRepository: Repository<Record>,
   ) {}
-  async create(createRecordDto: CreateRecordDto, user: User): Promise<Record> {
+  async create(createRecordDto: CreateRecordDto, user: User) {
     const record = createRecordDto.toEntity(user.id);
 
-    return await this.recordRepository.save(record);
+    const result = await this.recordRepository.upsert(record, {
+      conflictPaths: ['attendeeId', 'date'],
+      upsertType: 'on-conflict-do-update',
+    });
+
+    return this.findOneById(result.raw.id);
   }
 
   findAll() {
     return `This action returns all records`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} record`;
+  findOneById(id: number) {
+    return this.recordRepository.findOneBy({ id });
   }
 
   update(id: number, updateRecordDto: UpdateRecordDto) {
