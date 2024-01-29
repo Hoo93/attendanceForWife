@@ -170,11 +170,11 @@ describe('RecordsService', () => {
       const createdRecord_1 = await recordRepository.save(record_1);
       const createdRecord_2 = await recordRepository.save(record_2);
 
-      // When
       const deleteDto = new DeleteRecordDto();
       deleteDto.ids = [createdRecord_1.id, createdRecord_2.id];
       deleteDto.attendanceId = 'testAttendanceId';
 
+      // When
       await service.deleteAll(deleteDto);
 
       const sut = await recordRepository.findBy({
@@ -183,6 +183,50 @@ describe('RecordsService', () => {
 
       // Then
       expect(sut).toHaveLength(0);
+    });
+
+    it('Attendance에 속하지 않은 Record를 삭제하면 에러를 발생시킨다.', async () => {
+      // Given
+      const targetAttendanceId = 'testAttendanceId';
+
+      const user_1 = new User();
+      user_1.id = 'user id 1';
+
+      const attendee_1 = new Attendee();
+      attendee_1.id = 'Attendee Id 1';
+      attendee_1.attendanceId = targetAttendanceId;
+
+      const attendee_2 = new Attendee();
+      attendee_2.id = 'Attendee Id 2';
+      attendee_2.attendanceId = 'notTestAttendanceId';
+
+      const record_1 = createRecord(
+        '2024-01-15',
+        DayType.MONDAY,
+        AttendanceStatus.ABSENT,
+        attendee_1.id,
+        user_1.id,
+      );
+
+      const record_2 = createRecord(
+        '2024-01-16',
+        DayType.MONDAY,
+        AttendanceStatus.ABSENT,
+        attendee_2.id,
+        user_1.id,
+      );
+
+      const createdRecord_1 = await recordRepository.save(record_1);
+      const createdRecord_2 = await recordRepository.save(record_2);
+
+      const deleteDto = new DeleteRecordDto();
+      deleteDto.ids = [createdRecord_1.id, createdRecord_2.id];
+      deleteDto.attendanceId = targetAttendanceId;
+
+      // When / Then
+      expect(async () => {
+        await service.deleteAll(deleteDto);
+      }).rejects.toThrowError();
     });
   });
 
