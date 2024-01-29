@@ -98,7 +98,7 @@ export class AttendeesController {
   @ApiOperation({ summary: '출석대상 일괄 삭제' })
   @ApiBody({
     type: DeleteAttendeeDto,
-    description: '출석 대상 생성 DTO',
+    description: '출석대상 삭제 DTO',
   })
   @ApiResponse({
     status: 204,

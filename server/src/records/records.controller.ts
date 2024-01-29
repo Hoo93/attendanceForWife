@@ -28,6 +28,7 @@ import { RoleType } from '../roles/entities/role-type.enum';
 import { AuthGuard } from '@nestjs/passport';
 import { CreateAttendeeDto } from '../attendees/dto/create-attendee.dto';
 import { DeleteRecordDto } from './dto/delete-record.dto';
+import { DeleteAttendeeDto } from '../attendees/dto/delete-attendee.dto';
 
 @UseGuards(AuthGuard('jwt'))
 @Controller('records')
@@ -79,6 +80,16 @@ export class RecordsController {
   }
 
   @Delete()
+  @ApiOperation({ summary: '출석기록 일괄 삭제' })
+  @ApiBody({
+    type: DeleteRecordDto,
+    description: '출석기록 삭제 DTO',
+  })
+  @ApiResponse({
+    status: 204,
+    description: '출석기록 일괄 삭제',
+    type: null,
+  })
   @UseGuards(RoleGuard)
   @Roles(RoleType.MASTER, RoleType.MANAGER)
   deleteAll(@Body() deleteRecordDto: DeleteRecordDto) {
