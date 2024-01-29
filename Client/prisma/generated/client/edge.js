@@ -116,7 +116,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "/Users/gimbeomsu/Desktop/1차 미션/prisma/generated/client",
+      "value": "/Users/gimbeomsu/Desktop/사이드 프로젝트/attendanceForWife/client/prisma/generated/client",
       "fromEnvVar": null
     },
     "config": {
@@ -142,7 +142,7 @@ const config = {
     "db"
   ],
   "activeProvider": "sqlite",
-  "postinstall": false,
+  "postinstall": true,
   "inlineDatasources": {
     "db": {
       "url": {
