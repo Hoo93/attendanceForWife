@@ -44,11 +44,11 @@ export class RecordsService {
       },
     });
 
-    found.filter((record) => {
-      deleteRecordDto.ids.includes(record.id);
+    const filteredRecord = found.filter((record) => {
+      return deleteRecordDto.ids.includes(record.id);
     });
 
-    if (found.length !== deleteRecordDto.ids.length) {
+    if (filteredRecord.length !== deleteRecordDto.ids.length) {
       throw new BadRequestException(
         `AttendanceId : ${deleteRecordDto.attendanceId} 에 속한 기록만 삭제할 수 있습니다..`,
       );
