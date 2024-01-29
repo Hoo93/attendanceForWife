@@ -79,7 +79,7 @@ export class RecordsController {
     return this.recordsService.findOneById(+id);
   }
 
-  @Delete()
+  @Delete('delete')
   @ApiOperation({ summary: '출석기록 일괄 삭제' })
   @ApiBody({
     type: DeleteRecordDto,
