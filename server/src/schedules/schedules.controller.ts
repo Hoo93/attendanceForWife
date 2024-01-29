@@ -96,7 +96,7 @@ export class SchedulesController {
     return this.schedulesService.update(+id, updateScheduleDto);
   }
 
-  @Delete('delete')
+  @Delete()
   @ApiOperation({ summary: '스케쥴 일괄 삭제' })
   @ApiResponse({
     status: 200,

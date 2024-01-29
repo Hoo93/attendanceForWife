@@ -94,7 +94,7 @@ export class AttendeesController {
     return this.attendeesService.update(id, updateAttendeeDto);
   }
 
-  @Delete('delete')
+  @Delete()
   @ApiOperation({ summary: '출석대상 일괄 삭제' })
   @ApiBody({
     type: DeleteAttendeeDto,
