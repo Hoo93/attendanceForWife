@@ -1,9 +1,7 @@
 import CreateView from "@/app/components/CreateView";
 
 const index = () => {
-  return (
-      <CreateView />
-  );
+  return <CreateView />;
 };
 
 export default index;

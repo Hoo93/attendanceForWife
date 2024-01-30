@@ -1,7 +1,14 @@
 "use client";
 import { Box, Grid, TextField, Button } from "@mui/material";
+import Radio from "@mui/material/Radio";
+import RadioGroup from "@mui/material/RadioGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import FormControl from "@mui/material/FormControl";
+import FormLabel from "@mui/material/FormLabel";
+
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import BasicDatePicker from "@/app/components/DatePicker";
 
 export interface Register {
   id: string;
@@ -57,25 +64,65 @@ const index = () => {
               onChange={(e) => onChange("pw", e.target.value)}
             />
           </Grid>
+          <Grid item xs={5}>
+            <div>Phone</div>
+          </Grid>
+          <Grid item xs={7}>
+            <TextField
+              variant="outlined"
+              value={login?.phone}
+              fullWidth
+              onChange={(e) => onChange("phone", e.target.value)}
+            />
+          </Grid>
+          <Grid item xs={5}>
+            <div>Age</div>
+          </Grid>
+          <Grid item xs={7}>
+            <BasicDatePicker />
+          </Grid>
+          <Grid item xs={5}>
+            <div>Gender</div>
+          </Grid>
+          <Grid item xs={7}>
+            <RadioGroup
+              row
+              aria-labelledby="demo-row-radio-buttons-group-label"
+              name="row-radio-buttons-group"
+            >
+              <FormControlLabel
+                value="female"
+                control={<Radio />}
+                label="Female"
+              />
+              <FormControlLabel value="male" control={<Radio />} label="Male" />
+              <FormControlLabel
+                value="other"
+                control={<Radio />}
+                label="Other"
+              />
+            </RadioGroup>
+          </Grid>
         </Grid>
         <Box mt={3} display={"flex"} justifyContent={"flex-end"} gap={"5px"}>
           <Button
             variant="contained"
-            color="primary"
+            color="error"
             onClick={() => {
-              alert("로그인 되었습니다");
+              router.push("/auth/login");
             }}
           >
-            로그인
+            취소
           </Button>
           <Button
             variant="contained"
             color="primary"
             onClick={() => {
-              router.push("/auth/register");
+              alert("회원가입 되었습니다.");
+              router.push("/auth/login");
             }}
           >
-            회원가입
+            저장
           </Button>
         </Box>
       </Box>
