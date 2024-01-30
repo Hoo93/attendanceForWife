@@ -60,11 +60,6 @@ export class RecordsController {
     return this.recordsService.create(createRecordDto, user);
   }
 
-  @Get()
-  findAll() {
-    return this.recordsService.findAll();
-  }
-
   @Get(':id')
   @ApiOperation({
     description: '출석기록 조회',

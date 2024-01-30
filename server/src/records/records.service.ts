@@ -24,8 +24,8 @@ export class RecordsService {
     return this.findOneById(result.raw.id);
   }
 
-  findAll() {
-    return `This action returns all records`;
+  async createAll(createAllrecordDto: CreateRecordDto) {
+    return;
   }
 
   findOneById(id: number) {
