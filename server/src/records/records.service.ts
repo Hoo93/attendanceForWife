@@ -6,6 +6,7 @@ import { Record } from './entities/record.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
 import { DeleteRecordDto } from './dto/delete-record.dto';
+import { CreateAllRecordDto } from './dto/createAll-record.dto';
 
 @Injectable()
 export class RecordsService {
@@ -24,7 +25,7 @@ export class RecordsService {
     return this.findOneById(result.raw.id);
   }
 
-  async createAll(createAllrecordDto: CreateRecordDto) {
+  async createAll(createAllrecordDto: CreateAllRecordDto) {
     return;
   }
 

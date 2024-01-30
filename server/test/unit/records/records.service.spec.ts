@@ -8,14 +8,14 @@ import { AttendanceType } from '../../../src/attendances/const/attendance-type.e
 import { Attendee } from '../../../src/attendees/entities/attendee.entity';
 import { TestModule } from '../../../src/test.module';
 import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm';
-import { Schedule } from '../../../src/schedules/entities/schedule.entity';
 import { Record } from '../../../src/records/entities/record.entity';
 import { CreateRecordDto } from '../../../src/records/dto/create-record.dto';
 import { DayType } from '../../../src/schedules/const/day-type.enum';
 import { AttendanceStatus } from '../../../src/records/record-type.enum';
 import { In, Repository } from 'typeorm';
-import { DeleteAttendeeDto } from '../../../src/attendees/dto/delete-attendee.dto';
 import { DeleteRecordDto } from '../../../src/records/dto/delete-record.dto';
+import { createSimpleAttendee } from '../attendee/createSimpleAttendee';
+import { CreateAllRecordDto } from '../../../src/records/dto/createAll-record.dto';
 
 describe('RecordsService', () => {
   let module: TestingModule;
@@ -63,12 +63,7 @@ describe('RecordsService', () => {
       const attendee = new Attendee();
       attendee.id = 'Attendee Id 1';
 
-      const recordDto = createRecordDto(
-        '2024-01-15',
-        DayType.MONDAY,
-        AttendanceStatus.PRESENT,
-        attendee.id,
-      );
+      const recordDto = createRecordDto('2024-01-15', DayType.MONDAY, AttendanceStatus.PRESENT, attendee.id);
 
       const sut = await service.create(recordDto, user);
 
@@ -88,12 +83,7 @@ describe('RecordsService', () => {
 
       const now = new Date();
 
-      const recordDto = createRecordDto(
-        '2024-01-15',
-        DayType.MONDAY,
-        AttendanceStatus.PRESENT,
-        attendee.id,
-      );
+      const recordDto = createRecordDto('2024-01-15', DayType.MONDAY, AttendanceStatus.PRESENT, attendee.id);
       recordDto.createdAt = now;
 
       const sut = await service.create(recordDto, user);
@@ -110,21 +100,11 @@ describe('RecordsService', () => {
       const attendee = new Attendee();
       attendee.id = 'Attendee Id 1';
 
-      const recordDto_1 = createRecordDto(
-        '2024-01-15',
-        DayType.MONDAY,
-        AttendanceStatus.PRESENT,
-        attendee.id,
-      );
+      const recordDto_1 = createRecordDto('2024-01-15', DayType.MONDAY, AttendanceStatus.PRESENT, attendee.id);
 
       await service.create(recordDto_1, user);
 
-      const recordDto_2 = createRecordDto(
-        '2024-01-15',
-        DayType.MONDAY,
-        AttendanceStatus.ABSENT,
-        attendee.id,
-      );
+      const recordDto_2 = createRecordDto('2024-01-15', DayType.MONDAY, AttendanceStatus.ABSENT, attendee.id);
 
       // When
       const sut = await service.create(recordDto_2, user);
@@ -135,6 +115,45 @@ describe('RecordsService', () => {
       expect(sut.day).toBe('MONDAY');
       expect(sut.status).not.toBe('Present');
       expect(sut.status).toBe('Absent');
+    });
+  });
+
+  describe('CreateAll Test', () => {
+    it('선택한 날짜와 선택한 출석부의 모든 출석기록을 일괄 생성한다.', async () => {
+      // Given
+      const attendanceId = 'testAttendanceId';
+
+      const attendee1 = createSimpleAttendee('attendee_1', attendanceId, 'user id 1');
+      const attendee2 = createSimpleAttendee('attendee_2', attendanceId, 'user id 1');
+      const attendee3 = createSimpleAttendee('attendee_3', attendanceId, 'user id 1');
+
+      await attendeeRepository.save([attendee1, attendee2, attendee3]);
+
+      const createAllRecordDto = new CreateAllRecordDto();
+      createAllRecordDto.day = DayType.TUESDAY;
+      createAllRecordDto.date = new Date('2024-01-30');
+      createAllRecordDto.status = AttendanceStatus.PRESENT;
+      createAllRecordDto.attendanceId = attendanceId;
+
+      // When
+      await service.createAll(createAllRecordDto);
+
+      const sut = await recordRepository.find({
+        where: {
+          date: createAllRecordDto.date,
+          attendee: {
+            attendanceId: createAllRecordDto.attendanceId,
+          },
+        },
+      });
+
+      // Then
+      expect(sut).toHaveLength(2);
+      sut.map((record) => {
+        expect(record.status).toBe(AttendanceStatus.PRESENT);
+        expect(record.date).toBe(new Date('2024-01-30'));
+        expect(record.day).toBe(DayType.TUESDAY);
+      });
     });
   });
 
@@ -151,21 +170,8 @@ describe('RecordsService', () => {
       attendee_1.id = 'Attendee Id 1';
       attendee_1.attendanceId = attendance.id;
 
-      const record_1 = createRecord(
-        '2024-01-15',
-        DayType.MONDAY,
-        AttendanceStatus.ABSENT,
-        attendee_1.id,
-        user_1.id,
-      );
-
-      const record_2 = createRecord(
-        '2024-01-16',
-        DayType.MONDAY,
-        AttendanceStatus.ABSENT,
-        attendee_1.id,
-        user_1.id,
-      );
+      const record_1 = createRecord('2024-01-15', DayType.MONDAY, AttendanceStatus.ABSENT, attendee_1.id, user_1.id);
+      const record_2 = createRecord('2024-01-16', DayType.MONDAY, AttendanceStatus.ABSENT, attendee_1.id, user_1.id);
 
       const createdRecord_1 = await recordRepository.save(record_1);
       const createdRecord_2 = await recordRepository.save(record_2);
@@ -200,21 +206,8 @@ describe('RecordsService', () => {
       attendee_2.id = 'Attendee Id 2';
       attendee_2.attendanceId = 'notTestAttendanceId';
 
-      const record_1 = createRecord(
-        '2024-01-15',
-        DayType.MONDAY,
-        AttendanceStatus.ABSENT,
-        attendee_1.id,
-        user_1.id,
-      );
-
-      const record_2 = createRecord(
-        '2024-01-16',
-        DayType.MONDAY,
-        AttendanceStatus.ABSENT,
-        attendee_2.id,
-        user_1.id,
-      );
+      const record_1 = createRecord('2024-01-15', DayType.MONDAY, AttendanceStatus.ABSENT, attendee_1.id, user_1.id);
+      const record_2 = createRecord('2024-01-16', DayType.MONDAY, AttendanceStatus.ABSENT, attendee_2.id, user_1.id);
 
       const createdRecord_1 = await recordRepository.save(record_1);
       const createdRecord_2 = await recordRepository.save(record_2);
@@ -290,12 +283,7 @@ describe('RecordsService', () => {
     await userRepository.query(`DELETE FROM user;`);
   }
 });
-function createRecordDto(
-  date,
-  day: DayType,
-  status: AttendanceStatus,
-  attendeeId,
-) {
+function createRecordDto(date, day: DayType, status: AttendanceStatus, attendeeId) {
   const recordDto = new CreateRecordDto();
   recordDto.date = date;
   recordDto.day = day;
@@ -304,13 +292,7 @@ function createRecordDto(
   return recordDto;
 }
 
-function createRecord(
-  date,
-  day: DayType,
-  status: AttendanceStatus,
-  attendeeId,
-  userId,
-) {
+function createRecord(date, day: DayType, status: AttendanceStatus, attendeeId, userId) {
   const record = new Record();
   record.date = date;
   record.day = day;
