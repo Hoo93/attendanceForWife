@@ -121,6 +121,9 @@ describe('RecordsService', () => {
   describe('CreateAll Test', () => {
     it('선택한 날짜와 선택한 출석부의 모든 출석기록을 일괄 생성한다.', async () => {
       // Given
+      const user = new User();
+      user.id = 'user id 1';
+
       const attendanceId = 'testAttendanceId';
 
       const attendee1 = createSimpleAttendee('attendee_1', attendanceId, 'user id 1');
@@ -136,7 +139,7 @@ describe('RecordsService', () => {
       createAllRecordDto.attendanceId = attendanceId;
 
       // When
-      await service.createAll(createAllRecordDto);
+      await service.createAll(createAllRecordDto, user);
 
       const sut = await recordRepository.find({
         where: {
@@ -153,6 +156,7 @@ describe('RecordsService', () => {
         expect(record.status).toBe(AttendanceStatus.PRESENT);
         expect(record.date).toBe(new Date('2024-01-30'));
         expect(record.day).toBe(DayType.TUESDAY);
+        expect(record.createId).toBe(user.id);
       });
     });
   });

@@ -25,7 +25,7 @@ export class RecordsService {
     return this.findOneById(result.raw.id);
   }
 
-  async createAll(createAllrecordDto: CreateAllRecordDto) {
+  async createAll(createAllrecordDto: CreateAllRecordDto, user: User) {
     return;
   }
 
