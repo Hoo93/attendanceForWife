@@ -1,12 +1,5 @@
 import { BaseTimeEntity } from '../../BaseTimeEntity';
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-  Unique,
-} from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, Unique } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { AttendanceStatus } from '../record-type.enum';
 import { DayType } from '../../schedules/const/day-type.enum';
@@ -33,9 +26,9 @@ export class Record extends BaseTimeEntity {
   })
   status: AttendanceStatus;
 
-  @Column({ comment: '출석 날짜', type: 'date' })
-  @ApiProperty({ description: '출석 날짜', type: 'date' })
-  date: Date;
+  @Column({ comment: '출석 날짜', type: 'varchar' })
+  @ApiProperty({ description: '출석 날짜', type: 'string' })
+  date: string;
 
   @Column({ comment: '출석 요일', type: 'enum', enum: DayType })
   @ApiProperty({
