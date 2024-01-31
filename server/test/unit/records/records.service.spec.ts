@@ -130,31 +130,32 @@ describe('RecordsService', () => {
       const attendee2 = createSimpleAttendee('attendee_2', attendanceId, 'user id 1');
       const attendee3 = createSimpleAttendee('attendee_3', attendanceId, 'user id 1');
 
+      await attendeeRepository.query('DELETE FROM attendee;');
       await attendeeRepository.save([attendee1, attendee2, attendee3]);
 
       const createAllRecordDto = new CreateAllRecordDto();
       createAllRecordDto.day = DayType.TUESDAY;
-      createAllRecordDto.date = new Date('2024-01-30');
+      createAllRecordDto.date = '2024-01-30';
       createAllRecordDto.status = AttendanceStatus.PRESENT;
       createAllRecordDto.attendanceId = attendanceId;
 
       // When
-      await service.createAll(createAllRecordDto, user);
+      const result = await service.createAll(createAllRecordDto, user);
 
       const sut = await recordRepository.find({
         where: {
-          date: createAllRecordDto.date,
           attendee: {
             attendanceId: createAllRecordDto.attendanceId,
           },
+          date: createAllRecordDto.date,
         },
       });
 
       // Then
-      expect(sut).toHaveLength(2);
+      expect(sut).toHaveLength(3);
       sut.map((record) => {
         expect(record.status).toBe(AttendanceStatus.PRESENT);
-        expect(record.date).toBe(new Date('2024-01-30'));
+        expect(record.date).toBe('2024-01-30');
         expect(record.day).toBe(DayType.TUESDAY);
         expect(record.createId).toBe(user.id);
       });
@@ -228,6 +229,8 @@ describe('RecordsService', () => {
   });
 
   async function setupTest() {
+    await recordRepository.query('DELETE FROM record;');
+    await attendeeRepository.query('DELETE FROM attendee;');
     await attendanceRepository.query('DELETE FROM attendance;');
     await userRepository.query(`DELETE FROM user;`);
 
@@ -304,4 +307,17 @@ function createRecord(date, day: DayType, status: AttendanceStatus, attendeeId, 
   record.attendeeId = attendeeId;
   record.createId = userId;
   return record;
+}
+
+function getDate(date: Date) {
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1;
+  const day = date.getDay();
+
+  // 한 자리수 월과 일에 선행하는 0 추가
+  const formattedMonth = month < 10 ? `0${month}` : month;
+  const formattedDay = day < 10 ? `0${day}` : day;
+
+  // YYYY-MM-DD 형식으로 변환
+  return `${year}-${formattedMonth}-${formattedDay}`;
 }
