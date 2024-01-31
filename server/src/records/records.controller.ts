@@ -1,25 +1,10 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-  UseGuards,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { RecordsService } from './records.service';
 import { CreateRecordDto } from './dto/create-record.dto';
 import { UpdateRecordDto } from './dto/update-record.dto';
 import { User } from '../users/entities/user.entity';
 import { GetUser } from '../common/user.decorator';
-import {
-  ApiBearerAuth,
-  ApiBody,
-  ApiOperation,
-  ApiResponse,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Attendee } from '../attendees/entities/attendee.entity';
 import { Record } from './entities/record.entity';
 import { RoleGuard } from '../roles/role.guard';
@@ -29,6 +14,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { CreateAttendeeDto } from '../attendees/dto/create-attendee.dto';
 import { DeleteRecordDto } from './dto/delete-record.dto';
 import { DeleteAttendeeDto } from '../attendees/dto/delete-attendee.dto';
+import { CreateAllRecordDto } from './dto/createAll-record.dto';
 
 @UseGuards(AuthGuard('jwt'))
 @Controller('records')
@@ -53,11 +39,28 @@ export class RecordsController {
   })
   @UseGuards(RoleGuard)
   @Roles(RoleType.MASTER, RoleType.MANAGER, RoleType.GENERAL)
-  async createRecord(
-    @Body() createRecordDto: CreateRecordDto,
-    @GetUser() user: User,
-  ) {
+  async createRecord(@Body() createRecordDto: CreateRecordDto, @GetUser() user: User) {
     return this.recordsService.create(createRecordDto, user);
+  }
+
+  @Post('create')
+  @ApiOperation({
+    description: '선택한 날짜의 출석기록 일괄 생성',
+    summary: '선택한 날짜의 출석기록 일괄 생성',
+  })
+  @ApiBody({
+    type: CreateAllRecordDto,
+    description: '출석기록 일괄 생성 DTO',
+  })
+  @ApiResponse({
+    status: 200,
+    description: '출석 기록 일괄 생성 후 affected Raws',
+    type: Number,
+  })
+  @UseGuards(RoleGuard)
+  @Roles(RoleType.MASTER, RoleType.MANAGER, RoleType.GENERAL)
+  async createAllRecord(@Body() createAllRecordDto: CreateAllRecordDto, @GetUser() user: User) {
+    return this.recordsService.createAll(createAllRecordDto, user);
   }
 
   @Get(':id')
