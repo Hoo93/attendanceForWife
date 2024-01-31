@@ -32,13 +32,15 @@ export class RecordsService {
     SELECT atd.id,?,?,?,?
     FROM attendee as atd
     LEFT JOIN record r ON r.attendeeId = atd.id AND r.date = ?
-    WHERE atd.attendanceId = ? AND atd.deletedAt IS NULL AND r.id IS NULL;`,
+    LEFT JOIN schedule s ON s.attendeeId = atd.id AND s.day = ?
+    WHERE atd.attendanceId = ? AND atd.deletedAt IS NULL AND r.id IS NULL AND s.id IS NOT NULL;`,
       [
         createAllrecordDto.status,
         createAllrecordDto.date,
         createAllrecordDto.day,
         user.id,
         createAllrecordDto.date,
+        createAllrecordDto.day,
         createAllrecordDto.attendanceId,
       ],
     );

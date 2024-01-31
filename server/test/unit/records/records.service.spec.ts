@@ -149,7 +149,7 @@ describe('RecordsService', () => {
       createAllRecordDto.attendanceId = attendanceId;
 
       // When
-      const result = await service.createAll(createAllRecordDto, user);
+      await service.createAll(createAllRecordDto, user);
 
       const sut = await recordRepository.find({
         where: {
@@ -196,7 +196,7 @@ describe('RecordsService', () => {
       createAllRecordDto.attendanceId = attendanceId;
 
       // When
-      const result = await service.createAll(createAllRecordDto, user);
+      await service.createAll(createAllRecordDto, user);
 
       const sut = await recordRepository.find({
         where: {
@@ -242,7 +242,7 @@ describe('RecordsService', () => {
       createAllRecordDto.attendanceId = attendanceId;
 
       // When
-      const result = await service.createAll(createAllRecordDto, user);
+      await service.createAll(createAllRecordDto, user);
 
       const sut = await recordRepository.find({
         where: {
