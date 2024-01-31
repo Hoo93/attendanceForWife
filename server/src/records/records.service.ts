@@ -25,8 +25,35 @@ export class RecordsService {
     return this.findOneById(result.raw.id);
   }
 
-  async createAll(createAllrecordDto: CreateAllRecordDto, user: User) {
-    return;
+  async createAll(createAllrecordDto: CreateAllRecordDto, user: User): Promise<number> {
+    const result = await this.recordRepository.query(
+      `
+    INSERT INTO record (attendeeId,status,date,day,createId)
+    SELECT id,?,?,?,?
+    FROM attendee
+    WHERE attendanceId = ? AND deletedAt IS NULL;`,
+      [
+        createAllrecordDto.status,
+        createAllrecordDto.date,
+        createAllrecordDto.day,
+        user.id,
+        createAllrecordDto.attendanceId,
+      ],
+    );
+    return result.affectedRows;
+  }
+
+  private getDate(date: Date) {
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1;
+    const day = date.getDay();
+
+    // 한 자리수 월과 일에 선행하는 0 추가
+    const formattedMonth = month < 10 ? `0${month}` : month;
+    const formattedDay = day < 10 ? `0${day}` : day;
+
+    // YYYY-MM-DD 형식으로 변환
+    return `${year}-${formattedMonth}-${formattedDay}`;
   }
 
   findOneById(id: number) {
