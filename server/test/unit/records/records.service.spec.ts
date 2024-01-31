@@ -160,6 +160,43 @@ describe('RecordsService', () => {
         expect(record.createId).toBe(user.id);
       });
     });
+
+    it('출석 내역이 없는 경우에 대해서만 일괄 생성한다.', async () => {
+      // Given
+      const user = new User();
+      user.id = 'user id 1';
+
+      const attendanceId = 'testAttendanceId';
+
+      const attendee1 = createSimpleAttendee('attendee_1', attendanceId, 'user id 1');
+      const attendee2 = createSimpleAttendee('attendee_2', attendanceId, 'user id 1');
+      const attendee3 = createSimpleAttendee('attendee_3', attendanceId, 'user id 1');
+
+      await attendeeRepository.query('DELETE FROM attendee;');
+      const createAttendee_1 = await attendeeRepository.save(attendee1);
+      await attendeeRepository.save([attendee2, attendee3]);
+
+      const record = createRecord(
+        '2024-01-30',
+        DayType.TUESDAY,
+        AttendanceStatus.PRESENT,
+        createAttendee_1.id,
+        user.id,
+      );
+      await recordRepository.save(record);
+
+      const createAllRecordDto = new CreateAllRecordDto();
+      createAllRecordDto.day = DayType.TUESDAY;
+      createAllRecordDto.date = '2024-01-30';
+      createAllRecordDto.status = AttendanceStatus.PRESENT;
+      createAllRecordDto.attendanceId = attendanceId;
+
+      // When
+      const sut = await service.createAll(createAllRecordDto, user);
+
+      // Then
+      expect(sut).toBe(2);
+    });
   });
 
   describe('deleteAll TEST', () => {
