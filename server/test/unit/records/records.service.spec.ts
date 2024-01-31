@@ -16,11 +16,13 @@ import { In, Repository } from 'typeorm';
 import { DeleteRecordDto } from '../../../src/records/dto/delete-record.dto';
 import { createSimpleAttendee } from '../attendee/createSimpleAttendee';
 import { CreateAllRecordDto } from '../../../src/records/dto/createAll-record.dto';
+import { Schedule } from '../../../src/schedules/entities/schedule.entity';
 
 describe('RecordsService', () => {
   let module: TestingModule;
   let service: RecordsService;
   let recordRepository: Repository<Record>;
+  let scheduleRepository: Repository<Schedule>;
   let attendeeRepository;
   let attendanceRepository;
   let userRepository;
@@ -33,6 +35,7 @@ describe('RecordsService', () => {
 
     service = module.get<RecordsService>(RecordsService);
     recordRepository = module.get(getRepositoryToken(Record));
+    scheduleRepository = module.get(getRepositoryToken(Schedule));
     attendeeRepository = module.get(getRepositoryToken(Attendee));
     attendanceRepository = module.get(getRepositoryToken(Attendance));
     userRepository = module.get(getRepositoryToken(User));
@@ -119,7 +122,7 @@ describe('RecordsService', () => {
   });
 
   describe('CreateAll Test', () => {
-    it('선택한 날짜와 선택한 출석부의 모든 출석기록을 일괄 생성한다.', async () => {
+    it('선택한 날짜에 스케쥴이 있는 모든 출석대상의 출석기록을 일괄 생성한다.', async () => {
       // Given
       const user = new User();
       user.id = 'user id 1';
@@ -131,7 +134,106 @@ describe('RecordsService', () => {
       const attendee3 = createSimpleAttendee('attendee_3', attendanceId, 'user id 1');
 
       await attendeeRepository.query('DELETE FROM attendee;');
-      await attendeeRepository.save([attendee1, attendee2, attendee3]);
+      const attendeeIds = await attendeeRepository.save([attendee1, attendee2, attendee3]);
+
+      const schedule1 = createSchedule(attendeeIds[0].id, DayType.TUESDAY, '0930');
+      const schedule2 = createSchedule(attendeeIds[1].id, DayType.TUESDAY, '1210');
+      const schedule3 = createSchedule(attendeeIds[2].id, DayType.TUESDAY, '1500');
+
+      await scheduleRepository.save([schedule1, schedule2, schedule3]);
+
+      const createAllRecordDto = new CreateAllRecordDto();
+      createAllRecordDto.day = DayType.TUESDAY;
+      createAllRecordDto.date = '2024-01-30';
+      createAllRecordDto.status = AttendanceStatus.PRESENT;
+      createAllRecordDto.attendanceId = attendanceId;
+
+      // When
+      const result = await service.createAll(createAllRecordDto, user);
+
+      const sut = await recordRepository.find({
+        where: {
+          attendee: {
+            attendanceId: createAllRecordDto.attendanceId,
+          },
+          date: createAllRecordDto.date,
+        },
+      });
+      // Then
+      expect(sut).toHaveLength(3);
+      sut.map((record) => {
+        expect(record.status).toBe(AttendanceStatus.PRESENT);
+        expect(record.date).toBe('2024-01-30');
+        expect(record.day).toBe(DayType.TUESDAY);
+        expect(record.createId).toBe(user.id);
+      });
+    });
+
+    it('스케쥴이 없는 경우 출석기록이 생성되지 않는다.', async () => {
+      // Given
+      const user = new User();
+      user.id = 'user id 1';
+
+      const attendanceId = 'testAttendanceId';
+
+      const attendee1 = createSimpleAttendee('attendee_1', attendanceId, 'user id 1');
+      const attendee2 = createSimpleAttendee('attendee_2', attendanceId, 'user id 1');
+      const attendee3 = createSimpleAttendee('attendee_3', attendanceId, 'user id 1');
+
+      await attendeeRepository.query('DELETE FROM attendee;');
+      const attendeeIds = await attendeeRepository.save([attendee1, attendee2, attendee3]);
+
+      const schedule1 = createSchedule(attendeeIds[0].id, DayType.MONDAY, '0930');
+      const schedule2 = createSchedule(attendeeIds[1].id, DayType.TUESDAY, '1210');
+      const schedule3 = createSchedule(attendeeIds[2].id, DayType.WEDNESDAY, '1500');
+
+      await scheduleRepository.save([schedule1, schedule2, schedule3]);
+
+      const createAllRecordDto = new CreateAllRecordDto();
+      createAllRecordDto.day = DayType.TUESDAY;
+      createAllRecordDto.date = '2024-01-30';
+      createAllRecordDto.status = AttendanceStatus.PRESENT;
+      createAllRecordDto.attendanceId = attendanceId;
+
+      // When
+      const result = await service.createAll(createAllRecordDto, user);
+
+      const sut = await recordRepository.find({
+        where: {
+          attendee: {
+            attendanceId: createAllRecordDto.attendanceId,
+          },
+          date: createAllRecordDto.date,
+        },
+      });
+
+      // Then
+      expect(sut).toHaveLength(1);
+      expect(sut[0].status).toBe(AttendanceStatus.PRESENT);
+      expect(sut[0].date).toBe('2024-01-30');
+      expect(sut[0].day).toBe(DayType.TUESDAY);
+      expect(sut[0].createId).toBe(user.id);
+    });
+
+    it('선택한 날짜에 스케쥴이 있는 모든 출석대상의 출석기록을 일괄 생성한다.', async () => {
+      // Given
+      const user = new User();
+      user.id = 'user id 1';
+
+      const attendanceId = 'testAttendanceId';
+
+      const attendee1 = createSimpleAttendee('attendee_1', attendanceId, 'user id 1');
+      const attendee2 = createSimpleAttendee('attendee_2', attendanceId, 'user id 1');
+      const attendee3 = createSimpleAttendee('attendee_3', attendanceId, 'user id 1');
+
+      await attendeeRepository.query('DELETE FROM attendee;');
+      const attendeeIds = await attendeeRepository.save([attendee1, attendee2, attendee3]);
+
+      const schedule1 = createSchedule(attendeeIds[0].id, DayType.TUESDAY, '0930');
+      const schedule2 = createSchedule(attendeeIds[1].id, DayType.TUESDAY, '1210');
+      const schedule3 = createSchedule(attendeeIds[2].id, DayType.TUESDAY, '1500');
+
+      await scheduleRepository.save([schedule1, schedule2, schedule3]);
 
       const createAllRecordDto = new CreateAllRecordDto();
       createAllRecordDto.day = DayType.TUESDAY;
@@ -173,8 +275,18 @@ describe('RecordsService', () => {
       const attendee3 = createSimpleAttendee('attendee_3', attendanceId, 'user id 1');
 
       await attendeeRepository.query('DELETE FROM attendee;');
-      const createAttendee_1 = await attendeeRepository.save(attendee1);
-      await attendeeRepository.save([attendee2, attendee3]);
+
+      const [createAttendee_1, createAttendee_2, createAttendee_3] = await attendeeRepository.save([
+        attendee1,
+        attendee2,
+        attendee3,
+      ]);
+
+      const schedule1 = createSchedule(createAttendee_1.id, DayType.TUESDAY, '0930');
+      const schedule2 = createSchedule(createAttendee_2.id, DayType.TUESDAY, '1210');
+      const schedule3 = createSchedule(createAttendee_3.id, DayType.TUESDAY, '1500');
+
+      await scheduleRepository.save([schedule1, schedule2, schedule3]);
 
       const record = createRecord(
         '2024-01-30',
@@ -322,6 +434,7 @@ describe('RecordsService', () => {
 
   async function clear() {
     await recordRepository.query('DELETE FROM record;');
+    await scheduleRepository.query('DELETE FROM schedule;');
     await attendeeRepository.query('DELETE FROM attendee;');
     await attendanceRepository.query('DELETE FROM attendance;');
     await userRepository.query(`DELETE FROM user;`);
@@ -357,4 +470,13 @@ function getDate(date: Date) {
 
   // YYYY-MM-DD 형식으로 변환
   return `${year}-${formattedMonth}-${formattedDay}`;
+}
+
+function createSchedule(attendeeId: string, day: DayType, time: string) {
+  const schedule = new Schedule();
+  schedule.attendeeId = attendeeId;
+  schedule.day = day;
+  schedule.time = time;
+  schedule.createId = 'user id 1';
+  return schedule;
 }
