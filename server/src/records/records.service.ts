@@ -29,14 +29,16 @@ export class RecordsService {
     const result = await this.recordRepository.query(
       `
     INSERT INTO record (attendeeId,status,date,day,createId)
-    SELECT id,?,?,?,?
-    FROM attendee
-    WHERE attendanceId = ? AND deletedAt IS NULL;`,
+    SELECT atd.id,?,?,?,?
+    FROM attendee as atd
+    LEFT JOIN record r ON r.attendeeId = atd.id AND r.date = ?
+    WHERE atd.attendanceId = ? AND atd.deletedAt IS NULL AND r.id IS NULL;`,
       [
         createAllrecordDto.status,
         createAllrecordDto.date,
         createAllrecordDto.day,
         user.id,
+        createAllrecordDto.date,
         createAllrecordDto.attendanceId,
       ],
     );
