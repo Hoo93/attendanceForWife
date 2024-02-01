@@ -18,7 +18,7 @@ import { Record } from './records/entities/record.entity';
 @Module({
   imports: [
     TypeOrmModule.forRoot({
-      ...ormConfigDevelopment,
+      ...ormConfig,
       entities: [User, Role, Attendance, UserAttendance, Schedule, Record],
     }),
     UsersModule,
