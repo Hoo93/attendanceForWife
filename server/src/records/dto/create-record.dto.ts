@@ -2,7 +2,7 @@ import { Column } from 'typeorm';
 import { AttendanceStatus } from '../record-type.enum';
 import { ApiProperty } from '@nestjs/swagger';
 import { DayType } from '../../schedules/const/day-type.enum';
-import { IsDate, IsEnum, IsNotEmpty, IsOptional, IsString, Matches } from 'class-validator';
+import { IsDate, IsDateString, IsEnum, IsNotEmpty, IsOptional, IsString, Matches } from 'class-validator';
 import { Record } from '../entities/record.entity';
 import { Transform } from 'class-transformer';
 
@@ -33,7 +33,7 @@ export class CreateRecordDto {
   })
   attendeeId: string;
 
-  @IsDate()
+  @IsDateString()
   @ApiProperty({
     description: '출석날짜',
     type: 'date',
