@@ -58,7 +58,12 @@ export class RecordsService {
   }
 
   async findByAttendanceId(attendanceId: string, recordFilterDto: RecordFilterDto): Promise<Record[]> {
-    return;
+    return await this.recordRepository
+      .createQueryBuilder('record')
+      .innerJoinAndSelect('record.attendee', 'attendee', 'attendee.attendanceId = :attendanceId', {
+        attendanceId: attendanceId,
+      })
+      .getMany();
   }
 
   update(id: number, updateRecordDto: UpdateRecordDto) {
