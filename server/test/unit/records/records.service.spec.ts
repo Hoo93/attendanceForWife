@@ -17,6 +17,7 @@ import { DeleteRecordDto } from '../../../src/records/dto/delete-record.dto';
 import { createSimpleAttendee } from '../attendee/createSimpleAttendee';
 import { CreateAllRecordDto } from '../../../src/records/dto/createAll-record.dto';
 import { Schedule } from '../../../src/schedules/entities/schedule.entity';
+import { RecordFilterDto } from '../../../src/records/dto/record-filter.dto';
 
 describe('RecordsService', () => {
   let module: TestingModule;
@@ -299,11 +300,7 @@ describe('RecordsService', () => {
 
       await attendeeRepository.query('DELETE FROM attendee;');
 
-      const [createAttendee_1, createAttendee_2, createAttendee_3] = await attendeeRepository.save([
-        attendee1,
-        attendee2,
-        attendee3,
-      ]);
+      const [createAttendee_1, createAttendee_2, createAttendee_3] = await attendeeRepository.save([attendee1, attendee2, attendee3]);
 
       const schedule1 = createSchedule(createAttendee_1.id, DayType.TUESDAY, '0930');
       const schedule2 = createSchedule(createAttendee_2.id, DayType.TUESDAY, '1210');
@@ -311,13 +308,7 @@ describe('RecordsService', () => {
 
       await scheduleRepository.save([schedule1, schedule2, schedule3]);
 
-      const record = createRecord(
-        '2024-01-30',
-        DayType.TUESDAY,
-        AttendanceStatus.PRESENT,
-        createAttendee_1.id,
-        user.id,
-      );
+      const record = createRecord('2024-01-30', DayType.TUESDAY, AttendanceStatus.PRESENT, createAttendee_1.id, user.id);
       await recordRepository.save(record);
 
       const createAllRecordDto = new CreateAllRecordDto();
@@ -331,6 +322,46 @@ describe('RecordsService', () => {
 
       // Then
       expect(sut).toBe(2);
+    });
+  });
+
+  describe('FindByAttendanceId Test', () => {
+    it('attendanceId에 속한 모든 record를 조사한다.', async () => {
+      // Given
+      const user_1 = new User();
+      user_1.id = 'user id 1';
+
+      const targetAttendanceId = 'testAttendanceId';
+
+      const attendee1 = createSimpleAttendee('attendee_1', targetAttendanceId, 'user id 1');
+      const attendee2 = createSimpleAttendee('attendee_2', targetAttendanceId, 'user id 1');
+      const attendee3 = createSimpleAttendee('attendee_3', targetAttendanceId, 'user id 1');
+
+      await attendeeRepository.query('DELETE FROM attendee;');
+      const [createdAttendee1, createdAttendee2, createdAttendee3] = await attendeeRepository.save([attendee1, attendee2, attendee3]);
+
+      const record1_1 = createRecord('2024-01-31', DayType.WEDNESDAY, AttendanceStatus.PRESENT, createdAttendee1.id, user_1.id);
+      const record2_1 = createRecord('2024-01-31', DayType.WEDNESDAY, AttendanceStatus.PRESENT, createdAttendee2.id, user_1.id);
+      const record3_1 = createRecord('2024-01-31', DayType.WEDNESDAY, AttendanceStatus.PRESENT, createdAttendee3.id, user_1.id);
+      const record1_2 = createRecord('2024-02-01', DayType.THURSDAY, AttendanceStatus.PRESENT, createdAttendee1.id, user_1.id);
+      const record2_2 = createRecord('2024-02-01', DayType.THURSDAY, AttendanceStatus.PRESENT, createdAttendee2.id, user_1.id);
+      const record3_2 = createRecord('2024-02-01', DayType.THURSDAY, AttendanceStatus.PRESENT, createdAttendee3.id, user_1.id);
+      const record1_3 = createRecord('2024-02-02', DayType.FRIDAY, AttendanceStatus.PRESENT, createdAttendee1.id, user_1.id);
+      const record2_3 = createRecord('2024-02-02', DayType.FRIDAY, AttendanceStatus.PRESENT, createdAttendee2.id, user_1.id);
+      const record3_3 = createRecord('2024-02-02', DayType.FRIDAY, AttendanceStatus.PRESENT, createdAttendee3.id, user_1.id);
+
+      await recordRepository.save([record1_1, record1_2, record1_3, record2_1, record2_2, record2_3, record3_1, record3_2, record3_3]);
+
+      // When
+      const recordfilterDto = new RecordFilterDto();
+      const sut = await service.findByAttendanceId(targetAttendanceId, recordfilterDto);
+
+      // Then
+      expect(sut).toHaveLength(9);
+      sut.map((result) => {
+        expect(['2024-01-31', '2024-02-01', '2024-02-02']).toContain(result.date);
+        expect([createdAttendee1.id, createdAttendee2.id, createdAttendee3.id]).toContain(result.attendeeId);
+      });
     });
   });
 
@@ -479,6 +510,16 @@ function createRecord(date, day: DayType, status: AttendanceStatus, attendeeId, 
   record.status = status;
   record.attendeeId = attendeeId;
   record.createId = userId;
+  return record;
+}
+
+function createRecordWithUser1(date, day: DayType, status: AttendanceStatus, attendeeId) {
+  const record = new Record();
+  record.date = date;
+  record.day = day;
+  record.status = status;
+  record.attendeeId = attendeeId;
+  record.createId = 'user id 1';
   return record;
 }
 
