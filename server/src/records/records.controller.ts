@@ -1,10 +1,10 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query } from '@nestjs/common';
 import { RecordsService } from './records.service';
 import { CreateRecordDto } from './dto/create-record.dto';
 import { UpdateRecordDto } from './dto/update-record.dto';
 import { User } from '../users/entities/user.entity';
 import { GetUser } from '../common/user.decorator';
-import { ApiBearerAuth, ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Attendee } from '../attendees/entities/attendee.entity';
 import { Record } from './entities/record.entity';
 import { RoleGuard } from '../roles/role.guard';
@@ -15,6 +15,7 @@ import { CreateAttendeeDto } from '../attendees/dto/create-attendee.dto';
 import { DeleteRecordDto } from './dto/delete-record.dto';
 import { DeleteAttendeeDto } from '../attendees/dto/delete-attendee.dto';
 import { CreateAllRecordDto } from './dto/createAll-record.dto';
+import { RecordFilterDto } from './dto/record-filter.dto';
 
 @UseGuards(AuthGuard('jwt'))
 @Controller('records')
@@ -65,16 +66,34 @@ export class RecordsController {
 
   @Get(':id')
   @ApiOperation({
-    description: '출석기록 조회',
-    summary: '출석기록 조회',
+    description: '출석기록 ID로 조회',
+    summary: '출석기록 ID로 조회',
   })
   @ApiResponse({
     status: 200,
-    description: '출석기록 조회',
+    description: '출석기록 ID로 조회',
     type: Record,
   })
   findOne(@Param('id') id: string) {
     return this.recordsService.findOneById(+id);
+  }
+
+  @ApiOperation({
+    description: '출석부에 속한 출석기록 조회',
+    summary: '출석부에 속한 출석기록 조회',
+  })
+  // @ApiParam({
+  //   name: '출석부 조회 필터 DTO',
+  //   type: RecordFilterDto,
+  // })
+  @ApiResponse({
+    status: 200,
+    description: '출석부에 속한 출석기록 조회',
+    type: Array<Record>,
+  })
+  @Get('attendance/:attendanceId')
+  async findByattendanceId(@Param('attendanceId') attendanceId: string, @Query() recordFilterDto: RecordFilterDto) {
+    return this.recordsService.findByAttendanceId(attendanceId, recordFilterDto);
   }
 
   @Delete()

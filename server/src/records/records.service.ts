@@ -8,6 +8,7 @@ import { In, InsertResult, Repository } from 'typeorm';
 import { DeleteRecordDto } from './dto/delete-record.dto';
 import { CreateAllRecordDto } from './dto/createAll-record.dto';
 import { AttendanceStatus } from './record-type.enum';
+import { RecordFilterDto } from './dto/record-filter.dto';
 
 @Injectable()
 export class RecordsService {
@@ -52,8 +53,12 @@ export class RecordsService {
     return result.affectedRows;
   }
 
-  findOneById(id: number) {
+  async findOneById(id: number) {
     return this.recordRepository.findOneBy({ id });
+  }
+
+  async findByAttendanceId(attendanceId: string, recordFilterDto: RecordFilterDto): Promise<Record[]> {
+    return;
   }
 
   update(id: number, updateRecordDto: UpdateRecordDto) {
@@ -73,9 +78,7 @@ export class RecordsService {
     });
 
     if (filteredRecord.length !== deleteRecordDto.ids.length) {
-      throw new BadRequestException(
-        `AttendanceId : ${deleteRecordDto.attendanceId} 에 속한 기록만 삭제할 수 있습니다..`,
-      );
+      throw new BadRequestException(`AttendanceId : ${deleteRecordDto.attendanceId} 에 속한 기록만 삭제할 수 있습니다..`);
     }
 
     await this.recordRepository.softDelete({
