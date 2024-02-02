@@ -76,6 +76,29 @@ describe('RecordsService', () => {
       expect(sut.status).toBe('Present');
     });
 
+    it('출석상태가 지각이 아닌 경우 lateReason이 입력되지 않는다.', async () => {
+      const user = new User();
+      user.id = 'user id 1';
+
+      const attendee = new Attendee();
+      attendee.id = 'Attendee Id 1';
+
+      const recordDto = new CreateRecordDto();
+      recordDto.day = DayType.MONDAY;
+      recordDto.date = '2024-01-15';
+      recordDto.status = AttendanceStatus.PRESENT;
+      recordDto.attendeeId = attendee.id;
+      recordDto.lateReason = '입력이 되지 않을 겁니다.';
+
+      const sut = await service.create(recordDto, user);
+
+      expect(sut.lateReason).toBeNull();
+      expect(sut.attendeeId).toBe('Attendee Id 1');
+      expect(sut.date).toBe('2024-01-15');
+      expect(sut.day).toBe('MONDAY');
+      expect(sut.status).toBe('Present');
+    });
+
     it('출석부 생성 시 createId, createdAt을 기록한다.', async () => {
       // Given
       const user = new User();

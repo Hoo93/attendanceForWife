@@ -18,8 +18,7 @@ export class RoleGuard implements CanActivate {
 
     const request = context.switchToHttp().getRequest();
     const user = request.user;
-    const attendanceId =
-      request.body.attendanceId || request.params.attendanceId; // 출석부 ID를 요청에서 가져옴
+    const attendanceId = request.body.attendanceId || request.params.attendanceId; // 출석부 ID를 요청에서 가져옴
 
     if (!user || !user.userAttendance || user.userAttendance.length === 0) {
       // 사용자가 인증되지 않았거나 역할이 없는 경우 거부
@@ -27,9 +26,7 @@ export class RoleGuard implements CanActivate {
     }
 
     // 사용자의 출석부 중 attendanceId와 일치하는 출석부가 있는지 검증
-    const userRoleForAttendance = user.userAttendance.filter(
-      (data) => data.attendanceId === attendanceId,
-    );
+    const userRoleForAttendance = user.userAttendance.filter((data) => data.attendanceId === attendanceId);
 
     if (userRoleForAttendance.length === 0) {
       // 사용자가 해당 출석부에 대한 역할이 없는 경우 거부
