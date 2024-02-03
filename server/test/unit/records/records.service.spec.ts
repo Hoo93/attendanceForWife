@@ -77,6 +77,23 @@ describe('RecordsService', () => {
       expect(sut.status).toBe('Present');
     });
 
+    it('입력한 date의 실제 요일이 입력한 day가 아닌 경우 오류를 발생시킨다.', async () => {
+      // Given
+      const user = new User();
+      user.id = 'user id 1';
+
+      const attendee = new Attendee();
+      attendee.id = 'Attendee Id 1';
+
+      // 실제 2024-01-15는 월요일
+      const recordDto = createRecordDto('2024-01-15', DayType.FRIDAY, AttendanceStatus.PRESENT, attendee.id);
+
+      // When / Then
+      expect(async () => {
+        await service.create(recordDto, user);
+      }).rejects.toThrowError();
+    });
+
     it('출석상태가 지각이 아닌 경우 lateReason이 입력되지 않는다.', async () => {
       const user = new User();
       user.id = 'user id 1';
