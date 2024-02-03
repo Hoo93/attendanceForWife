@@ -419,6 +419,48 @@ describe('RecordsService', () => {
     });
   });
 
+  describe('FindByAttendanceId RecordFilterDto Test', () => {
+    it('recordFilterDto의 date에 속한 record만 조회한다.', async () => {
+      // Given
+      const user_1 = new User();
+      user_1.id = 'user id 1';
+
+      const targetAttendanceId = 'testAttendanceId';
+
+      const attendee1 = createSimpleAttendee('attendee_1', targetAttendanceId, 'user id 1');
+      const attendee2 = createSimpleAttendee('attendee_2', targetAttendanceId, 'user id 1');
+      const attendee3 = createSimpleAttendee('attendee_3', targetAttendanceId, 'user id 1');
+
+      await attendeeRepository.query('DELETE FROM attendee;');
+      const [createdAttendee1, createdAttendee2, createdAttendee3] = await attendeeRepository.save([attendee1, attendee2, attendee3]);
+
+      const record1_1 = createRecord('2024-01-31', DayType.WEDNESDAY, AttendanceStatus.PRESENT, createdAttendee1.id, user_1.id);
+      const record2_1 = createRecord('2024-01-31', DayType.WEDNESDAY, AttendanceStatus.PRESENT, createdAttendee2.id, user_1.id);
+      const record3_1 = createRecord('2024-01-31', DayType.WEDNESDAY, AttendanceStatus.PRESENT, createdAttendee3.id, user_1.id);
+      const record1_2 = createRecord('2024-02-01', DayType.THURSDAY, AttendanceStatus.PRESENT, createdAttendee1.id, user_1.id);
+      const record2_2 = createRecord('2024-02-01', DayType.THURSDAY, AttendanceStatus.PRESENT, createdAttendee2.id, user_1.id);
+      const record3_2 = createRecord('2024-02-01', DayType.THURSDAY, AttendanceStatus.PRESENT, createdAttendee3.id, user_1.id);
+      const record1_3 = createRecord('2024-02-02', DayType.FRIDAY, AttendanceStatus.PRESENT, createdAttendee1.id, user_1.id);
+      const record2_3 = createRecord('2024-02-02', DayType.FRIDAY, AttendanceStatus.PRESENT, createdAttendee2.id, user_1.id);
+      const record3_3 = createRecord('2024-02-02', DayType.FRIDAY, AttendanceStatus.PRESENT, createdAttendee3.id, user_1.id);
+
+      await recordRepository.save([record1_1, record1_2, record1_3, record2_1, record2_2, record2_3, record3_1, record3_2, record3_3]);
+
+      const recordfilterDto = new RecordFilterDto();
+      recordfilterDto.date = '2024-01-31';
+
+      // When
+      const sut = await service.findByAttendanceId(targetAttendanceId, recordfilterDto);
+
+      // Then
+      expect(sut).toHaveLength(3);
+      sut.map((result) => {
+        expect(result.date).toBe('2024-01-31');
+        expect([createdAttendee1.id, createdAttendee2.id, createdAttendee3.id]).toContain(result.attendeeId);
+      });
+    });
+  });
+
   describe('deleteAll TEST', () => {
     it('배열에 입력한 모든 출석기록을 soft delete 한다.', async () => {
       // Given
