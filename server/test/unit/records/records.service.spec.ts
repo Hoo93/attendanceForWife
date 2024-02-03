@@ -91,7 +91,7 @@ describe('RecordsService', () => {
       // When / Then
       expect(async () => {
         await service.create(recordDto, user);
-      }).rejects.toThrowError();
+      }).rejects.toThrowError('요일이 정확하지 않습니다.');
     });
 
     it('출석상태가 지각이 아닌 경우 lateReason이 입력되지 않는다.', async () => {

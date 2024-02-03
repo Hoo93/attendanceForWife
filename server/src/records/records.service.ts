@@ -9,6 +9,7 @@ import { DeleteRecordDto } from './dto/delete-record.dto';
 import { CreateAllRecordDto } from './dto/createAll-record.dto';
 import { AttendanceStatus } from './record-type.enum';
 import { RecordFilterDto } from './dto/record-filter.dto';
+import { NumberToDayString } from './numberToDayString';
 
 @Injectable()
 export class RecordsService {
@@ -18,6 +19,12 @@ export class RecordsService {
   ) {}
   async create(createRecordDto: CreateRecordDto, user: User) {
     const record = createRecordDto.toEntity(user.id);
+
+    const realDay = NumberToDayString[new Date(record.date).getDay()];
+
+    if (record.day !== realDay.toUpperCase()) {
+      throw new BadRequestException('요일이 정확하지 않습니다.');
+    }
 
     if (record.status !== AttendanceStatus.ABSENT) {
       delete record.lateReason;
@@ -31,7 +38,7 @@ export class RecordsService {
     return this.findOneById(result.raw?.insertId);
   }
 
-  async createAll(createAllrecordDto: CreateAllRecordDto, user: User): Promise<number> {
+  async createAll(createAllRecordDto: CreateAllRecordDto, user: User): Promise<number> {
     const result = await this.recordRepository.query(
       `
     INSERT INTO record (attendeeId,status,date,day,createId)
@@ -41,13 +48,13 @@ export class RecordsService {
     LEFT JOIN schedule s ON s.attendeeId = atd.id AND s.day = ?
     WHERE atd.attendanceId = ? AND atd.deletedAt IS NULL AND r.id IS NULL AND s.id IS NOT NULL;`,
       [
-        createAllrecordDto.status,
-        createAllrecordDto.date,
-        createAllrecordDto.day,
+        createAllRecordDto.status,
+        createAllRecordDto.date,
+        createAllRecordDto.day,
         user.id,
-        createAllrecordDto.date,
-        createAllrecordDto.day,
-        createAllrecordDto.attendanceId,
+        createAllRecordDto.date,
+        createAllRecordDto.day,
+        createAllRecordDto.attendanceId,
       ],
     );
     return result.affectedRows;
