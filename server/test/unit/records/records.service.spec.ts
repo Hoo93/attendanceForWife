@@ -370,8 +370,8 @@ describe('RecordsService', () => {
       await recordRepository.save([record1_1, record1_2, record1_3, record2_1, record2_2, record2_3, record3_1, record3_2, record3_3]);
 
       // When
-      const recordfilterDto = new RecordFilterDto();
-      const sut = await service.findByAttendanceId(targetAttendanceId, recordfilterDto);
+      const recordFilterDto = new RecordFilterDto();
+      const sut = await service.findByAttendanceId(targetAttendanceId, recordFilterDto);
 
       // Then
       expect(sut).toHaveLength(9);
@@ -408,8 +408,8 @@ describe('RecordsService', () => {
       await recordRepository.save([record1_1, record1_2, record1_3, record2_1, record2_2, record2_3, record3_1, record3_2, record3_3]);
 
       // When
-      const recordfilterDto = new RecordFilterDto();
-      const sut = await service.findByAttendanceId(targetAttendanceId, recordfilterDto);
+      const recordFilterDto = new RecordFilterDto();
+      const sut = await service.findByAttendanceId(targetAttendanceId, recordFilterDto);
 
       // Then
       expect(sut).toHaveLength(6);
@@ -446,11 +446,11 @@ describe('RecordsService', () => {
 
       await recordRepository.save([record1_1, record1_2, record1_3, record2_1, record2_2, record2_3, record3_1, record3_2, record3_3]);
 
-      const recordfilterDto = new RecordFilterDto();
-      recordfilterDto.date = '2024-01-31';
+      const recordFilterDto = new RecordFilterDto();
+      recordFilterDto.date = '2024-01-31';
 
       // When
-      const sut = await service.findByAttendanceId(targetAttendanceId, recordfilterDto);
+      const sut = await service.findByAttendanceId(targetAttendanceId, recordFilterDto);
 
       // Then
       expect(sut).toHaveLength(3);
@@ -486,11 +486,11 @@ describe('RecordsService', () => {
 
       await recordRepository.save([record1_1, record1_2, record1_3, record2_1, record2_2, record2_3, record3_1, record3_2, record3_3]);
 
-      const recordfilterDto = new RecordFilterDto();
-      recordfilterDto.day = DayType.WEDNESDAY;
+      const recordFilterDto = new RecordFilterDto();
+      recordFilterDto.day = DayType.WEDNESDAY;
 
       // When
-      const sut = await service.findByAttendanceId(targetAttendanceId, recordfilterDto);
+      const sut = await service.findByAttendanceId(targetAttendanceId, recordFilterDto);
 
       // Then
       expect(sut).toHaveLength(3);
@@ -526,11 +526,11 @@ describe('RecordsService', () => {
 
       await recordRepository.save([record1_1, record1_2, record1_3, record2_1, record2_2, record2_3, record3_1, record3_2, record3_3]);
 
-      const recordfilterDto = new RecordFilterDto();
-      recordfilterDto.status = AttendanceStatus.PRESENT;
+      const recordFilterDto = new RecordFilterDto();
+      recordFilterDto.status = AttendanceStatus.PRESENT;
 
       // When
-      const sut = await service.findByAttendanceId(targetAttendanceId, recordfilterDto);
+      const sut = await service.findByAttendanceId(targetAttendanceId, recordFilterDto);
 
       // Then
       expect(sut).toHaveLength(3);

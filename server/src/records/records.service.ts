@@ -78,6 +78,10 @@ export class RecordsService {
     if (recordFilterDto.day) {
       queryBuilder.andWhere({ day: recordFilterDto.day });
     }
+
+    if (recordFilterDto.status) {
+      queryBuilder.andWhere({ status: recordFilterDto.status });
+    }
     return queryBuilder.getMany();
   }
 
