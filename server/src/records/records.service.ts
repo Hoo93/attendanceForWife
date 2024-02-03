@@ -75,6 +75,9 @@ export class RecordsService {
       queryBuilder.andWhere({ date: recordFilterDto.date });
     }
 
+    if (recordFilterDto.day) {
+      queryBuilder.andWhere({ day: recordFilterDto.day });
+    }
     return queryBuilder.getMany();
   }
 
