@@ -83,7 +83,10 @@ export class RecordsService {
       queryBuilder.andWhere({ status: recordFilterDto.status });
     }
 
+    // Pagination
     queryBuilder.take(recordFilterDto.take);
+    queryBuilder.skip(recordFilterDto.skip);
+
     return queryBuilder.getMany();
   }
 
