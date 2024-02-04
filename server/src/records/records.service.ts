@@ -82,6 +82,8 @@ export class RecordsService {
     if (recordFilterDto.status) {
       queryBuilder.andWhere({ status: recordFilterDto.status });
     }
+
+    queryBuilder.take(recordFilterDto.take);
     return queryBuilder.getMany();
   }
 
