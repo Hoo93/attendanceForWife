@@ -1,12 +1,16 @@
-import { ExceptionFilter, Catch, ArgumentsHost, HttpException, HttpStatus } from '@nestjs/common';
+import { ExceptionFilter, Catch, ArgumentsHost, HttpException, HttpStatus, ConsoleLogger } from '@nestjs/common';
 import { HttpAdapterHost } from '@nestjs/core';
 import { ErrorReponse } from './error-reponse';
+import * as http from 'http';
 
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
-  constructor(private readonly httpAdapterHost: HttpAdapterHost) {}
+  constructor(
+    private readonly httpAdapterHost: HttpAdapterHost,
+    private readonly logger: ConsoleLogger,
+  ) {}
 
-  catch(exception: unknown, host: ArgumentsHost): void {
+  catch(exception: any, host: ArgumentsHost): void {
     // In certain situations `httpAdapter` might not be available in the
     // constructor method, thus we should resolve it here.
     const { httpAdapter } = this.httpAdapterHost;
@@ -19,7 +23,10 @@ export class AllExceptionsFilter implements ExceptionFilter {
     errorResponse.type = exception?.name;
     errorResponse.path = httpAdapter.getRequestUrl(ctx.getRequest());
     errorResponse.timestamp = new Date().toLocaleString();
-    errorResponse.message = typeof exception === 'string' ? exception : exception?.message;
+    errorResponse.message = typeof exception === 'string' ? exception : exception.response?.message;
+    errorResponse.statusCode = exception.status;
+
+    this.logger.error(errorResponse.message, exception.stack, errorResponse.path);
 
     httpAdapter.reply(ctx.getResponse(), errorResponse, httpStatus);
   }
