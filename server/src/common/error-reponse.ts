@@ -3,4 +3,5 @@ export class ErrorReponse {
   path: string;
   message: string;
   timestamp: string;
+  statusCode: number;
 }
