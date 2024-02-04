@@ -689,29 +689,6 @@ function createRecord(date, day: DayType, status: AttendanceStatus, attendeeId, 
   return record;
 }
 
-function createRecordWithUser1(date, day: DayType, status: AttendanceStatus, attendeeId) {
-  const record = new Record();
-  record.date = date;
-  record.day = day;
-  record.status = status;
-  record.attendeeId = attendeeId;
-  record.createId = 'user id 1';
-  return record;
-}
-
-function getDate(date: Date) {
-  const year = date.getFullYear();
-  const month = date.getMonth() + 1;
-  const day = date.getDay();
-
-  // 한 자리수 월과 일에 선행하는 0 추가
-  const formattedMonth = month < 10 ? `0${month}` : month;
-  const formattedDay = day < 10 ? `0${day}` : day;
-
-  // YYYY-MM-DD 형식으로 변환
-  return `${year}-${formattedMonth}-${formattedDay}`;
-}
-
 function createSchedule(attendeeId: string, day: DayType, time: string) {
   const schedule = new Schedule();
   schedule.attendeeId = attendeeId;
