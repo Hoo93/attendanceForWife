@@ -27,7 +27,7 @@ export class ExcelService {
     return mappedData;
   }
 
-  async exportMembersToExcel(exportData: Array<any>, dbToHeaderMapper: { [key: string]: string }): Promise<Buffer> {
+  async exportDataToExcel(exportData: Array<any>, dbToHeaderMapper: { [key: string]: string }): Promise<Buffer> {
     // 데이터베이스에서 조회한 데이터를 매핑 정보를 기반으로 변환
     const dataForExcel = exportData.map((member) => {
       const mappedData = {};
