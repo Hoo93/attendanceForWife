@@ -1,0 +1,44 @@
+{
+  "name": "portfolio",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev && npx prisma studio",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.11.3",
+    "@emotion/styled": "^11.11.0",
+    "@mui/icons-material": "^5.15.5",
+    "@mui/lab": "^5.0.0-alpha.161",
+    "@mui/material": "^5.15.3",
+    "@mui/styled-engine-sc": "^6.0.0-alpha.11",
+    "@mui/x-date-pickers": "^6.19.0",
+    "@prisma/client": "^5.8.1",
+    "@tanstack/react-query": "^4.36.1",
+    "@tanstack/react-query-devtools": "^5.18.0",
+    "@tanstack/react-query-next-experimental": "^5.18.0",
+    "@types/node": "20.10.7",
+    "@types/react": "18.2.47",
+    "@types/react-dom": "18.2.18",
+    "axios": "^1.6.7",
+    "babel-plugin-styled-components": "^2.1.4",
+    "body-parser": "^1.20.2",
+    "dayjs": "^1.11.10",
+    "eslint": "8.56.0",
+    "eslint-config-next": "14.0.4",
+    "next": "14.0.4",
+    "next-connect": "^1.0.0",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "react-query": "^3.39.3",
+    "sqlite3": "^5.1.7",
+    "styled-components": "^6.1.8",
+    "typescript": "5.3.3"
+  },
+  "devDependencies": {
+    "prisma": "^5.8.1"
+  }
+}

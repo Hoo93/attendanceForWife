@@ -3,29 +3,26 @@
 // Component
 import { Box, Button } from "@mui/material";
 
-import BasicTable from "@/app/components/Table";
+import CommonTable from "@/app/components/Table";
+import axios from "axios";
 // libraries
-import { useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-// Hook
-import useUser from "@/app/hooks/useUser";
-
-const mainStyle = { 
-  width: "800px",
-  display: "flex",
-  justifyContent: "space-around",
-  flexDirection: "column",
-}
 
 const index = () => {
   const router = useRouter();
-  // state
-  const { infoList, fetchInfoList } = useUser();
+  // const { infoList, fetchInfoList } = useUser(); <- react query로 인한 주석
 
-  // Hook
-  useEffect(() => {
-    fetchInfoList();
-  }, []);
+  const { isLoading, data, isError } = useQuery({
+    queryKey: ["get-user"],
+    queryFn: async () => {
+      const response = await axios.get("http://localhost:3000/api/users");
+      return response?.data.result;
+    },
+  });
+
+  if (isLoading) return <>Loading...</>;
+  if (isError) return <>에러..</>;
 
   return (
     <div
@@ -36,26 +33,17 @@ const index = () => {
         flexDirection: "column",
       }}
     >
-      <BasicTable infoList={infoList} />
+      <CommonTable infoList={data} />
       <Box mt={2}>
         <Button
           variant="contained"
           color="primary"
           style={{ marginRight: 8 }}
           onClick={() => {
-            router.push("/main/create");
+            router.push("/attendancy/create");
           }}
         >
           회원 생성
-        </Button>
-        <Button
-          variant="contained"
-          color="error"
-          onClick={() => {
-            fetchInfoList();
-          }}
-        >
-          새로고침
         </Button>
       </Box>
     </div>
