@@ -10,12 +10,14 @@ import { CreateAllRecordDto } from './dto/createAll-record.dto';
 import { AttendanceStatus } from './record-type.enum';
 import { RecordFilterDto } from './dto/record-filter.dto';
 import { NumberToDayString } from './numberToDayString';
+import { ExcelService } from '../common/excel.service';
 
 @Injectable()
 export class RecordsService {
   constructor(
     @InjectRepository(Record)
     private recordRepository: Repository<Record>,
+    private excelService: ExcelService,
   ) {}
   async create(createRecordDto: CreateRecordDto, user: User) {
     const record = createRecordDto.toEntity(user.id);
@@ -114,5 +116,19 @@ export class RecordsService {
       id: In(deleteRecordDto.ids),
     });
     return;
+  }
+
+  async excelDownload(attendanceId: string, recordFilterDto: RecordFilterDto) {
+    const rawData = await this.findByAttendanceId(attendanceId, recordFilterDto);
+
+    const dataToDbMapper = {};
+    dataToDbMapper['name'] = '회원이름';
+    dataToDbMapper['age'] = '나이';
+    dataToDbMapper['day'] = '요일';
+    dataToDbMapper['date'] = '날짜';
+    dataToDbMapper['status'] = '출석상태';
+
+    const excelBuffer = this.excelService.exportDataToExcel(rawData, dataToDbMapper);
+    return excelBuffer;
   }
 }
