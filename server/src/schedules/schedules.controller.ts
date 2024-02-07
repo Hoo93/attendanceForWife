@@ -1,27 +1,11 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-  UseGuards,
-  Query,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query } from '@nestjs/common';
 import { SchedulesService } from './schedules.service';
 import { CreateScheduleDto } from './dto/create-schedule.dto';
 import { UpdateScheduleDto } from './dto/update-schedule.dto';
 import { GetUser } from '../common/user.decorator';
 import { User } from '../users/entities/user.entity';
 import { AuthGuard } from '@nestjs/passport';
-import {
-  ApiBearerAuth,
-  ApiBody,
-  ApiOperation,
-  ApiResponse,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Attendee } from '../attendees/entities/attendee.entity';
 import { CreateAttendeeDto } from '../attendees/dto/create-attendee.dto';
 import { Schedule } from './entities/schedule.entity';
@@ -50,16 +34,6 @@ export class SchedulesController {
     return this.schedulesService.create(createScheduleDto, user);
   }
 
-  @Get()
-  findAll() {
-    return this.schedulesService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.schedulesService.findOne(+id);
-  }
-
   @Get('/attendee/:attendeeId')
   @ApiOperation({ summary: '출석대상의 스케쥴 조회' })
   @ApiResponse({
@@ -67,9 +41,7 @@ export class SchedulesController {
     description: '출석대상의 스케쥴 조회',
     type: Array<Schedule>,
   })
-  findByAttendeeId(
-    @Param('attendeeId') attendeeId: string,
-  ): Promise<Schedule[]> {
+  findByAttendeeId(@Param('attendeeId') attendeeId: string): Promise<Schedule[]> {
     return this.schedulesService.findByAttendeeId(attendeeId);
   }
 
@@ -80,20 +52,9 @@ export class SchedulesController {
     description: '출석부에 속한 모든 스케쥴 조회',
     type: Array<Schedule>,
   })
-  findByAttendanceId(
-    @Param('attendanceId') attendanceId: string,
-    @Query() scheduleFilterDto: ScheduleFilterDto,
-  ): Promise<Schedule[]> {
+  findByAttendanceId(@Param('attendanceId') attendanceId: string, @Query() scheduleFilterDto: ScheduleFilterDto): Promise<Schedule[]> {
     console.log(scheduleFilterDto);
     return this.schedulesService.findByAttendanceId(attendanceId);
-  }
-
-  @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateScheduleDto: UpdateScheduleDto,
-  ) {
-    return this.schedulesService.update(+id, updateScheduleDto);
   }
 
   @Delete()

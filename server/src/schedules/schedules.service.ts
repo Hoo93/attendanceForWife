@@ -19,10 +19,7 @@ export class SchedulesService {
     private scheduleRepository: Repository<Schedule>,
   ) {}
 
-  async create(
-    createScheduleDto: CreateScheduleDto,
-    user: User,
-  ): Promise<Schedule> {
+  async create(createScheduleDto: CreateScheduleDto, user: User): Promise<Schedule> {
     const schedule = createScheduleDto.toEntity(user.id);
 
     if (!this.verifyAttendTime(schedule.time)) {
@@ -31,10 +28,6 @@ export class SchedulesService {
     const createdSchedule = await this.scheduleRepository.save(schedule);
 
     return createdSchedule;
-  }
-
-  findAll() {
-    return `This action returns all schedules`;
   }
 
   async findByAttendeeId(attendeeId: string): Promise<Schedule[]> {
@@ -59,18 +52,6 @@ export class SchedulesService {
         },
       },
     });
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} schedule`;
-  }
-
-  update(id: number, updateScheduleDto: UpdateScheduleDto) {
-    return `This action updates a #${id} schedule`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} schedule`;
   }
 
   async deleteAll(deleteScheduleDto: DeleteScheduleDto) {
