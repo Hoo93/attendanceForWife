@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query, Res, Response } from '@nestjs/common';
 import { RecordsService } from './records.service';
 import { CreateRecordDto } from './dto/create-record.dto';
 import { UpdateRecordDto } from './dto/update-record.dto';
@@ -78,22 +78,36 @@ export class RecordsController {
     return this.recordsService.findOneById(+id);
   }
 
+  @Get('attendance/:attendanceId')
   @ApiOperation({
     description: '출석부에 속한 출석기록 조회',
     summary: '출석부에 속한 출석기록 조회',
   })
-  // @ApiParam({
-  //   name: '출석부 조회 필터 DTO',
-  //   type: RecordFilterDto,
-  // })
   @ApiResponse({
     status: 200,
     description: '출석부에 속한 출석기록 조회',
     type: Array<Record>,
   })
-  @Get('attendance/:attendanceId')
   async findByattendanceId(@Param('attendanceId') attendanceId: string, @Query() recordFilterDto: RecordFilterDto) {
     return this.recordsService.findByAttendanceId(attendanceId, recordFilterDto);
+  }
+
+  @Get('attendance/:attendanceId/excel')
+  @ApiOperation({
+    description: '출석부에 속한 출석기록 엑셀 다운로드',
+    summary: '출석부에 속한 출석기록 엑셀 다운로드',
+  })
+  @ApiResponse({
+    status: 200,
+    description: '출석부에 속한 출석기록 엑셀 다운로드',
+  })
+  async downloadMemberExcel(@Response() res, @Param('attendanceId') attendanceId: string, @Query() recordFilterDto: RecordFilterDto) {
+    const buffer = await this.recordsService.excelDownload(attendanceId, recordFilterDto);
+    res.set({
+      'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      'Content-Disposition': 'attachment; filename="Members.xlsx"',
+    });
+    res.end(buffer);
   }
 
   @Delete()
