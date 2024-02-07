@@ -4,7 +4,7 @@ import { UpdateRecordDto } from './dto/update-record.dto';
 import { User } from '../users/entities/user.entity';
 import { Record } from './entities/record.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { In, InsertResult, Repository } from 'typeorm';
+import { In, InsertResult, Repository, SelectQueryBuilder } from 'typeorm';
 import { DeleteRecordDto } from './dto/delete-record.dto';
 import { CreateAllRecordDto } from './dto/createAll-record.dto';
 import { AttendanceStatus } from './record-type.enum';
@@ -67,7 +67,8 @@ export class RecordsService {
   }
 
   async findByAttendanceId(attendanceId: string, recordFilterDto: RecordFilterDto): Promise<Record[]> {
-    const queryBuilder = await this.recordRepository
+    let queryBuilder: SelectQueryBuilder<Record>;
+    queryBuilder = this.recordRepository
       .createQueryBuilder('record')
       .innerJoinAndSelect('record.attendee', 'attendee', 'attendee.attendanceId = :attendanceId', {
         attendanceId: attendanceId,
@@ -90,6 +91,34 @@ export class RecordsService {
     queryBuilder.skip(recordFilterDto.skip);
 
     return queryBuilder.getMany();
+  }
+
+  async findByAttendanceIdForExcel(attendanceId: string, recordFilterDto: RecordFilterDto): Promise<Record[]> {
+    let queryBuilder: SelectQueryBuilder<Record>;
+    queryBuilder = this.recordRepository
+      .createQueryBuilder('record')
+      .innerJoinAndSelect('record.attendee', 'attendee', 'attendee.attendanceId = :attendanceId', {
+        attendanceId: attendanceId,
+      })
+      .select('record')
+      .addSelect('attendee.name')
+      .addSelect('attendee.age');
+
+    if (recordFilterDto.date) {
+      queryBuilder.andWhere({ date: recordFilterDto.date });
+    }
+
+    if (recordFilterDto.day) {
+      queryBuilder.andWhere({ day: recordFilterDto.day });
+    }
+
+    if (recordFilterDto.status) {
+      queryBuilder.andWhere({ status: recordFilterDto.status });
+    }
+
+    queryBuilder.orderBy('attendee_name', 'ASC');
+
+    return queryBuilder.getRawMany();
   }
 
   update(id: number, updateRecordDto: UpdateRecordDto) {
@@ -119,14 +148,15 @@ export class RecordsService {
   }
 
   async excelDownload(attendanceId: string, recordFilterDto: RecordFilterDto) {
-    const rawData = await this.findByAttendanceId(attendanceId, recordFilterDto);
+    const rawData = await this.findByAttendanceIdForExcel(attendanceId, recordFilterDto);
 
     const dataToDbMapper = {};
-    dataToDbMapper['name'] = '회원이름';
-    dataToDbMapper['age'] = '나이';
-    dataToDbMapper['day'] = '요일';
-    dataToDbMapper['date'] = '날짜';
-    dataToDbMapper['status'] = '출석상태';
+
+    dataToDbMapper['attendee_name'] = '회원이름';
+    dataToDbMapper['attendee_age'] = '나이';
+    dataToDbMapper['record_day'] = '요일';
+    dataToDbMapper['record_date'] = '날짜';
+    dataToDbMapper['record_status'] = '출석상태';
 
     const excelBuffer = this.excelService.exportDataToExcel(rawData, dataToDbMapper);
     return excelBuffer;
