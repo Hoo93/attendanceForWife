@@ -34,7 +34,7 @@ export const ormConfigTest: TypeOrmModuleOptions = {
   host: 'localhost',
   username: 'root',
   password: 'test',
-  database: 'sys',
+  database: 'attendanceTest',
   synchronize: true,
   logging: true,
   poolSize: 10,
