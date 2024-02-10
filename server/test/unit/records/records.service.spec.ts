@@ -18,6 +18,7 @@ import { createSimpleAttendee } from '../attendee/createSimpleAttendee';
 import { CreateAllRecordDto } from '../../../src/records/dto/createAll-record.dto';
 import { Schedule } from '../../../src/schedules/entities/schedule.entity';
 import { RecordFilterDto } from '../../../src/records/dto/record-filter.dto';
+import { ExcelService } from '../../../src/common/excel.service';
 
 describe('RecordsService', () => {
   let module: TestingModule;
@@ -31,7 +32,7 @@ describe('RecordsService', () => {
   beforeAll(async () => {
     module = await Test.createTestingModule({
       imports: [TestModule, TypeOrmModule.forFeature([Record])],
-      providers: [RecordsService],
+      providers: [RecordsService, ExcelService],
     }).compile();
 
     service = module.get<RecordsService>(RecordsService);
