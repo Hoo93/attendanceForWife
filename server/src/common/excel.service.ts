@@ -3,7 +3,7 @@ import * as XLSX from 'xlsx';
 
 @Injectable()
 export class ExcelService {
-  async extractDataFromExcel(fileBuffer: Buffer, headerToDbMapper: { [key: string]: string }): Promise<any[]> {
+  extractDataFromExcel(fileBuffer: Buffer, headerToDbMapper: { [key: string]: string }) {
     const workbook = XLSX.read(fileBuffer, { type: 'buffer' });
     const sheetName = workbook.SheetNames[0];
     const worksheet = workbook.Sheets[sheetName];
