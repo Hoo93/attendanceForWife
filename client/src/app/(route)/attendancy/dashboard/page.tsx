@@ -107,7 +107,13 @@ const index = () => {
         <Button variant="contained" color="primary" onClick={() => {}}>
           출석 통계
         </Button>
-        <Button variant="contained" color="primary" onClick={() => {}}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => {
+            router.push("/attendancy/roaster-management");
+          }}
+        >
           명단 관리
         </Button>
         <Button

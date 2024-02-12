@@ -1,6 +1,6 @@
 "use client";
 import { Box, Grid, TextField, Button } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 
 export interface Login {
@@ -25,9 +25,14 @@ const index = () => {
   };
 
   return (
-    <div style={{ width: "500px" }}>
-      <Box alignContent={"center"}>
+    <>
+      <Box>
         <Grid container spacing={1} alignItems={"center"}>
+          <Grid item xs={12} textAlign={"center"} marginBottom={"20px"}>
+            <Button fullWidth variant="contained">
+              출석이 로그인
+            </Button>
+          </Grid>
           <Grid item xs={5}>
             <div>ID</div>
           </Grid>
@@ -59,6 +64,7 @@ const index = () => {
             color="primary"
             onClick={() => {
               alert("로그인 되었습니다");
+              router.push("/attendancy/list");
             }}
           >
             로그인
@@ -74,7 +80,7 @@ const index = () => {
           </Button>
         </Box>
       </Box>
-    </div>
+    </>
   );
 };
 

@@ -1,4 +1,4 @@
-import AddIcon from '@mui/icons-material/Add';
+import AddIcon from "@mui/icons-material/Add";
 import Paper from "@mui/material/Paper";
 // Libraries
 import React from "react";
@@ -21,14 +21,16 @@ interface Info {
 
 interface CommonTableProps {
   infoList: Info[];
-  isCreate:boolean;
+  isCreate: boolean;
   setIsCreate: React.Dispatch<React.SetStateAction<boolean>>;
-  // or void
 }
 
-const CommonTable: React.FC<CommonTableProps> = ({ infoList, isCreate, setIsCreate }) => {
+const CommonTable: React.FC<CommonTableProps> = ({
+  infoList,
+  isCreate,
+  setIsCreate,
+}) => {
   const router = useRouter();
-
 
   return (
     <TableContainer component={Paper}>
@@ -53,44 +55,68 @@ const CommonTable: React.FC<CommonTableProps> = ({ infoList, isCreate, setIsCrea
                 router.push(`/attendancy/list/${item.id}`);
               }}
             >
-              <TableCell  component="th" scope="row">
+              <TableCell component="th" scope="row">
                 {item.id}
               </TableCell>
-              <TableCell  component="th" scope="row">
+              <TableCell component="th" scope="row">
                 {item.name}
               </TableCell>
-              <TableCell >{item.email}</TableCell>
-              <TableCell >{item.password}</TableCell>
-              <TableCell >비고</TableCell>
+              <TableCell>{item.email}</TableCell>
+              <TableCell>{item.password}</TableCell>
+              <TableCell>비고</TableCell>
             </TableRow>
           ))}
-          <TableRow     
-              sx={{ "&:last-child td, &:last-child th": { border: 0 } }}   
-              style={{ cursor: "pointer" }}
+          <TableRow
+            sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+            style={{ cursor: "pointer" }}
           >
-            {isCreate ? 
-            <>
-              <TableCell  component="th" scope="row">
-                <TextField id="outlined-basic" label="이름" variant="outlined" />
-              </TableCell>
-                <TableCell  component="th" scope="row">
-              <TextField id="outlined-basic" label="출석 상태" variant="outlined" />
+            {isCreate ? (
+              <>
+                <TableCell component="th" scope="row">
+                  <TextField
+                    id="outlined-basic"
+                    label="이름"
+                    variant="outlined"
+                  />
                 </TableCell>
-              <TableCell  component="th" scope="row">
-                <TextField id="outlined-basic" label="지각" variant="outlined" />
+                <TableCell component="th" scope="row">
+                  <TextField
+                    id="outlined-basic"
+                    label="출석 상태"
+                    variant="outlined"
+                  />
+                </TableCell>
+                <TableCell component="th" scope="row">
+                  <TextField
+                    id="outlined-basic"
+                    label="지각"
+                    variant="outlined"
+                  />
+                </TableCell>
+                <TableCell component="th" scope="row">
+                  <TextField
+                    id="outlined-basic"
+                    label="등원시간"
+                    variant="outlined"
+                  />
+                </TableCell>
+                <TableCell component="th" scope="row">
+                  <TextField
+                    id="outlined-basic"
+                    label="비고"
+                    variant="outlined"
+                  />
+                </TableCell>
+              </>
+            ) : (
+              <TableCell
+                component="th"
+                style={{ display: "flex", alignItems: "center", gap: "10px" }}
+                onClick={() => setIsCreate(true)}
+              >
+                <AddIcon /> <p>생성</p>
               </TableCell>
-              <TableCell  component="th" scope="row">
-                <TextField id="outlined-basic" label="등원시간" variant="outlined" />
-              </TableCell>
-              <TableCell  component="th" scope="row">
-                <TextField id="outlined-basic" label="비고" variant="outlined" />
-              </TableCell>
-            </> 
-           :     <TableCell component="th" style={{display:"flex", alignItems:"center", gap:"10px"}} onClick={() => setIsCreate(true)}>
-           <AddIcon /> <p>생성</p>
-         </TableCell>
-          }
-          
+            )}
           </TableRow>
         </TableBody>
       </Table>

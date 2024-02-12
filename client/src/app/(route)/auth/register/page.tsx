@@ -1,11 +1,9 @@
 "use client";
 
 import { Box, Button, Grid, TextField } from "@mui/material";
-import React, { useEffect, useState } from "react";
-
+import React, { useState } from "react";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import  DateUtil from "@/app/utils";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -18,7 +16,7 @@ export interface Register {
   password: string;
   phone: string;
   birthday: {
-    $d : string;
+    $d: string;
   };
   sex: string;
 }
@@ -30,7 +28,7 @@ const index = () => {
     password: "",
     phone: "",
     birthday: {
-      $d:""
+      $d: "",
     },
     sex: "",
   });
@@ -43,7 +41,6 @@ const index = () => {
     }));
   };
 
-  console.log(login);
   return (
     <div style={{ width: "500px" }}>
       <Box alignContent={"center"}>
@@ -89,14 +86,15 @@ const index = () => {
             <div>Birthday</div>
           </Grid>
           <Grid item xs={7}>
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DemoContainer components={["DatePicker"]}>
-              <DatePicker   label="Controlled picker"
-                value={login?.birthday}
-                onChange={(e) => onChange("birthday",e)} 
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DemoContainer components={["DatePicker"]}>
+                <DatePicker
+                  label="Controlled picker"
+                  value={login?.birthday}
+                  onChange={(e) => onChange("birthday", e)}
                 />
-            </DemoContainer>
-          </LocalizationProvider>
+              </DemoContainer>
+            </LocalizationProvider>
           </Grid>
           <Grid item xs={5}>
             <div>Gender</div>
@@ -106,7 +104,7 @@ const index = () => {
               row
               aria-labelledby="demo-row-radio-buttons-group-label"
               name="row-radio-buttons-group"
-              onChange={(e) => onChange("sex",e.target.value)}
+              onChange={(e) => onChange("sex", e.target.value)}
             >
               <FormControlLabel
                 value="female"

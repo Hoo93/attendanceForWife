@@ -11,7 +11,7 @@ const index = () => {
 
   return (
     <Stack direction="row" spacing={2}>
-      <Button onClick={() => router.push("/attendancy/list")} variant="outlined">
+      <Button onClick={() => router.push("/auth/login")} variant="outlined">
         출석이 시작하기
       </Button>
     </Stack>
