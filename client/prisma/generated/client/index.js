@@ -117,7 +117,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "/Users/gimbeomsu/Desktop/Client 2/prisma/generated/client",
+      "value": "/Users/gimbeomsu/Desktop/사이드 프로젝트/attendanceForWife/client/prisma/generated/client",
       "fromEnvVar": null
     },
     "config": {

@@ -1,15 +1,11 @@
 "use client";
 
 // Component
-import { Box, Button } from "@mui/material";
-
-import CommonTable from "@/app/components/Table";
-import axios from "axios";
-// libraries
-import { useQuery } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
+import { Box, Button, CircularProgress } from "@mui/material";
 import React, { useState } from "react";
 
+import BasicLayout from "@/app/components/BasicLayout";
+import CommonTable from "@/app/components/Table";
 import Paper from "@mui/material/Paper";
 // Component
 import Table from "@mui/material/Table";
@@ -18,6 +14,10 @@ import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
+import axios from "axios";
+// libraries
+import { useQuery } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 
 interface Info {
   id: number;
@@ -42,33 +42,14 @@ const index = () => {
     },
   });
 
-  if (isLoading) return <>Loading...</>;
+  if (isLoading) return <CircularProgress color="inherit" />;
   if (isError) return <>에러..</>;
 
   return (
-    <div
-      style={{
-        width: "800px",
-        display: "flex",
-        justifyContent: "space-around",
-        flexDirection: "column",
-      }}
-    >
+    <BasicLayout>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
-          <TableHead>
-            <TableRow>
-              <TableCell>교회1</TableCell>
-              <TableCell>충무교회 청년부</TableCell>
-              <TableCell>주말</TableCell>
-              <TableCell>30</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            <TableCell align="center" colSpan={4}>
-              2024/02/05 (화) 출석 대상자 5명
-            </TableCell>
-          </TableBody>
+          <TableBody></TableBody>
         </Table>
       </TableContainer>
       <br />
@@ -76,11 +57,21 @@ const index = () => {
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
             <TableRow>
+              <TableCell align="center" colSpan={5}>
+                교회1 충무교회 청년부 주말 30
+              </TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell align="center" colSpan={5}>
+                2024/02/05 (화) 출석 대상자 5명
+              </TableCell>
+            </TableRow>
+            <TableRow>
               <TableCell align="right">이름</TableCell>
               <TableCell align="right">출석 상태</TableCell>
               <TableCell align="right">지각</TableCell>
               <TableCell align="right">등원시간</TableCell>
-              <TableCell align="right">비교</TableCell>
+              <TableCell align="right">비고</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -110,40 +101,32 @@ const index = () => {
         </Table>
       </TableContainer>
       <Box mt={2} display={"flex"} justifyContent={"space-between"}>
-        <Button
-          variant="contained"
-          color="primary"
-          style={{ marginRight: 8 }}
-          onClick={() => {}}
-        >
+        <Button variant="contained" color="primary" onClick={() => {}}>
           출석 체크
         </Button>
-        <Button
-          variant="contained"
-          color="primary"
-          style={{ marginRight: 8 }}
-          onClick={() => {}}
-        >
+        <Button variant="contained" color="primary" onClick={() => {}}>
           출석 통계
         </Button>
         <Button
           variant="contained"
           color="primary"
-          style={{ marginRight: 8 }}
-          onClick={() => {}}
+          onClick={() => {
+            router.push("/attendancy/roaster-management");
+          }}
         >
           명단 관리
         </Button>
         <Button
           variant="contained"
           color="primary"
-          style={{ marginRight: 8 }}
-          onClick={() => {}}
+          onClick={() => {
+            router.push("/attendancy/settings");
+          }}
         >
           출석부 설정
         </Button>
       </Box>
-    </div>
+    </BasicLayout>
   );
 };
 
