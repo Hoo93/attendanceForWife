@@ -1,17 +1,28 @@
 "use client";
 
-// Component
-import { Box, Button } from "@mui/material";
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Grid,
+  Hidden,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
 
+import BasicLayout from "@/app/components/BasicLayout";
 import CommonTable from "@/app/components/Table";
 import axios from "axios";
-// libraries
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
-const index = () => {
+const Index = () => {
   const router = useRouter();
-  // const { infoList, fetchInfoList } = useUser(); <- react query로 인한 주석
+  const [isCreate, setIsCreate] = useState<boolean>(false);
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
   const { isLoading, data, isError } = useQuery({
     queryKey: ["get-user"],
@@ -20,34 +31,46 @@ const index = () => {
       return response?.data.result;
     },
   });
-
-  if (isLoading) return <>Loading...</>;
+  // {loading && <CircularProgress color="inherit" />}
+  if (isLoading) return <CircularProgress color="inherit" />;
   if (isError) return <>에러..</>;
 
   return (
-    <div
-      style={{
-        width: "800px",
-        display: "flex",
-        justifyContent: "space-around",
-        flexDirection: "column",
-      }}
-    >
-      <CommonTable infoList={data} />
-      <Box mt={2}>
-        <Button
-          variant="contained"
-          color="primary"
-          style={{ marginRight: 8 }}
-          onClick={() => {
-            router.push("/attendancy/create");
-          }}
-        >
-          회원 생성
-        </Button>
+    <BasicLayout>
+      <Box
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
+        padding={isSmallScreen ? 2 : 4}
+      >
+        <CommonTable
+          infoList={data}
+          setIsCreate={setIsCreate}
+          isCreate={isCreate}
+        />
+
+        {isCreate && (
+          <Box mt={2}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => {
+                alert("저장되었습니다");
+                setIsCreate(false);
+              }}
+            >
+              저장
+            </Button>
+          </Box>
+        )}
       </Box>
-    </div>
+    </BasicLayout>
+    // <Grid container display={"flex"} justifyContent={"space-around"}>
+    //   <Grid item xs={12} md={6}>
+
+    //   </Grid>
+    // </Grid>
   );
 };
 
-export default index;
+export default Index;

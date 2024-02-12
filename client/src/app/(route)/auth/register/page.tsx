@@ -1,42 +1,49 @@
 "use client";
-import { Box, Grid, TextField, Button } from "@mui/material";
+
+import { Box, Button, Grid, TextField } from "@mui/material";
+import React, { useEffect, useState } from "react";
+
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import  DateUtil from "@/app/utils";
+import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import FormControl from "@mui/material/FormControl";
-import FormLabel from "@mui/material/FormLabel";
-
-import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import BasicDatePicker from "@/app/components/DatePicker";
 
 export interface Register {
   id: string;
-  pw: string;
+  password: string;
   phone: string;
-  age: string;
+  birthday: {
+    $d : string;
+  };
   sex: string;
 }
 
 const index = () => {
   const router = useRouter();
-
   const [login, setLogin] = useState<Register>({
     id: "",
-    pw: "",
+    password: "",
     phone: "",
-    age: "",
+    birthday: {
+      $d:""
+    },
     sex: "",
   });
 
   // Hook
-  const onChange = (field: string, value: string) => {
+  const onChange = (field: string, value: string | any) => {
     setLogin((prevState) => ({
       ...prevState,
       [field]: value,
     }));
   };
 
+  console.log(login);
   return (
     <div style={{ width: "500px" }}>
       <Box alignContent={"center"}>
@@ -49,6 +56,7 @@ const index = () => {
               variant="outlined"
               value={login?.id}
               fullWidth
+              label={"ID"}
               onChange={(e) => onChange("id", e.target.value)}
             />
           </Grid>
@@ -59,9 +67,10 @@ const index = () => {
           <Grid item xs={7}>
             <TextField
               variant="outlined"
-              value={login?.pw}
+              value={login?.password}
               fullWidth
-              onChange={(e) => onChange("pw", e.target.value)}
+              label={"PW"}
+              onChange={(e) => onChange("password", e.target.value)}
             />
           </Grid>
           <Grid item xs={5}>
@@ -72,14 +81,22 @@ const index = () => {
               variant="outlined"
               value={login?.phone}
               fullWidth
+              label={"Tel_no"}
               onChange={(e) => onChange("phone", e.target.value)}
             />
           </Grid>
           <Grid item xs={5}>
-            <div>Age</div>
+            <div>Birthday</div>
           </Grid>
           <Grid item xs={7}>
-            <BasicDatePicker />
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DemoContainer components={["DatePicker"]}>
+              <DatePicker   label="Controlled picker"
+                value={login?.birthday}
+                onChange={(e) => onChange("birthday",e)} 
+                />
+            </DemoContainer>
+          </LocalizationProvider>
           </Grid>
           <Grid item xs={5}>
             <div>Gender</div>
@@ -89,17 +106,18 @@ const index = () => {
               row
               aria-labelledby="demo-row-radio-buttons-group-label"
               name="row-radio-buttons-group"
+              onChange={(e) => onChange("sex",e.target.value)}
             >
               <FormControlLabel
                 value="female"
                 control={<Radio />}
-                label="Female"
+                label="여성"
               />
-              <FormControlLabel value="male" control={<Radio />} label="Male" />
+              <FormControlLabel value="male" control={<Radio />} label="남성" />
               <FormControlLabel
-                value="other"
+                value="gay"
                 control={<Radio />}
-                label="Other"
+                label="동성애자"
               />
             </RadioGroup>
           </Grid>

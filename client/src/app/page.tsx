@@ -6,7 +6,7 @@ import { Button } from "@mui/material";
 import Stack from "@mui/material/Stack";
 import { useRouter } from "next/navigation";
 
-const Home = () => {
+const index = () => {
   const router = useRouter();
 
   return (
@@ -18,4 +18,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default index;
