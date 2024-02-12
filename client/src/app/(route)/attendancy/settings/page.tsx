@@ -7,10 +7,10 @@ import BasicLayout from "@/app/components/BasicLayout";
 // Mui
 import { Button } from "@mui/material";
 import Stack from "@mui/material/Stack";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 const index = () => {
-  // const router = useRouter();
+  const router = useRouter();
 
   return (
     <BasicLayout>
@@ -19,22 +19,22 @@ const index = () => {
           출석이 설정
         </Button>
         <Button
-          onClick={() => alert("준비중인 기능입니다.")}
+          onClick={() => router.push("/attendancy/dashboard")}
           variant="outlined"
         >
-          사용자 정보
+          출석이 대시보드
         </Button>
         <Button
-          onClick={() => alert("준비중인 기능입니다.")}
+          onClick={() => router.push("/attendancy/dashboard")}
           variant="outlined"
         >
-          앱 버전 정보
+          출석이 명단관리
         </Button>
         <Button
-          onClick={() => alert("준비중인 기능입니다.")}
+          onClick={() => router.push("/attendancy/list")}
           variant="outlined"
         >
-          앱 사용법
+          출석이 출석부
         </Button>
         <Button
           onClick={() => alert("준비중인 기능입니다.")}

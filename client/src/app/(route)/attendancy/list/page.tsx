@@ -50,18 +50,31 @@ const Index = () => {
         />
 
         {isCreate && (
-          <Box mt={2}>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={() => {
-                alert("저장되었습니다");
-                setIsCreate(false);
-              }}
-            >
-              저장
-            </Button>
-          </Box>
+          <div style={{ display: "flex", gap: "10px" }}>
+            <Box mt={2}>
+              <Button
+                variant="contained"
+                color="error"
+                onClick={() => {
+                  setIsCreate(false);
+                }}
+              >
+                취소
+              </Button>
+            </Box>
+            <Box mt={2}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => {
+                  alert("저장되었습니다");
+                  setIsCreate(false);
+                }}
+              >
+                저장
+              </Button>
+            </Box>
+          </div>
         )}
       </Box>
     </BasicLayout>
