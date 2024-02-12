@@ -10,12 +10,18 @@ import Stack from "@mui/material/Stack";
 import { useRouter } from "next/router";
 
 const index = () => {
-  const router = useRouter();
+  // const router = useRouter();
 
   return (
     <BasicLayout>
       <Stack gap={"20px"} padding={"30px"} minWidth={"300px"}>
-        <Button onClick={() => router.push("/attendancy/")} variant="outlined">
+        <Button onClick={() => {}} variant="contained">
+          출석이 설정
+        </Button>
+        <Button
+          onClick={() => alert("준비중인 기능입니다.")}
+          variant="outlined"
+        >
           사용자 정보
         </Button>
         <Button
