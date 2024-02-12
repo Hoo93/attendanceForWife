@@ -7,7 +7,7 @@ import BasicLayout from "@/app/components/BasicLayout";
 // Mui
 import { Button } from "@mui/material";
 import Stack from "@mui/material/Stack";
-import { useRouter } from "next/navigation";
+import { useRouter } from "next/router";
 
 const index = () => {
   const router = useRouter();
@@ -16,16 +16,25 @@ const index = () => {
     <BasicLayout>
       <Stack gap={"20px"} padding={"30px"} minWidth={"300px"}>
         <Button onClick={() => router.push("/attendancy/")} variant="outlined">
-          설정1
+          사용자 정보
         </Button>
-        <Button onClick={() => router.push("/attendancy/")} variant="outlined">
-          설정2
+        <Button
+          onClick={() => alert("준비중인 기능입니다.")}
+          variant="outlined"
+        >
+          앱 버전 정보
         </Button>
-        <Button onClick={() => router.push("/attendancy/")} variant="outlined">
-          설정3
+        <Button
+          onClick={() => alert("준비중인 기능입니다.")}
+          variant="outlined"
+        >
+          앱 사용법
         </Button>
-        <Button onClick={() => router.push("/attendancy/")} variant="outlined">
-          설정4
+        <Button
+          onClick={() => alert("준비중인 기능입니다.")}
+          variant="outlined"
+        >
+          기타 등등
         </Button>
       </Stack>
     </BasicLayout>
