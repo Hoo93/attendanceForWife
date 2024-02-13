@@ -17,11 +17,20 @@ import { useRouter } from "next/navigation";
 export interface Register {
   username: string;
   password: string;
-  phone: string;
+  name: string;
+  mobileNumber: string;
   birthday: {
     $d: string;
   };
-  sex: string;
+  email: string;
+}
+
+function convertToBirthdate(dateString: string): string {
+  const date = new Date(dateString);
+  const year = date.getUTCFullYear().toString().slice(2);
+  const month = (date.getUTCMonth() + 1).toString().padStart(2, "0");
+  const day = date.getUTCDate().toString().padStart(2, "0");
+  return `${year}${month}${day}`;
 }
 
 const index = () => {
@@ -29,11 +38,12 @@ const index = () => {
   const [register, setRegister] = useState<Register>({
     username: "",
     password: "",
-    phone: "",
+    name: "",
+    mobileNumber: "",
     birthday: {
       $d: "",
     },
-    sex: "",
+    email: "",
   });
 
   // Hook
@@ -45,15 +55,16 @@ const index = () => {
   };
 
   const fetchRegister = async (params: Register) => {
-    const { username, password, phone, birthday, sex } = params;
+    const { username, password, mobileNumber, name, birthday, email } = params;
     await axios.post(
       "http://localhost:12310/auth/signup",
       {
         username: username,
         password: password,
-        phone: phone,
-        birthday: birthday.$d,
-        sex: sex,
+        mobileNumber: mobileNumber,
+        birthday: convertToBirthdate(birthday.$d),
+        name: name,
+        email: email,
       },
       {
         headers: { "Content-Type": "application/json" },
@@ -78,6 +89,19 @@ const index = () => {
       <Box alignContent={"center"}>
         <Grid container spacing={1} alignItems={"center"}>
           <Grid item xs={5}>
+            <div>이름</div>
+          </Grid>
+          <Grid item xs={7}>
+            <TextField
+              variant="outlined"
+              value={register?.name}
+              fullWidth
+              label={"이름"}
+              onChange={(e) => onChange("name", e.target.value)}
+            />
+          </Grid>
+
+          <Grid item xs={5}>
             <div>ID</div>
           </Grid>
           <Grid item xs={7}>
@@ -89,12 +113,25 @@ const index = () => {
               onChange={(e) => onChange("username", e.target.value)}
             />
           </Grid>
+          <Grid item xs={5}>
+            <div>Email</div>
+          </Grid>
+          <Grid item xs={7}>
+            <TextField
+              variant="outlined"
+              value={register?.email}
+              fullWidth
+              label={"Email"}
+              onChange={(e) => onChange("email", e.target.value)}
+            />
+          </Grid>
 
           <Grid item xs={5}>
             <div>PW</div>
           </Grid>
           <Grid item xs={7}>
             <TextField
+              type="password"
               variant="outlined"
               value={register?.password}
               fullWidth
@@ -108,10 +145,10 @@ const index = () => {
           <Grid item xs={7}>
             <TextField
               variant="outlined"
-              value={register?.phone}
+              value={register?.mobileNumber}
               fullWidth
               label={"Tel_no"}
-              onChange={(e) => onChange("phone", e.target.value)}
+              onChange={(e) => onChange("mobileNumber", e.target.value)}
             />
           </Grid>
           <Grid item xs={5}>
@@ -128,7 +165,7 @@ const index = () => {
               </DemoContainer>
             </LocalizationProvider>
           </Grid>
-          <Grid item xs={5}>
+          {/* <Grid item xs={5}>
             <div>Gender</div>
           </Grid>
           <Grid item xs={7}>
@@ -150,7 +187,7 @@ const index = () => {
                 label="동성애자"
               />
             </RadioGroup>
-          </Grid>
+          </Grid> */}
         </Grid>
         <Box mt={3} display={"flex"} justifyContent={"flex-end"} gap={"5px"}>
           <Button
