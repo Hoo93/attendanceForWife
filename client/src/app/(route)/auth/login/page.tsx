@@ -1,19 +1,47 @@
 "use client";
-import { Box, Grid, TextField, Button } from "@mui/material";
+import { Box, Grid, TextField, Button, CircularProgress } from "@mui/material";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
 
 export interface Login {
-  id: string;
-  pw: string;
+  username: string;
+  password: string;
 }
 
 const index = () => {
   const router = useRouter();
-
   const [login, setLogin] = useState<Login>({
-    id: "",
-    pw: "",
+    username: "",
+    password: "",
+  });
+
+  const fetchLogin = async (params: Login) => {
+    const { username, password } = params;
+    await axios.post(
+      "http://localhost:12310/auth/signin",
+      {
+        username: username,
+        password: password,
+      },
+      {
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+  };
+
+  const { mutate, data, isLoading } = useMutation(fetchLogin, {
+    onSuccess: (data, variables, context) => {
+      alert("로그인 되었습니다.");
+      router.push("/attendancy/list");
+    },
+    onError: (error, variables, context) => {
+      // I will fire first
+    },
+    onSettled: (data, error, variables, context) => {
+      // I will fire first
+    },
   });
 
   // Hook
@@ -23,6 +51,8 @@ const index = () => {
       [field]: value,
     }));
   };
+
+  if (isLoading) return <CircularProgress color="inherit" />;
 
   return (
     <>
@@ -39,10 +69,10 @@ const index = () => {
           <Grid item xs={7}>
             <TextField
               variant="outlined"
-              value={login?.id}
+              value={login?.username}
               // disabled={isUpdate ? false : true}
               fullWidth
-              onChange={(e) => onChange("id", e.target.value)}
+              onChange={(e) => onChange("username", e.target.value)}
             />
           </Grid>
 
@@ -52,9 +82,9 @@ const index = () => {
           <Grid item xs={7}>
             <TextField
               variant="outlined"
-              value={login?.pw}
+              value={login?.password}
               fullWidth
-              onChange={(e) => onChange("pw", e.target.value)}
+              onChange={(e) => onChange("password", e.target.value)}
             />
           </Grid>
         </Grid>
@@ -63,8 +93,7 @@ const index = () => {
             variant="contained"
             color="primary"
             onClick={() => {
-              alert("로그인 되었습니다");
-              router.push("/attendancy/list");
+              mutate(login);
             }}
           >
             로그인
