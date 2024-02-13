@@ -622,6 +622,27 @@ describe('RecordsService', () => {
     });
   });
 
+  describe('FindByAttendeeId Test', () => {
+    it('attendeeId에 속한 전체 Record를 조사한다.', async () => {
+      // Given
+      const user_1 = new User();
+      user_1.id = 'user id 1';
+
+      const targetAttendanceId = 'testAttendanceId';
+
+      const targetAttendeeId = 'Attendee Id 1';
+
+      const record_1 = createRecord('2024-01-31', DayType.WEDNESDAY, AttendanceStatus.PRESENT, targetAttendeeId, user_1.id);
+      const record_2 = createRecord('2024-02-01', DayType.THURSDAY, AttendanceStatus.PRESENT, targetAttendeeId, user_1.id);
+      const record_3 = createRecord('2024-02-02', DayType.FRIDAY, AttendanceStatus.PRESENT, targetAttendeeId, user_1.id);
+
+      await recordRepository.save([record_1, record_2, record_3]);
+      // When
+
+      // Then
+    });
+  });
+
   describe('deleteAll TEST', () => {
     it('배열에 입력한 모든 출석기록을 soft delete 한다.', async () => {
       // Given
