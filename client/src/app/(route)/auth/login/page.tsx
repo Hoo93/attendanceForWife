@@ -36,7 +36,10 @@ const index = () => {
   const { mutate, data, isLoading } = useMutation(fetchLogin, {
     onSuccess: (data, variables, context) => {
       alert("로그인 되었습니다.");
-      router.push("/attendancy/list");
+      // router.push("/attendancy/list");
+      console.log(data);
+      console.log(variables);
+      console.log(context);
     },
     onError: (error, variables, context) => {
       alert("존재하지 않는 계정이거나 비밀번호가 다릅니다.");
@@ -44,6 +47,7 @@ const index = () => {
     onSettled: (data, error, variables, context) => {},
   });
 
+  console.log(mutate);
   // Hook
   const onChange = (field: string, value: string) => {
     setLogin((prevState) => ({

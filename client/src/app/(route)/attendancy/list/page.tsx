@@ -27,7 +27,11 @@ const Index = () => {
   const { isLoading, data, isError } = useQuery({
     queryKey: ["get-user"],
     queryFn: async () => {
-      const response = await axios.get("http://localhost:3000/api/users");
+      const response = await axios.get("http://localhost:12301/attendances", {
+        headers: {
+          Authorization: "",
+        },
+      });
       return response?.data.result;
     },
   });
