@@ -1,7 +1,8 @@
 "use client";
 
-import { Box, Button, Grid, TextField } from "@mui/material";
+import { Box, Button, CircularProgress, Grid, TextField } from "@mui/material";
 import React, { useState } from "react";
+
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
@@ -9,10 +10,12 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
+import axios from "axios";
+import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 
 export interface Register {
-  id: string;
+  username: string;
   password: string;
   phone: string;
   birthday: {
@@ -23,8 +26,8 @@ export interface Register {
 
 const index = () => {
   const router = useRouter();
-  const [login, setLogin] = useState<Register>({
-    id: "",
+  const [register, setRegister] = useState<Register>({
+    username: "",
     password: "",
     phone: "",
     birthday: {
@@ -35,11 +38,40 @@ const index = () => {
 
   // Hook
   const onChange = (field: string, value: string | any) => {
-    setLogin((prevState) => ({
+    setRegister((prevState) => ({
       ...prevState,
       [field]: value,
     }));
   };
+
+  const fetchRegister = async (params: Register) => {
+    const { username, password, phone, birthday, sex } = params;
+    await axios.post(
+      "http://localhost:12310/auth/signup",
+      {
+        username: username,
+        password: password,
+        phone: phone,
+        birthday: birthday.$d,
+        sex: sex,
+      },
+      {
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+  };
+
+  const { mutate, data, isLoading } = useMutation(fetchRegister, {
+    onSuccess: (data, variables, context) => {
+      alert("회원가입이 되었습니다.");
+      router.push("/auth/login");
+    },
+    onError: (error, variables, context) => {
+      alert("빈칸없이 전부 입력해주세요.");
+    },
+    onSettled: (data, error, variables, context) => {},
+  });
+  if (isLoading) return <CircularProgress color="inherit" />;
 
   return (
     <div style={{ width: "500px" }}>
@@ -51,10 +83,10 @@ const index = () => {
           <Grid item xs={7}>
             <TextField
               variant="outlined"
-              value={login?.id}
+              value={register?.username}
               fullWidth
               label={"ID"}
-              onChange={(e) => onChange("id", e.target.value)}
+              onChange={(e) => onChange("username", e.target.value)}
             />
           </Grid>
 
@@ -64,7 +96,7 @@ const index = () => {
           <Grid item xs={7}>
             <TextField
               variant="outlined"
-              value={login?.password}
+              value={register?.password}
               fullWidth
               label={"PW"}
               onChange={(e) => onChange("password", e.target.value)}
@@ -76,7 +108,7 @@ const index = () => {
           <Grid item xs={7}>
             <TextField
               variant="outlined"
-              value={login?.phone}
+              value={register?.phone}
               fullWidth
               label={"Tel_no"}
               onChange={(e) => onChange("phone", e.target.value)}
@@ -90,7 +122,7 @@ const index = () => {
               <DemoContainer components={["DatePicker"]}>
                 <DatePicker
                   label="Controlled picker"
-                  value={login?.birthday}
+                  value={register?.birthday}
                   onChange={(e) => onChange("birthday", e)}
                 />
               </DemoContainer>
@@ -134,8 +166,7 @@ const index = () => {
             variant="contained"
             color="primary"
             onClick={() => {
-              alert("회원가입 되었습니다.");
-              router.push("/auth/login");
+              mutate(register);
             }}
           >
             저장

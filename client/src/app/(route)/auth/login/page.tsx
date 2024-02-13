@@ -1,9 +1,11 @@
 "use client";
-import { Box, Grid, TextField, Button, CircularProgress } from "@mui/material";
+
+import { Box, Button, CircularProgress, Grid, TextField } from "@mui/material";
 import React, { useState } from "react";
-import { useRouter } from "next/navigation";
-import { useMutation } from "@tanstack/react-query";
+
 import axios from "axios";
+import { useMutation } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 
 export interface Login {
   username: string;
@@ -37,11 +39,9 @@ const index = () => {
       router.push("/attendancy/list");
     },
     onError: (error, variables, context) => {
-      // I will fire first
+      alert("존재하지 않는 계정이거나 비밀번호가 다릅니다.");
     },
-    onSettled: (data, error, variables, context) => {
-      // I will fire first
-    },
+    onSettled: (data, error, variables, context) => {},
   });
 
   // Hook
