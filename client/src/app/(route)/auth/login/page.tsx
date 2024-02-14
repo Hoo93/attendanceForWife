@@ -2,7 +2,7 @@
 
 import { Box, Button, CircularProgress, Grid, TextField } from "@mui/material";
 import React, { useState } from "react";
-
+import Cookies from "js-cookie";
 import axios from "axios";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
@@ -21,25 +21,32 @@ const index = () => {
 
   const fetchLogin = async (params: Login) => {
     const { username, password } = params;
-    await axios.post(
-      "http://localhost:12310/auth/signin",
-      {
-        username: username,
-        password: password,
-      },
-      {
-        headers: { "Content-Type": "application/json" },
+    try {
+      const response = await axios.post(
+        "http://localhost:12310/auth/signin",
+        {
+          username: username,
+          password: password,
+        },
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+
+      // response가 정상적으로 수신되었는지 확인
+      if (response && response.data && response.data.access_token) {
+        Cookies.set("access-token", response.data.access_token);
+      } else {
+        console.error("Unexpected response format:", response);
       }
-    );
+    } catch (error) {
+      console.error("Error occurred during login:", error);
+    }
   };
 
-  const { mutate, data, isLoading } = useMutation(fetchLogin, {
+  const { mutate, isLoading } = useMutation(fetchLogin, {
     onSuccess: (data, variables, context) => {
       alert("로그인 되었습니다.");
-      // router.push("/attendancy/list");
-      console.log(data);
-      console.log(variables);
-      console.log(context);
     },
     onError: (error, variables, context) => {
       alert("존재하지 않는 계정이거나 비밀번호가 다릅니다.");
@@ -47,7 +54,6 @@ const index = () => {
     onSettled: (data, error, variables, context) => {},
   });
 
-  console.log(mutate);
   // Hook
   const onChange = (field: string, value: string) => {
     setLogin((prevState) => ({
@@ -86,6 +92,7 @@ const index = () => {
           <Grid item xs={7}>
             <TextField
               variant="outlined"
+              type="password"
               value={login?.password}
               fullWidth
               onChange={(e) => onChange("password", e.target.value)}
