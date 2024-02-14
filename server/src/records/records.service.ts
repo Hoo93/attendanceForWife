@@ -93,6 +93,10 @@ export class RecordsService {
     return queryBuilder.getMany();
   }
 
+  async findByAttendeeId(attendeeId: string, recordFilterDto): Promise<Record[]> {
+    return;
+  }
+
   async findByAttendanceIdForExcel(attendanceId: string, recordFilterDto: RecordFilterDto): Promise<Record[]> {
     let queryBuilder: SelectQueryBuilder<Record>;
     queryBuilder = this.recordRepository
