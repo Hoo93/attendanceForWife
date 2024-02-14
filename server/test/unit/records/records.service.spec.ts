@@ -632,14 +632,24 @@ describe('RecordsService', () => {
 
       const targetAttendeeId = 'Attendee Id 1';
 
-      const record_1 = createRecord('2024-01-31', DayType.WEDNESDAY, AttendanceStatus.PRESENT, targetAttendeeId, user_1.id);
-      const record_2 = createRecord('2024-02-01', DayType.THURSDAY, AttendanceStatus.PRESENT, targetAttendeeId, user_1.id);
-      const record_3 = createRecord('2024-02-02', DayType.FRIDAY, AttendanceStatus.PRESENT, targetAttendeeId, user_1.id);
+      const attendee_2_id = 'Attendee Id 2';
 
-      await recordRepository.save([record_1, record_2, record_3]);
+      const targetRecord_1 = createRecord('2024-01-31', DayType.WEDNESDAY, AttendanceStatus.PRESENT, targetAttendeeId, user_1.id);
+      const targetRecord_2 = createRecord('2024-02-01', DayType.THURSDAY, AttendanceStatus.PRESENT, targetAttendeeId, user_1.id);
+      const targetRecord_3 = createRecord('2024-02-02', DayType.FRIDAY, AttendanceStatus.PRESENT, targetAttendeeId, user_1.id);
+      const record_4 = createRecord('2024-02-02', DayType.FRIDAY, AttendanceStatus.PRESENT, attendee_2_id, user_1.id);
+
+      await recordRepository.save([targetRecord_1, targetRecord_2, targetRecord_3, record_4]);
+
       // When
+      const recordFilterDto = {};
+      const sut = await service.findByAttendeeId(targetAttendeeId, recordFilterDto);
 
       // Then
+      expect(sut).toHaveLength(3);
+      sut.map((record) => {
+        expect(record.attendeeId).toBe(targetAttendeeId);
+      });
     });
   });
 
