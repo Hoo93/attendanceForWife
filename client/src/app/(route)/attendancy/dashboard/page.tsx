@@ -93,7 +93,7 @@ const index = () => {
                   {item.name}
                 </TableCell>
                 <TableCell align="right">{item.email}</TableCell>
-                <TableCell align="right">{item.password}</TableCell>
+                <TableCell align="right">{item.password}</TableCell>ㅈㄷㄱ33김ㅂ
                 <TableCell align="right">비고</TableCell>
               </TableRow>
             ))}

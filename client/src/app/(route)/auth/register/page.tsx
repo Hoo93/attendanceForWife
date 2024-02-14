@@ -1,7 +1,8 @@
 "use client";
 
-import { Box, Button, Grid, TextField } from "@mui/material";
+import { Box, Button, CircularProgress, Grid, TextField } from "@mui/material";
 import React, { useState } from "react";
+
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
@@ -9,52 +10,119 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
+import axios from "axios";
+import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 
 export interface Register {
-  id: string;
+  username: string;
   password: string;
-  phone: string;
+  name: string;
+  mobileNumber: string;
   birthday: {
     $d: string;
   };
-  sex: string;
+  email: string;
+}
+
+function convertToBirthdate(dateString: string): string {
+  const date = new Date(dateString);
+  const year = date.getUTCFullYear().toString().slice(2);
+  const month = (date.getUTCMonth() + 1).toString().padStart(2, "0");
+  const day = date.getUTCDate().toString().padStart(2, "0");
+  return `${year}${month}${day}`;
 }
 
 const index = () => {
   const router = useRouter();
-  const [login, setLogin] = useState<Register>({
-    id: "",
+  const [register, setRegister] = useState<Register>({
+    username: "",
     password: "",
-    phone: "",
+    name: "",
+    mobileNumber: "",
     birthday: {
       $d: "",
     },
-    sex: "",
+    email: "",
   });
 
   // Hook
   const onChange = (field: string, value: string | any) => {
-    setLogin((prevState) => ({
+    setRegister((prevState) => ({
       ...prevState,
       [field]: value,
     }));
   };
+
+  const fetchRegister = async (params: Register) => {
+    const { username, password, mobileNumber, name, birthday, email } = params;
+    await axios.post(
+      "http://localhost:12310/auth/signup",
+      {
+        username: username,
+        password: password,
+        mobileNumber: mobileNumber,
+        birthday: convertToBirthdate(birthday.$d),
+        name: name,
+        email: email,
+      },
+      {
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+  };
+
+  const { mutate, data, isLoading } = useMutation(fetchRegister, {
+    onSuccess: (data, variables, context) => {
+      alert("회원가입이 되었습니다.");
+      router.push("/auth/login");
+    },
+    onError: (error, variables, context) => {
+      alert("빈칸없이 전부 입력해주세요.");
+    },
+    onSettled: (data, error, variables, context) => {},
+  });
+  if (isLoading) return <CircularProgress color="inherit" />;
 
   return (
     <div style={{ width: "500px" }}>
       <Box alignContent={"center"}>
         <Grid container spacing={1} alignItems={"center"}>
           <Grid item xs={5}>
+            <div>이름</div>
+          </Grid>
+          <Grid item xs={7}>
+            <TextField
+              variant="outlined"
+              value={register?.name}
+              fullWidth
+              label={"이름"}
+              onChange={(e) => onChange("name", e.target.value)}
+            />
+          </Grid>
+
+          <Grid item xs={5}>
             <div>ID</div>
           </Grid>
           <Grid item xs={7}>
             <TextField
               variant="outlined"
-              value={login?.id}
+              value={register?.username}
               fullWidth
               label={"ID"}
-              onChange={(e) => onChange("id", e.target.value)}
+              onChange={(e) => onChange("username", e.target.value)}
+            />
+          </Grid>
+          <Grid item xs={5}>
+            <div>Email</div>
+          </Grid>
+          <Grid item xs={7}>
+            <TextField
+              variant="outlined"
+              value={register?.email}
+              fullWidth
+              label={"Email"}
+              onChange={(e) => onChange("email", e.target.value)}
             />
           </Grid>
 
@@ -63,8 +131,9 @@ const index = () => {
           </Grid>
           <Grid item xs={7}>
             <TextField
+              type="password"
               variant="outlined"
-              value={login?.password}
+              value={register?.password}
               fullWidth
               label={"PW"}
               onChange={(e) => onChange("password", e.target.value)}
@@ -76,10 +145,10 @@ const index = () => {
           <Grid item xs={7}>
             <TextField
               variant="outlined"
-              value={login?.phone}
+              value={register?.mobileNumber}
               fullWidth
               label={"Tel_no"}
-              onChange={(e) => onChange("phone", e.target.value)}
+              onChange={(e) => onChange("mobileNumber", e.target.value)}
             />
           </Grid>
           <Grid item xs={5}>
@@ -90,13 +159,13 @@ const index = () => {
               <DemoContainer components={["DatePicker"]}>
                 <DatePicker
                   label="Controlled picker"
-                  value={login?.birthday}
+                  value={register?.birthday}
                   onChange={(e) => onChange("birthday", e)}
                 />
               </DemoContainer>
             </LocalizationProvider>
           </Grid>
-          <Grid item xs={5}>
+          {/* <Grid item xs={5}>
             <div>Gender</div>
           </Grid>
           <Grid item xs={7}>
@@ -118,7 +187,7 @@ const index = () => {
                 label="동성애자"
               />
             </RadioGroup>
-          </Grid>
+          </Grid> */}
         </Grid>
         <Box mt={3} display={"flex"} justifyContent={"flex-end"} gap={"5px"}>
           <Button
@@ -134,8 +203,7 @@ const index = () => {
             variant="contained"
             color="primary"
             onClick={() => {
-              alert("회원가입 되었습니다.");
-              router.push("/auth/login");
+              mutate(register);
             }}
           >
             저장

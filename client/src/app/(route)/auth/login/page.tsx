@@ -1,9 +1,11 @@
 "use client";
-import { Box, Grid, TextField, Button, CircularProgress } from "@mui/material";
+
+import { Box, Button, CircularProgress, Grid, TextField } from "@mui/material";
 import React, { useState } from "react";
-import { useRouter } from "next/navigation";
-import { useMutation } from "@tanstack/react-query";
+
 import axios from "axios";
+import { useMutation } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 
 export interface Login {
   username: string;
@@ -34,16 +36,18 @@ const index = () => {
   const { mutate, data, isLoading } = useMutation(fetchLogin, {
     onSuccess: (data, variables, context) => {
       alert("로그인 되었습니다.");
-      router.push("/attendancy/list");
+      // router.push("/attendancy/list");
+      console.log(data);
+      console.log(variables);
+      console.log(context);
     },
     onError: (error, variables, context) => {
-      // I will fire first
+      alert("존재하지 않는 계정이거나 비밀번호가 다릅니다.");
     },
-    onSettled: (data, error, variables, context) => {
-      // I will fire first
-    },
+    onSettled: (data, error, variables, context) => {},
   });
 
+  console.log(mutate);
   // Hook
   const onChange = (field: string, value: string) => {
     setLogin((prevState) => ({
