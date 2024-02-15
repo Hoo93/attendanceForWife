@@ -643,11 +643,11 @@ describe('RecordsService', () => {
 
       // When
       const recordFilterDto = {};
-      const sut = await service.findByAttendeeId(targetAttendeeId, recordFilterDto);
+      const [records, count] = await service.findByAttendeeId(targetAttendeeId, recordFilterDto);
 
       // Then
-      expect(sut).toHaveLength(3);
-      sut.map((record) => {
+      expect(count).toBe(3);
+      records.map((record) => {
         expect(record.attendeeId).toBe(targetAttendeeId);
       });
     });
