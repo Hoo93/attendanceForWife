@@ -39,4 +39,9 @@ export class RecordFilterDto extends Pagination {
     nullable: true,
   })
   day: DayType;
+
+  @IsString()
+  @IsOptional()
+  @ApiPropertyOptional({ description: '출석체크 대상 번호', type: 'string', nullable: true })
+  attendeeId: number;
 }
