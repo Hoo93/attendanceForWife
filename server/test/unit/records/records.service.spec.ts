@@ -623,7 +623,7 @@ describe('RecordsService', () => {
   });
 
   describe('FindByAttendeeId Test', () => {
-    it('attendeeId에 속한 전체 Record를 조사한다.', async () => {
+    it('attendeeId에 속한 전체 record를 조사한다.', async () => {
       // Given
       const user_1 = new User();
       user_1.id = 'user id 1';
@@ -649,6 +649,35 @@ describe('RecordsService', () => {
       expect(count).toBe(3);
       records.map((record) => {
         expect(record.attendeeId).toBe(targetAttendeeId);
+      });
+    });
+
+    it('filterDto의 month에 해당하는 record만 조회한다.', async () => {
+      // Given
+      const user_1 = new User();
+      user_1.id = 'user id 1';
+
+      const targetAttendanceId = 'testAttendanceId';
+
+      const targetAttendeeId = 'Attendee Id 1';
+
+      const attendee_2_id = 'Attendee Id 2';
+
+      const targetRecord_1 = createRecord('2024-01-31', DayType.WEDNESDAY, AttendanceStatus.PRESENT, targetAttendeeId, user_1.id);
+      const targetRecord_2 = createRecord('2024-02-01', DayType.THURSDAY, AttendanceStatus.PRESENT, targetAttendeeId, user_1.id);
+      const targetRecord_3 = createRecord('2024-02-02', DayType.FRIDAY, AttendanceStatus.PRESENT, targetAttendeeId, user_1.id);
+      const record_4 = createRecord('2024-02-02', DayType.FRIDAY, AttendanceStatus.PRESENT, attendee_2_id, user_1.id);
+
+      await recordRepository.save([targetRecord_1, targetRecord_2, targetRecord_3, record_4]);
+
+      // When
+      const recordFilterDto = { month: 2 };
+      const [records, count] = await service.findByAttendeeId(targetAttendeeId, recordFilterDto);
+
+      // Then
+      expect(count).toBe(2);
+      records.map((record) => {
+        expect(parseInt(record.date.split('-')[1])).toBe(2);
       });
     });
   });
