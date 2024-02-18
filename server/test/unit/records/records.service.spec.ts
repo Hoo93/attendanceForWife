@@ -379,7 +379,7 @@ describe('RecordsService', () => {
       sut.map((result) => {
         expect(['2024-01-31', '2024-02-01', '2024-02-02']).toContain(result.date);
         expect([createdAttendee1.id, createdAttendee2.id, createdAttendee3.id]).toContain(result.attendeeId);
-        expect(result.attendee).not.toBeNull();
+        expect(result.attendee.id).not.toBeNull();
       });
     });
 
@@ -646,10 +646,13 @@ describe('RecordsService', () => {
       const recordFilterDto = {};
       const [records, count] = await service.findByAttendeeId(targetAttendeeId, recordFilterDto);
 
+      console.log(records);
+
       // Then
       expect(count).toBe(3);
       records.map((record) => {
         expect(record.attendeeId).toBe(targetAttendeeId);
+        expect(record.attendee.id).not.toBeNull();
       });
     });
 
