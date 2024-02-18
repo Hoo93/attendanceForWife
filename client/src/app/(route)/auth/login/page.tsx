@@ -21,6 +21,9 @@ const index = () => {
 
   const fetchLogin = async (params: Login) => {
     const { username, password } = params;
+    const axiosInstance = axios.create({
+      baseURL: "http://localhost:3000",
+    });
     try {
       const response = await axios.post(
         "http://localhost:12310/auth/signin",
@@ -33,20 +36,17 @@ const index = () => {
         }
       );
 
-      // response가 정상적으로 수신되었는지 확인
-      if (response && response.data && response.data.access_token) {
-        Cookies.set("access-token", response.data.access_token);
-      } else {
-        console.error("Unexpected response format:", response);
-      }
+      const token = response.data.access_token;
+      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+      Cookies.set("access-token", response.data.access_token);
     } catch (error) {
       console.error("Error occurred during login:", error);
     }
   };
-
   const { mutate, isLoading } = useMutation(fetchLogin, {
     onSuccess: (data, variables, context) => {
       alert("로그인 되었습니다.");
+      router.push("/attendancy/list");
     },
     onError: (error, variables, context) => {
       alert("존재하지 않는 계정이거나 비밀번호가 다릅니다.");

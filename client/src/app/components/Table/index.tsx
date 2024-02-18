@@ -1,4 +1,4 @@
-import { CircularProgress, TextField } from "@mui/material";
+import { Button, TextField } from "@mui/material";
 // Libraries
 import React, { useState } from "react";
 
@@ -14,24 +14,28 @@ import TableRow from "@mui/material/TableRow";
 import axios from "axios";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
+import Cookies from "js-cookie";
 
 interface Info {
-  id: number;
+  attendanceId: number;
   name: string;
   email: string;
   password: string;
+  attendance: {
+    title: string;
+    description: string;
+    type: string;
+  };
 }
 
 interface listCreate {
-  a: string; // 이름
-  b: string; // 출석 상태
-  c: string; // 지각
-  d: string; // 등원시간
-  e: string; // 비고
+  title: string; // 이름
+  description: string; // 출석 상태
+  type: string; // 지각
 }
 
 interface CommonTableProps {
-  infoList: Info[];
+  infoList: any;
   isCreate: boolean;
   setIsCreate: React.Dispatch<React.SetStateAction<boolean>>;
 }
@@ -42,39 +46,39 @@ const CommonTable: React.FC<CommonTableProps> = ({
   setIsCreate,
 }) => {
   const router = useRouter();
-
+  const accessToken = Cookies.get("access-token");
   const [listCreate, setListCreate] = useState<listCreate>({
-    a: "",
-    b: "",
-    c: "",
-    d: "",
-    e: "",
+    title: "",
+    description: "",
+    type: "",
   });
 
-  // const fetchListCreate = async (params: listCreate) => {
-  //   const { username, password } = params;
-  //   await axios.post(
-  //     "http://localhost:12310/",
-  //     {
-  //       username: username,
-  //       password: password,
-  //     },
-  //     {
-  //       headers: { "Content-Type": "application/json" },
-  //     }
-  //   );
-  // };
+  const fetchListCreate = async (params: listCreate) => {
+    const { title, description, type } = params;
+    await axios.post(
+      "http://localhost:12310/attendances",
+      {
+        title: title,
+        description: description,
+        type: type,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+  };
 
-  // const { mutate, data, isLoading } = useMutation(fetchListCreate, {
-  //   onSuccess: (data, variables, context) => {
-  //     alert("로그인 되었습니다.");
-  //     router.push("/attendancy/list");
-  //   },
-  //   onError: (error, variables, context) => {
-  //     alert("존재하지 않는 계정이거나 비밀번호가 다릅니다.");
-  //   },
-  //   onSettled: (data, error, variables, context) => {},
-  // });
+  const { mutate, data, isLoading } = useMutation(fetchListCreate, {
+    onSuccess: (data, variables, context) => {
+      alert("생성 되었습니다.");
+      setIsCreate(false);
+    },
+    onError: (error, variables, context) => {
+      alert("빈칸을 전부 채워주세요");
+    },
+  });
 
   // Hook
   const onChange = (field: string, value: string) => {
@@ -86,38 +90,39 @@ const CommonTable: React.FC<CommonTableProps> = ({
 
   // if (isLoading) return <CircularProgress color="inherit" />;
 
+  console.log(infoList);
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
         <TableHead>
           <TableRow>
             <TableCell>이름</TableCell>
-            <TableCell>출석 상태</TableCell>
-            <TableCell>지각</TableCell>
-            <TableCell>등원시간</TableCell>
-            <TableCell>비고</TableCell>
+            <TableCell>출석부 이름</TableCell>
+            <TableCell>설명</TableCell>
+            <TableCell>타입</TableCell>
+            <TableCell>총원</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {infoList?.map((item: Info) => (
+          {infoList?.map((item: Info, index: number) => (
             <TableRow
-              key={item.id}
+              key={index}
               sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
               hover
               style={{ cursor: "pointer" }}
               onClick={() => {
-                router.push(`/attendancy/list/${item.id}`);
+                router.push(`/attendancy/list/${item.attendanceId}`);
               }}
             >
               <TableCell component="th" scope="row">
-                {item.id}
+                {index}
               </TableCell>
               <TableCell component="th" scope="row">
-                {item.name}
+                {item.attendance.title}
               </TableCell>
-              <TableCell>{item.email}</TableCell>
-              <TableCell>{item.password}</TableCell>
-              <TableCell>비고</TableCell>
+              <TableCell> {item.attendance.description}</TableCell>
+              <TableCell> {item.attendance.type}</TableCell>
+              <TableCell>0</TableCell>
             </TableRow>
           ))}
           <TableRow
@@ -127,33 +132,44 @@ const CommonTable: React.FC<CommonTableProps> = ({
             {isCreate ? (
               <>
                 <TableCell component="th" scope="row">
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => {
+                      mutate(listCreate);
+                    }}
+                  >
+                    저장
+                  </Button>
+                </TableCell>
+                <TableCell component="th" scope="row">
                   <TextField
                     id="outlined-basic"
-                    label="이름"
+                    label="출석부 이름"
                     variant="outlined"
-                    // value={login?.username}
-                    // onChange={(e) => onChange("username", e.target.value)}
+                    value={listCreate?.title}
+                    onChange={(e) => onChange("title", e.target.value)}
                   />
                 </TableCell>
                 <TableCell component="th" scope="row">
                   <TextField
                     id="outlined-basic"
-                    label="출석 상태"
+                    label="출석부 설명"
                     variant="outlined"
-                    // value={login?.username}
-                    // onChange={(e) => onChange("username", e.target.value)}
+                    value={listCreate?.description}
+                    onChange={(e) => onChange("description", e.target.value)}
                   />
                 </TableCell>
                 <TableCell component="th" scope="row">
                   <TextField
                     id="outlined-basic"
-                    label="지각"
+                    label="타입"
                     variant="outlined"
-                    // value={login?.username}
-                    // onChange={(e) => onChange("username", e.target.value)}
+                    value={listCreate?.type}
+                    onChange={(e) => onChange("type", e.target.value)}
                   />
                 </TableCell>
-                <TableCell component="th" scope="row">
+                {/* <TableCell component="th" scope="row">
                   <TextField
                     id="outlined-basic"
                     label="등원시간"
@@ -170,13 +186,13 @@ const CommonTable: React.FC<CommonTableProps> = ({
                     // value={login?.username}
                     // onChange={(e) => onChange("username", e.target.value)}
                   />
-                </TableCell>
+                </TableCell> */}
               </>
             ) : (
               <TableCell
                 component="th"
                 style={{ display: "flex", alignItems: "center", gap: "10px" }}
-                // onClick={() =>  mutate(listCreate);}
+                onClick={() => setIsCreate(true)}
               >
                 <AddIcon /> <p>생성</p>
               </TableCell>

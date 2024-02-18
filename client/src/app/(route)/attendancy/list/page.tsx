@@ -17,9 +17,10 @@ import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import Cookies from "js-cookie";
 
 const Index = () => {
-  const router = useRouter();
+  const accessToken = Cookies.get("access-token");
   const [isCreate, setIsCreate] = useState<boolean>(false);
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
@@ -27,17 +28,16 @@ const Index = () => {
   const { isLoading, data, isError } = useQuery({
     queryKey: ["get-user"],
     queryFn: async () => {
-      const response = await axios.get("http://localhost:12301/attendances", {
+      const response = await axios.get("http://localhost:12310/attendances", {
         headers: {
-          Authorization: "",
+          Authorization: `Bearer ${accessToken}`,
         },
       });
-      return response?.data.result;
+      return response.data;
     },
   });
-  // {loading && <CircularProgress color="inherit" />}
+
   if (isLoading) return <CircularProgress color="inherit" />;
-  if (isError) return <>에러..</>;
 
   return (
     <BasicLayout>
@@ -53,7 +53,7 @@ const Index = () => {
           isCreate={isCreate}
         />
 
-        {isCreate && (
+        {/* {isCreate && (
           <div style={{ display: "flex", gap: "10px" }}>
             <Box mt={2}>
               <Button
@@ -79,7 +79,7 @@ const Index = () => {
               </Button>
             </Box>
           </div>
-        )}
+        )} */}
       </Box>
     </BasicLayout>
     // <Grid container display={"flex"} justifyContent={"space-around"}>
