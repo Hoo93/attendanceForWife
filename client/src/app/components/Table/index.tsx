@@ -111,7 +111,7 @@ const CommonTable: React.FC<CommonTableProps> = ({
               hover
               style={{ cursor: "pointer" }}
               onClick={() => {
-                router.push(`/attendancy/list/${item.attendanceId}`);
+                router.push(`/attendancy/${item.attendanceId}`);
               }}
             >
               <TableCell component="th" scope="row">
@@ -169,24 +169,6 @@ const CommonTable: React.FC<CommonTableProps> = ({
                     onChange={(e) => onChange("type", e.target.value)}
                   />
                 </TableCell>
-                {/* <TableCell component="th" scope="row">
-                  <TextField
-                    id="outlined-basic"
-                    label="등원시간"
-                    variant="outlined"
-                    // value={login?.username}
-                    // onChange={(e) => onChange("username", e.target.value)}
-                  />
-                </TableCell>
-                <TableCell component="th" scope="row">
-                  <TextField
-                    id="outlined-basic"
-                    label="비고"
-                    variant="outlined"
-                    // value={login?.username}
-                    // onChange={(e) => onChange("username", e.target.value)}
-                  />
-                </TableCell> */}
               </>
             ) : (
               <TableCell

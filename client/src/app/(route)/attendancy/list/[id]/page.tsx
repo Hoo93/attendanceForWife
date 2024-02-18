@@ -1,41 +1,51 @@
 "use client";
 
-import { Box, Button, Grid, TextField } from "@mui/material";
+import { Box, Button, CircularProgress, Grid, TextField } from "@mui/material";
 import React from "react";
+import BasicLayout from "@/app/components/BasicLayout";
+import CommonTable from "@/app/components/Table";
+import Paper from "@mui/material/Paper";
+// Component
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
 
 import { useRouter } from "next/navigation";
 import useUser from "@/app/hooks/useUser";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import Cookies from "js-cookie";
 
 const index = () => {
   const router = useRouter();
   let currentUrl: string;
-  let id: number;
-
+  let id: string;
+  const accessToken = Cookies.get("access-token");
   if (typeof window !== "undefined") {
     currentUrl = window.location.pathname;
-    id = Number(currentUrl.split("/").pop());
+    id = String(currentUrl.split("/").pop());
+    console.log(id);
   }
 
-  const {
-    fetchUserUpdate,
-    fetchUserDetail,
-    fetchUserDelete,
-    setUserInfo,
-    setIsUpdate,
-    isUpdate,
-    userInfo,
-  } = useUser();
+  const { setUserInfo } = useUser();
 
   const { isLoading, data, isError } = useQuery({
-    queryKey: ["get-user-detail"],
+    queryKey: [
+      "get-user-detail",
+      typeof window !== "undefined" ?? window.location.pathname,
+    ],
     queryFn: async () => {
-      const response = await axios({
-        method: "get",
-        url: `http://localhost:3000/api/users/${id}`,
-        headers: { "Content-Type": "application/json" },
-      });
+      const response = await axios.get(
+        `http://localhost:12310/attendances/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
       return response?.data.result;
     },
   });
@@ -48,98 +58,89 @@ const index = () => {
     }));
   };
 
-  console.log(data);
-
-  if (isLoading) return <>Loading...</>;
-  else if (isError) return <>에러..</>;
-
+  if (isLoading) return <CircularProgress color="inherit" />;
   return (
-    <div style={{ width: "500px" }}>
-      <Box alignContent={"center"}>
-        <Grid container spacing={1} alignItems={"center"}>
-          <Grid item xs={5}>
-            <div>순번</div>
-          </Grid>
-          <Grid item xs={7}>
-            <TextField variant="outlined" value={data?.id} disabled fullWidth />
-          </Grid>
-          <Grid item xs={5}>
-            <div>이름</div>
-          </Grid>
-          <Grid item xs={7}>
-            <TextField
-              variant="outlined"
-              value={data?.name}
-              disabled={isUpdate ? false : true}
-              fullWidth
-              onChange={(e) => onChange("name", e.target.value)}
-            />
-          </Grid>
-
-          <Grid item xs={5}>
-            <div>이메일</div>
-          </Grid>
-          <Grid item xs={7}>
-            <TextField
-              variant="outlined"
-              value={data?.email}
-              disabled={isUpdate ? false : true}
-              fullWidth
-              onChange={(e) => onChange("email", e.target.value)}
-            />
-          </Grid>
-
-          <Grid item xs={5}>
-            <div>비밀번호</div>
-          </Grid>
-          <Grid item xs={7}>
-            <TextField
-              variant="outlined"
-              value={data?.password}
-              disabled={isUpdate ? false : true}
-              fullWidth
-              onChange={(e) => onChange("password", e.target.value)}
-            />
-          </Grid>
-        </Grid>
-        <Box mt={3}>
-          <Button
-            variant="contained"
-            color="primary"
-            style={{ marginRight: 8 }}
-            onClick={() => {
-              isUpdate ? fetchUserUpdate(userInfo) : setIsUpdate(true);
-            }}
-          >
-            {isUpdate ? "저장" : "수정"}
-          </Button>
-          {!isUpdate ? (
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={() => {
-                router.push("/attendancy/list");
-              }}
-              style={{ marginRight: 8 }}
-            >
-              목록
-            </Button>
-          ) : null}
-
-          <Button
-            variant="contained"
-            color="error"
-            onClick={() => {
-              alert("삭제되었습니다.");
-              fetchUserDelete(data?.id);
-              router.push("/attendancy/list");
-            }}
-          >
-            삭제
-          </Button>
-        </Box>
+    <BasicLayout>
+      <TableContainer component={Paper}>
+        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+          <TableBody></TableBody>
+        </Table>
+      </TableContainer>
+      <br />
+      <TableContainer component={Paper}>
+        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+          <TableHead>
+            <TableRow>
+              <TableCell align="center" colSpan={5}>
+                교회1 충무교회 청년부 주말 30
+              </TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell align="center" colSpan={5}>
+                2024/02/05 (화) 출석 대상자 5명
+              </TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell align="right">이름</TableCell>
+              <TableCell align="right">출석 상태</TableCell>
+              <TableCell align="right">지각</TableCell>
+              <TableCell align="right">등원시간</TableCell>
+              <TableCell align="right">비고</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {/* {data?.map((item: Info) => (
+              <TableRow
+                key={item.id}
+                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                hover
+                style={{ cursor: "pointer" }}
+                onClick={() => {
+                  //   fetchUserDetail(item.id);
+                  //   router.push(`/attendancy/list/${item.id}`);
+                }}
+              >
+                <TableCell component="th" align="right" scope="row">
+                  {item.id}
+                </TableCell>
+                <TableCell component="th" align="right" scope="row">
+                  {item.name}
+                </TableCell>
+                <TableCell align="right">{item.email}</TableCell>
+                <TableCell align="right">{item.password}</TableCell>ㅈㄷㄱ33김ㅂ
+                <TableCell align="right">비고</TableCell>
+              </TableRow>
+            ))} */}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      <Box mt={2} display={"flex"} justifyContent={"space-between"}>
+        <Button variant="contained" color="primary" onClick={() => {}}>
+          출석 체크
+        </Button>
+        <Button variant="contained" color="primary" onClick={() => {}}>
+          출석 통계
+        </Button>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => {
+            router.push("/attendancy/roaster-management");
+          }}
+        >
+          명단 관리
+        </Button>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => {
+            router.push("/attendancy/settings");
+          }}
+        >
+          출석부 설정
+        </Button>
       </Box>
-    </div>
+    </BasicLayout>
   );
 };
 
