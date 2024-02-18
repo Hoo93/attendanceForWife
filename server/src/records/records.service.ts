@@ -95,7 +95,11 @@ export class RecordsService {
 
   async findByAttendeeId(attendeeId: string, recordFilterDto): Promise<[Record[], number]> {
     let queryBuilder: SelectQueryBuilder<Record>;
-    queryBuilder = this.recordRepository.createQueryBuilder('record').where({ attendeeId: attendeeId });
+    queryBuilder = this.recordRepository
+      .createQueryBuilder('record')
+      .innerJoinAndSelect('record.attendee', 'attendee', 'attendee.id=:attendeeId', {
+        attendeeId: attendeeId,
+      });
 
     if (recordFilterDto.year) {
       queryBuilder.andWhere({ date: Like(`${recordFilterDto.year}-%`) });

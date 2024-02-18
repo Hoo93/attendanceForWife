@@ -646,8 +646,6 @@ describe('RecordsService', () => {
       const recordFilterDto = {};
       const [records, count] = await service.findByAttendeeId(targetAttendeeId, recordFilterDto);
 
-      console.log(records);
-
       // Then
       expect(count).toBe(3);
       records.map((record) => {
