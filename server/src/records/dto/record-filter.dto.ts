@@ -2,7 +2,7 @@ import { Column } from 'typeorm';
 import { AttendanceStatus } from '../record-type.enum';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { DayType } from '../../schedules/const/day-type.enum';
-import { IsDate, IsDateString, IsEnum, IsNotEmpty, IsOptional, IsString, Matches } from 'class-validator';
+import { IsDate, IsDateString, IsEnum, IsNotEmpty, IsOptional, IsPositive, IsString, Matches, Max, Min } from 'class-validator';
 import { Record } from '../entities/record.entity';
 import { Transform } from 'class-transformer';
 import { Pagination } from '../../common/pagination';
@@ -44,4 +44,8 @@ export class RecordFilterDto extends Pagination {
   @IsOptional()
   @ApiPropertyOptional({ description: '출석체크 대상 번호', type: 'string', nullable: true })
   attendeeId: number;
+
+  @IsPositive()
+  @ApiPropertyOptional({ description: '조회 대상 년도', type: 'number', nullable: true })
+  year: number;
 }
