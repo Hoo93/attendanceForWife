@@ -659,8 +659,6 @@ describe('RecordsService', () => {
       const user_1 = new User();
       user_1.id = 'user id 1';
 
-      const targetAttendanceId = 'testAttendanceId';
-
       const targetAttendeeId = 'Attendee Id 1';
 
       const attendee_2_id = 'Attendee Id 2';
