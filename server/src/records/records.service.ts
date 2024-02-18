@@ -4,7 +4,7 @@ import { UpdateRecordDto } from './dto/update-record.dto';
 import { User } from '../users/entities/user.entity';
 import { Record } from './entities/record.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { In, InsertResult, Repository, SelectQueryBuilder } from 'typeorm';
+import { In, InsertResult, Like, Repository, SelectQueryBuilder } from 'typeorm';
 import { DeleteRecordDto } from './dto/delete-record.dto';
 import { CreateAllRecordDto } from './dto/createAll-record.dto';
 import { AttendanceStatus } from './record-type.enum';
@@ -96,6 +96,11 @@ export class RecordsService {
   async findByAttendeeId(attendeeId: string, recordFilterDto): Promise<[Record[], number]> {
     let queryBuilder: SelectQueryBuilder<Record>;
     queryBuilder = this.recordRepository.createQueryBuilder('record').where({ attendeeId: attendeeId });
+
+    if (recordFilterDto.year) {
+      queryBuilder.andWhere({ date: Like(`${recordFilterDto.year}-%`) });
+    }
+
     return queryBuilder.getManyAndCount();
   }
 
