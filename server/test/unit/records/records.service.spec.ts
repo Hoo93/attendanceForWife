@@ -645,7 +645,7 @@ describe('RecordsService', () => {
       await recordRepository.save([targetRecord_1, targetRecord_2, targetRecord_3, record_4]);
 
       // When
-      const recordFilterDto = {};
+      const recordFilterDto = new RecordFilterDto();
       const [records, count] = await service.findByAttendeeId(targetAttendeeId, recordFilterDto);
 
       // Then
@@ -673,7 +673,8 @@ describe('RecordsService', () => {
       await recordRepository.save([targetRecord_1, targetRecord_2, targetRecord_3, record_4]);
 
       // When
-      const recordFilterDto = { year: 2024 };
+      const recordFilterDto = new RecordFilterDto();
+      recordFilterDto.year = 2024;
       const [records, count] = await service.findByAttendeeId(targetAttendeeId, recordFilterDto);
 
       // Then

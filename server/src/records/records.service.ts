@@ -93,7 +93,7 @@ export class RecordsService {
     return queryBuilder.getManyAndCount();
   }
 
-  async findByAttendeeId(attendeeId: string, recordFilterDto): Promise<[Record[], number]> {
+  async findByAttendeeId(attendeeId: string, recordFilterDto: RecordFilterDto): Promise<[Record[], number]> {
     let queryBuilder: SelectQueryBuilder<Record>;
     queryBuilder = this.recordRepository
       .createQueryBuilder('record')
@@ -101,7 +101,10 @@ export class RecordsService {
         attendeeId: attendeeId,
       });
 
-    if (recordFilterDto.year) {
+    if (recordFilterDto.year && recordFilterDto.month) {
+      const month = recordFilterDto.month < 10 ? '0' + recordFilterDto.month : recordFilterDto.month;
+      queryBuilder.andWhere({ date: Like(`${recordFilterDto.year}-${month}-%`) });
+    } else if (recordFilterDto.year) {
       queryBuilder.andWhere({ date: Like(`${recordFilterDto.year}-%`) });
     }
 
