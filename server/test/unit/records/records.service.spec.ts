@@ -682,6 +682,37 @@ describe('RecordsService', () => {
         expect(record.date.split('-')[0]).toBe('2024');
       });
     });
+
+    it('filterDto의 year와 month에 해당하는 record만 조회한다.', async () => {
+      // Given
+      const user_1 = new User();
+      user_1.id = 'user id 1';
+
+      const targetAttendeeId = 'Attendee Id 1';
+
+      const attendee_2_id = 'Attendee Id 2';
+
+      const targetRecord_1 = createRecord('2024-01-31', DayType.WEDNESDAY, AttendanceStatus.PRESENT, targetAttendeeId, user_1.id);
+      const targetRecord_2 = createRecord('2024-02-01', DayType.THURSDAY, AttendanceStatus.PRESENT, targetAttendeeId, user_1.id);
+      const targetRecord_3 = createRecord('2024-02-02', DayType.FRIDAY, AttendanceStatus.PRESENT, targetAttendeeId, user_1.id);
+      const targetRecord_4 = createRecord('2222-02-02', DayType.FRIDAY, AttendanceStatus.PRESENT, targetAttendeeId, user_1.id);
+      const record_4 = createRecord('2222-02-02', DayType.FRIDAY, AttendanceStatus.PRESENT, attendee_2_id, user_1.id);
+
+      await recordRepository.save([targetRecord_1, targetRecord_2, targetRecord_3, targetRecord_4, record_4]);
+
+      // When
+      const recordFilterDto = new RecordFilterDto();
+      recordFilterDto.year = 2024;
+      recordFilterDto.month = 2;
+
+      const [records, count] = await service.findByAttendeeId(targetAttendeeId, recordFilterDto);
+
+      // Then
+      expect(count).toBe(2);
+      records.map((record) => {
+        expect(record.date.substring(0, 7)).toBe('2024-02');
+      });
+    });
   });
 
   describe('deleteAll TEST', () => {
