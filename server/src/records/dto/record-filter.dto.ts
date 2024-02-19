@@ -40,12 +40,11 @@ export class RecordFilterDto extends Pagination {
   })
   day: DayType;
 
-  @IsString()
-  @IsOptional()
-  @ApiPropertyOptional({ description: '출석체크 대상 번호', type: 'string', nullable: true })
-  attendeeId: number;
+  @IsPositive()
+  @ApiPropertyOptional({ description: '조회 년도', type: 'number', nullable: true })
+  year: number;
 
   @IsPositive()
-  @ApiPropertyOptional({ description: '조회 대상 년도', type: 'number', nullable: true })
-  year: number;
+  @ApiPropertyOptional({ description: '조회 월', type: 'number', nullable: true })
+  month: number;
 }
