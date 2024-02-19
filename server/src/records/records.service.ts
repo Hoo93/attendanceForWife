@@ -108,6 +108,14 @@ export class RecordsService {
       queryBuilder.andWhere({ date: Like(`${recordFilterDto.year}-%`) });
     }
 
+    if (recordFilterDto.dateFrom) {
+      queryBuilder.andWhere('record.date >= :dateFrom', { dateFrom: recordFilterDto.dateFrom });
+    }
+
+    if (recordFilterDto.dateTo) {
+      queryBuilder.andWhere('record.date < :dateTo', { dateTo: recordFilterDto.dateTo });
+    }
+
     return queryBuilder.getManyAndCount();
   }
 
