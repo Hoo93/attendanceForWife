@@ -88,7 +88,7 @@ export class RecordsController {
     description: '출석부에 속한 출석기록 조회',
     type: Array<Record>,
   })
-  async findByattendanceId(@Param('attendanceId') attendanceId: string, @Query() recordFilterDto: RecordFilterDto) {
+  async findByAttendanceId(@Param('attendanceId') attendanceId: string, @Query() recordFilterDto: RecordFilterDto) {
     return this.recordsService.findByAttendanceId(attendanceId, recordFilterDto);
   }
 

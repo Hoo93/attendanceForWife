@@ -66,7 +66,7 @@ export class RecordsService {
     return this.recordRepository.findOneBy({ id });
   }
 
-  async findByAttendanceId(attendanceId: string, recordFilterDto: RecordFilterDto): Promise<Record[]> {
+  async findByAttendanceId(attendanceId: string, recordFilterDto: RecordFilterDto): Promise<[Record[], number]> {
     let queryBuilder: SelectQueryBuilder<Record>;
     queryBuilder = this.recordRepository
       .createQueryBuilder('record')
@@ -90,7 +90,7 @@ export class RecordsService {
     queryBuilder.take(recordFilterDto.take);
     queryBuilder.skip(recordFilterDto.skip);
 
-    return queryBuilder.getMany();
+    return queryBuilder.getManyAndCount();
   }
 
   async findByAttendeeId(attendeeId: string, recordFilterDto): Promise<[Record[], number]> {
@@ -134,10 +134,6 @@ export class RecordsService {
     queryBuilder.orderBy('attendee_name', 'ASC');
 
     return queryBuilder.getRawMany();
-  }
-
-  update(id: number, updateRecordDto: UpdateRecordDto) {
-    return `This action updates a #${id} record`;
   }
 
   async deleteAll(deleteRecordDto: DeleteRecordDto) {
