@@ -1,7 +1,5 @@
-import { Box, Container, styled } from "@mui/material";
+import { Box, styled } from "@mui/material";
 import { useEffect, useRef } from "react";
-
-import { Router } from "next/router";
 
 interface Props {
   children: React.ReactNode;
