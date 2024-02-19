@@ -1,9 +1,8 @@
 "use client";
 
-import { Box, Button, CircularProgress, Grid, TextField } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import React from "react";
 import BasicLayout from "@/app/components/BasicLayout";
-import CommonTable from "@/app/components/Table";
 import Paper from "@mui/material/Paper";
 // Component
 import Table from "@mui/material/Table";
@@ -13,33 +12,25 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import useUser from "@/app/hooks/useUser";
-import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import Cookies from "js-cookie";
+import { useQuery } from "@tanstack/react-query";
 
 const index = () => {
   const router = useRouter();
-  let currentUrl: string;
-  let id: string;
+  const params = useParams<{ id: string }>();
+
   const accessToken = Cookies.get("access-token");
-  if (typeof window !== "undefined") {
-    currentUrl = window.location.pathname;
-    id = String(currentUrl.split("/").pop());
-    console.log(id);
-  }
 
   const { setUserInfo } = useUser();
 
-  const { isLoading, data, isError } = useQuery({
-    queryKey: [
-      "get-user-detail",
-      typeof window !== "undefined" ?? window.location.pathname,
-    ],
+  const { isLoading } = useQuery({
+    queryKey: ["get-user-detail"],
     queryFn: async () => {
       const response = await axios.get(
-        `http://localhost:12310/attendances/${id}`,
+        `http://localhost:12310/attendances/${params.id}`,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -58,7 +49,7 @@ const index = () => {
     }));
   };
 
-  if (isLoading) return <CircularProgress color="inherit" />;
+  // if (isLoading) return <CircularProgress color="inherit" />;
   return (
     <BasicLayout>
       <TableContainer component={Paper}>
@@ -125,7 +116,7 @@ const index = () => {
           variant="contained"
           color="primary"
           onClick={() => {
-            router.push("/attendancy/roaster-management");
+            router.push(`/attendancy/roaster-management/${params.id}`);
           }}
         >
           명단 관리
