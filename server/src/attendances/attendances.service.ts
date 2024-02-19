@@ -33,7 +33,7 @@ export class AttendancesService {
     return newAttendance;
   }
 
-  async findAllByUserId(userId: string) {
+  async findAllByUserId(userId: string): Promise<any> {
     return this.userAttendanceRepository.find({
       select: { attendanceId: true, userId: true, role: true },
       where: { userId: userId },
@@ -45,14 +45,8 @@ export class AttendancesService {
     return this.attendanceRepository.findOneBy({ id });
   }
 
-  async update(
-    id: string,
-    updateAttendanceDto: UpdateAttendanceDto,
-  ): Promise<UpdateResult> {
-    const result = await this.attendanceRepository.update(
-      id,
-      updateAttendanceDto,
-    );
+  async update(id: string, updateAttendanceDto: UpdateAttendanceDto): Promise<UpdateResult> {
+    const result = await this.attendanceRepository.update(id, updateAttendanceDto);
     return result;
   }
 
