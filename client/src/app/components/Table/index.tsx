@@ -71,11 +71,11 @@ const CommonTable: React.FC<CommonTableProps> = ({
   };
 
   const { mutate, data, isLoading } = useMutation(fetchListCreate, {
-    onSuccess: (data, variables, context) => {
+    onSuccess: () => {
       alert("생성 되었습니다.");
       setIsCreate(false);
     },
-    onError: (error, variables, context) => {
+    onError: () => {
       alert("빈칸을 전부 채워주세요");
     },
   });
@@ -90,7 +90,6 @@ const CommonTable: React.FC<CommonTableProps> = ({
 
   // if (isLoading) return <CircularProgress color="inherit" />;
 
-  console.log(infoList);
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -111,7 +110,7 @@ const CommonTable: React.FC<CommonTableProps> = ({
               hover
               style={{ cursor: "pointer" }}
               onClick={() => {
-                router.push(`/attendancy/${item.attendanceId}`);
+                router.push(`/attendancy/list/${item.attendanceId}`);
               }}
             >
               <TableCell component="th" scope="row">
