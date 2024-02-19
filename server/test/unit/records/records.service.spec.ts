@@ -714,6 +714,97 @@ describe('RecordsService', () => {
         expect(record.date.substring(0, 7)).toBe('2024-02');
       });
     });
+
+    it('filterDto의 dateFrom 이상에 해당하는 Record를 조회한다.', async () => {
+      // Given
+      const user_1 = new User();
+      user_1.id = 'user id 1';
+
+      const targetAttendeeId = 'Attendee Id 1';
+
+      const attendee_2_id = 'Attendee Id 2';
+
+      const targetRecord_1 = createRecord('2024-01-31', DayType.WEDNESDAY, AttendanceStatus.PRESENT, targetAttendeeId, user_1.id);
+      const targetRecord_2 = createRecord('2024-02-01', DayType.THURSDAY, AttendanceStatus.PRESENT, targetAttendeeId, user_1.id);
+      const targetRecord_3 = createRecord('2024-02-02', DayType.FRIDAY, AttendanceStatus.PRESENT, targetAttendeeId, user_1.id);
+      const targetRecord_4 = createRecord('2222-02-02', DayType.FRIDAY, AttendanceStatus.PRESENT, targetAttendeeId, user_1.id);
+      const record_4 = createRecord('2222-02-02', DayType.FRIDAY, AttendanceStatus.PRESENT, attendee_2_id, user_1.id);
+
+      await recordRepository.save([targetRecord_1, targetRecord_2, targetRecord_3, targetRecord_4, record_4]);
+
+      // When
+      const recordFilterDto = new RecordFilterDto();
+      recordFilterDto.dateFrom = '2024-02-01';
+
+      const [records, count] = await service.findByAttendeeId(targetAttendeeId, recordFilterDto);
+
+      // Then
+      expect(count).toBe(3);
+      records.map((record) => {
+        expect(new Date(record.date).getTime()).toBeGreaterThanOrEqual(new Date('2024-02-01').getTime());
+      });
+    });
+
+    it('filterDto의 dateTo 미만에 해당하는 Record를 조회한다.', async () => {
+      // Given
+      const user_1 = new User();
+      user_1.id = 'user id 1';
+
+      const targetAttendeeId = 'Attendee Id 1';
+
+      const attendee_2_id = 'Attendee Id 2';
+
+      const targetRecord_1 = createRecord('2024-01-31', DayType.WEDNESDAY, AttendanceStatus.PRESENT, targetAttendeeId, user_1.id);
+      const targetRecord_2 = createRecord('2024-02-01', DayType.THURSDAY, AttendanceStatus.PRESENT, targetAttendeeId, user_1.id);
+      const targetRecord_3 = createRecord('2024-02-02', DayType.FRIDAY, AttendanceStatus.PRESENT, targetAttendeeId, user_1.id);
+      const targetRecord_4 = createRecord('2222-02-02', DayType.FRIDAY, AttendanceStatus.PRESENT, targetAttendeeId, user_1.id);
+      const record_4 = createRecord('2222-02-02', DayType.FRIDAY, AttendanceStatus.PRESENT, attendee_2_id, user_1.id);
+
+      await recordRepository.save([targetRecord_1, targetRecord_2, targetRecord_3, targetRecord_4, record_4]);
+
+      // When
+      const recordFilterDto = new RecordFilterDto();
+      recordFilterDto.dateTo = '2024-02-02';
+
+      const [records, count] = await service.findByAttendeeId(targetAttendeeId, recordFilterDto);
+
+      // Then
+      expect(count).toBe(2);
+      records.map((record) => {
+        expect(new Date(record.date).getTime()).toBeLessThanOrEqual(new Date('2024-02-02').getTime());
+      });
+    });
+
+    it('filterDto의 dateFrom 이상 dateFrom 미만에 해당하는 Record를 조회한다.', async () => {
+      // Given
+      const user_1 = new User();
+      user_1.id = 'user id 1';
+
+      const targetAttendeeId = 'Attendee Id 1';
+
+      const attendee_2_id = 'Attendee Id 2';
+
+      const targetRecord_1 = createRecord('2024-01-31', DayType.WEDNESDAY, AttendanceStatus.PRESENT, targetAttendeeId, user_1.id);
+      const targetRecord_2 = createRecord('2024-02-01', DayType.THURSDAY, AttendanceStatus.PRESENT, targetAttendeeId, user_1.id);
+      const targetRecord_3 = createRecord('2024-02-02', DayType.FRIDAY, AttendanceStatus.PRESENT, targetAttendeeId, user_1.id);
+      const targetRecord_4 = createRecord('2024-02-03', DayType.SATURDAY, AttendanceStatus.PRESENT, targetAttendeeId, user_1.id);
+      const record_4 = createRecord('2222-02-02', DayType.FRIDAY, AttendanceStatus.PRESENT, attendee_2_id, user_1.id);
+
+      await recordRepository.save([targetRecord_1, targetRecord_2, targetRecord_3, targetRecord_4, record_4]);
+
+      // When
+      const recordFilterDto = new RecordFilterDto();
+      recordFilterDto.dateFrom = '2024-02-01';
+      recordFilterDto.dateTo = '2024-02-03';
+
+      const [records, count] = await service.findByAttendeeId(targetAttendeeId, recordFilterDto);
+
+      // Then
+      expect(count).toBe(2);
+      records.map((record) => {
+        expect(['2024-02-01', '2024-02-02']).toContain(record.date);
+      });
+    });
   });
 
   describe('deleteAll TEST', () => {

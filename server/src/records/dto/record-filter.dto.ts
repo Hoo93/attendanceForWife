@@ -47,4 +47,12 @@ export class RecordFilterDto extends Pagination {
   @IsPositive()
   @ApiPropertyOptional({ description: '조회 월', type: 'number', nullable: true })
   month: number;
+
+  @IsDateString()
+  @ApiPropertyOptional({ description: '조회 시작일', type: 'string', nullable: true })
+  dateFrom: string;
+
+  @IsDateString()
+  @ApiPropertyOptional({ description: '조회 종료일', type: 'string', nullable: true })
+  dateTo: string;
 }
