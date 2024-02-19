@@ -34,11 +34,12 @@ export class AttendancesService {
   }
 
   async findAllByUserId(userId: string): Promise<any> {
-    return this.userAttendanceRepository.find({
-      select: { attendanceId: true, userId: true, role: true },
-      where: { userId: userId },
-      relations: { attendance: true },
-    });
+    return this.userAttendanceRepository
+      .createQueryBuilder('userAttendance')
+      .leftJoinAndSelect('userAttendance.attendance', 'attendance')
+      .loadRelationCountAndMap('attendance.attendeeCount', 'attendance.attendees')
+      .where('userAttendance.userId = :userId', { userId })
+      .getMany();
   }
 
   async findOneById(id: string) {

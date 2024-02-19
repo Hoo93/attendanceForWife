@@ -128,7 +128,7 @@ describe('AttendancesService', () => {
       // then
       expect(sut).toHaveLength(1);
       expect(sut[0].attendance.id).toBe(createdAttendance.id);
-      expect(sut[0].attendance?.attendeeCount).toBe(3);
+      expect(sut[0].attendance.attendeeCount).toBe(3);
     });
 
     it('회원의 id로 생성된 모든 출석부와 출석부에 속해있는 Attendee의 수를 조회한다.', async () => {
@@ -248,6 +248,7 @@ describe('AttendancesService', () => {
   }
 
   async function clear() {
+    await attendeeRepository.query('DELETE FROM attendee;');
     await userAttendanceRepository.query('DELETE FROM user_attendance;');
     await attendanceRepository.query('DELETE FROM attendance;');
     await userRepository.query(`DELETE FROM user;`);
