@@ -12,12 +12,11 @@ export interface Info {
   password: string;
 }
 
-
 const index = () => {
   const router = useRouter();
 
-  const {mutate : fetchUserCreate} = useAddProduct();
-  
+  const { mutate: fetchUserCreate } = useAddProduct();
+
   // State
   const [userInfo, setUserInfo] = useState<Info>({
     name: "",
@@ -25,16 +24,16 @@ const index = () => {
     password: "",
   });
 
-    // Hook
+  // Hook
   const onChange = (field: string, value: string) => {
     setUserInfo((prevState) => ({
       ...prevState,
       [field]: value,
     }));
   };
-  
+
   return (
-  <div style={{ width: "500px" }}>
+    <div style={{ width: "500px" }}>
       <Box alignContent={"center"}>
         <Grid container spacing={1} alignItems={"center"}>
           <Grid item xs={5}>

@@ -2,7 +2,7 @@
 
 // Component
 import { Box, Button, CircularProgress } from "@mui/material";
-import React, { useState } from "react";
+import React from "react";
 
 import BasicLayout from "@/app/components/BasicLayout";
 import CommonTable from "@/app/components/Table";
@@ -37,7 +37,7 @@ const index = () => {
   const { isLoading, data, isError } = useQuery({
     queryKey: ["get-user"],
     queryFn: async () => {
-      const response = await axios.get("http://localhost:3000/api/users");
+      const response = await axios.get("");
       return response?.data.result;
     },
   });
