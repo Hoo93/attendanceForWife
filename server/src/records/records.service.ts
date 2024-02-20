@@ -119,7 +119,33 @@ export class RecordsService {
     return queryBuilder.getManyAndCount();
   }
 
-  async findByAttendanceIdForExcel(attendanceId: string, recordFilterDto: RecordFilterDto): Promise<Record[]> {
+  private async findByAttendeeIdForExcelDownload(attendeeId: string, recordFilterDto: RecordFilterDto): Promise<Record[]> {
+    let queryBuilder: SelectQueryBuilder<Record>;
+    queryBuilder = this.recordRepository
+      .createQueryBuilder('record')
+      .innerJoinAndSelect('record.attendee', 'attendee', 'attendee.id=:attendeeId', {
+        attendeeId: attendeeId,
+      });
+
+    if (recordFilterDto.year && recordFilterDto.month) {
+      const month = recordFilterDto.month < 10 ? '0' + recordFilterDto.month : recordFilterDto.month;
+      queryBuilder.andWhere({ date: Like(`${recordFilterDto.year}-${month}-%`) });
+    } else if (recordFilterDto.year) {
+      queryBuilder.andWhere({ date: Like(`${recordFilterDto.year}-%`) });
+    }
+
+    if (recordFilterDto.dateFrom) {
+      queryBuilder.andWhere('record.date >= :dateFrom', { dateFrom: recordFilterDto.dateFrom });
+    }
+
+    if (recordFilterDto.dateTo) {
+      queryBuilder.andWhere('record.date < :dateTo', { dateTo: recordFilterDto.dateTo });
+    }
+
+    return queryBuilder.getRawMany();
+  }
+
+  private async findByAttendanceIdForExcel(attendanceId: string, recordFilterDto: RecordFilterDto): Promise<Record[]> {
     let queryBuilder: SelectQueryBuilder<Record>;
     queryBuilder = this.recordRepository
       .createQueryBuilder('record')
@@ -171,6 +197,21 @@ export class RecordsService {
 
   async excelDownload(attendanceId: string, recordFilterDto: RecordFilterDto) {
     const rawData = await this.findByAttendanceIdForExcel(attendanceId, recordFilterDto);
+
+    const dataToDbMapper = {};
+
+    dataToDbMapper['attendee_name'] = '회원이름';
+    dataToDbMapper['attendee_age'] = '나이';
+    dataToDbMapper['record_day'] = '요일';
+    dataToDbMapper['record_date'] = '날짜';
+    dataToDbMapper['record_status'] = '출석상태';
+
+    const excelBuffer = this.excelService.exportDataToExcel(rawData, dataToDbMapper);
+    return excelBuffer;
+  }
+
+  async attendeeRecordExcelDownload(attendeeId: string, recordFilterDto: RecordFilterDto) {
+    const rawData = await this.findByAttendeeIdForExcelDownload(attendeeId, recordFilterDto);
 
     const dataToDbMapper = {};
 
