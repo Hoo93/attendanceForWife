@@ -78,6 +78,23 @@ export class RecordsController {
     return this.recordsService.findOneById(+id);
   }
 
+  @Get('attendee/:attendeeId')
+  @ApiOperation({
+    description: '출석대상에 속한 출석기록 조회',
+    summary: '출석대상에 속한 출석기록 조회',
+  })
+  @ApiResponse({
+    status: 200,
+    description: '출석대상에 속한 출석기록 조회',
+    type: Array<Record>,
+  })
+  async findByAttendeeId(
+    @Param('attendeeId') attendeeId: string,
+    @Query() recordFilterDto: RecordFilterDto,
+  ): Promise<[Record[], number]> {
+    return this.recordsService.findByAttendeeId(attendeeId, recordFilterDto);
+  }
+
   @Get('attendance/:attendanceId')
   @ApiOperation({
     description: '출석부에 속한 출석기록 조회',
@@ -88,7 +105,10 @@ export class RecordsController {
     description: '출석부에 속한 출석기록 조회',
     type: Array<Record>,
   })
-  async findByAttendanceId(@Param('attendanceId') attendanceId: string, @Query() recordFilterDto: RecordFilterDto) {
+  async findByAttendanceId(
+    @Param('attendanceId') attendanceId: string,
+    @Query() recordFilterDto: RecordFilterDto,
+  ): Promise<[Record[], number]> {
     return this.recordsService.findByAttendanceId(attendanceId, recordFilterDto);
   }
 
@@ -101,8 +121,34 @@ export class RecordsController {
     status: 200,
     description: '출석부에 속한 출석기록 엑셀 다운로드',
   })
-  async downloadMemberExcel(@Response() res, @Param('attendanceId') attendanceId: string, @Query() recordFilterDto: RecordFilterDto) {
+  async downloadAttendanceRecordExcel(
+    @Response() res,
+    @Param('attendanceId') attendanceId: string,
+    @Query() recordFilterDto: RecordFilterDto,
+  ) {
     const buffer = await this.recordsService.excelDownload(attendanceId, recordFilterDto);
+    res.set({
+      'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      'Content-Disposition': 'attachment; filename="Members.xlsx"',
+    });
+    res.end(buffer);
+  }
+
+  @Get('attendee/:attendeeId/excel')
+  @ApiOperation({
+    description: '출석대상에 속한 출석기록 엑셀 다운로드',
+    summary: '출석대상에 속한 출석기록 엑셀 다운로드',
+  })
+  @ApiResponse({
+    status: 200,
+    description: '출석대상에 속한 출석기록 엑셀 다운로드',
+  })
+  async downloadAttendeeRecordExcel(
+    @Response() res,
+    @Param('attendeeId') attendeeId: string,
+    @Query() recordFilterDto: RecordFilterDto,
+  ) {
+    const buffer = await this.recordsService.attendeeRecordExcelDownload(attendeeId, recordFilterDto);
     res.set({
       'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
       'Content-Disposition': 'attachment; filename="Members.xlsx"',
