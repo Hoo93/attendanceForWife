@@ -1,10 +1,4 @@
-import {
-  IsInt,
-  IsNotEmpty,
-  IsOptional,
-  IsString,
-  Matches,
-} from 'class-validator';
+import { IsInt, IsNotEmpty, IsOptional, IsString, Matches } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { Attendance } from '../../attendances/entities/attendance.entity';
 import { Attendee } from '../entities/attendee.entity';
@@ -82,6 +76,8 @@ export class CreateAttendeeDto {
     const attendee = new Attendee();
     attendee.name = this.name;
     attendee.attendanceId = this.attendanceId;
+    attendee.mobileNumber = this.mobileNumber;
+    attendee.subMobileNumber = this.subMobileNumber;
     attendee.description = this?.description;
     attendee.age = this?.age;
     return attendee;
