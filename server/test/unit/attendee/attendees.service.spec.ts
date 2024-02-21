@@ -1,11 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AttendeesService } from '../../../src/attendees/attendees.service';
 import { TestModule } from '../../../src/test.module';
-import {
-  getDataSourceToken,
-  getRepositoryToken,
-  TypeOrmModule,
-} from '@nestjs/typeorm';
+import { getDataSourceToken, getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm';
 import { Attendee } from '../../../src/attendees/entities/attendee.entity';
 import { Attendance } from '../../../src/attendances/entities/attendance.entity';
 import { User } from '../../../src/users/entities/user.entity';
@@ -53,14 +49,9 @@ describe('AttendeesService', () => {
   });
 
   describe('createAttendee Test ', () => {
-    it('출석 대상 테이블에 출석 대상자를 생성한다.', async () => {
+    it('Attendee 테이블에 Attendee를 생성한다.', async () => {
       // given
-      const attendeeDto = createAttendeeDto(
-        'test name',
-        'testAttendanceId',
-        'this is first attendee',
-        15,
-      );
+      const attendeeDto = createAttendeeDto('test name', 'testAttendanceId', 'this is first attendee', 15);
 
       const user = new User();
       user.id = 'user id 1';
@@ -74,6 +65,31 @@ describe('AttendeesService', () => {
       expect(createdAttendee?.createId).toBe('user id 1');
       expect(createdAttendee?.attendanceId).toBe('testAttendanceId');
     });
+
+    it('createAttendeeDto의 정보로 Attendee를 생성한다.', async () => {
+      // given
+      const attendeeDto = new CreateAttendeeDto();
+      attendeeDto.name = 'test name';
+      attendeeDto.attendanceId = 'testAttendanceId';
+      attendeeDto.description = 'this is first attendee';
+      attendeeDto.age = 15;
+      attendeeDto.mobileNumber = '01080981398';
+      attendeeDto.subMobileNumber = '01026478104';
+
+      const user = new User();
+      user.id = 'user id 1';
+
+      // when
+      const createdAttendee = await service.createAttendee(attendeeDto, user);
+
+      // then
+      expect(createdAttendee?.name).toBe('test name');
+      expect(createdAttendee?.description).toBe('this is first attendee');
+      expect(createdAttendee?.createId).toBe('user id 1');
+      expect(createdAttendee?.attendanceId).toBe('testAttendanceId');
+      expect(createdAttendee?.mobileNumber).toBe('01080981398');
+      expect(createdAttendee?.subMobileNumber).toBe('01026478104');
+    });
   });
 
   describe('findAllByAttendanceId Test', () => {
@@ -85,24 +101,9 @@ describe('AttendeesService', () => {
       const user_1 = new User();
       user_1.id = 'user id 1';
 
-      const attendeeDto_1 = createAttendeeDto(
-        '가나다',
-        'testAttendanceId',
-        '가나다 학생',
-        3,
-      );
-      const attendeeDto_2 = createAttendeeDto(
-        '라마바',
-        'testAttendanceId',
-        '라마바 학생',
-        4,
-      );
-      const attendeeDto_3 = createAttendeeDto(
-        '아자차',
-        'notTestAttendanceId',
-        '아자차 학생',
-        5,
-      );
+      const attendeeDto_1 = createAttendeeDto('가나다', 'testAttendanceId', '가나다 학생', 3);
+      const attendeeDto_2 = createAttendeeDto('라마바', 'testAttendanceId', '라마바 학생', 4);
+      const attendeeDto_3 = createAttendeeDto('아자차', 'notTestAttendanceId', '아자차 학생', 5);
 
       await service.createAttendee(attendeeDto_1, user_1);
       await service.createAttendee(attendeeDto_2, user_1);
@@ -130,13 +131,7 @@ describe('AttendeesService', () => {
       const user_1 = new User();
       user_1.id = 'user id 1';
 
-      const attendee = createAttendee(
-        '가나다',
-        'testAttendanceId',
-        '가나다 학생',
-        3,
-        user_1.id,
-      );
+      const attendee = createAttendee('가나다', 'testAttendanceId', '가나다 학생', 3, user_1.id);
 
       const createdAttendee = await attendeeRepository.save(attendee);
 
@@ -148,10 +143,7 @@ describe('AttendeesService', () => {
       updateDto.description = '수정되었습니다';
       updateDto.age = 99;
 
-      const updatedAttendee = await service.update(
-        createdAttendee.id,
-        updateDto,
-      );
+      const updatedAttendee = await service.update(createdAttendee.id, updateDto);
 
       // Then
       expect(updatedAttendee.name).toBe('수정된');
@@ -167,13 +159,7 @@ describe('AttendeesService', () => {
       const user_1 = new User();
       user_1.id = 'user id 1';
 
-      const attendee = createAttendee(
-        '가나다',
-        'testAttendanceId',
-        '가나다 학생',
-        3,
-        user_1.id,
-      );
+      const attendee = createAttendee('가나다', 'testAttendanceId', '가나다 학생', 3, user_1.id);
 
       const createdAttendee = await attendeeRepository.save(attendee);
 
@@ -184,10 +170,7 @@ describe('AttendeesService', () => {
       updateDto.updateId = user_1.id;
       updateDto.updatedAt = now;
 
-      const updatedAttendee = await service.update(
-        createdAttendee.id,
-        updateDto,
-      );
+      const updatedAttendee = await service.update(createdAttendee.id, updateDto);
 
       // Then
       expect(updatedAttendee.name).toBe('가나다');
@@ -209,13 +192,7 @@ describe('AttendeesService', () => {
 
       const now = new Date();
 
-      const attendee = createAttendee(
-        '가나다',
-        'testAttendanceId',
-        '가나다 학생',
-        3,
-        user_1.id,
-      );
+      const attendee = createAttendee('가나다', 'testAttendanceId', '가나다 학생', 3, user_1.id);
       attendee.createdAt = now;
 
       const createdAttendee = await attendeeRepository.save(attendee);
@@ -242,21 +219,9 @@ describe('AttendeesService', () => {
       const user_1 = new User();
       user_1.id = 'user id 1';
 
-      const attendee_1 = createAttendee(
-        '가나다',
-        'testAttendanceId',
-        '가나다 학생',
-        3,
-        user_1.id,
-      );
+      const attendee_1 = createAttendee('가나다', 'testAttendanceId', '가나다 학생', 3, user_1.id);
 
-      const attendee_2 = createAttendee(
-        '라마바',
-        'testAttendanceId',
-        '라마바 학생',
-        5,
-        user_1.id,
-      );
+      const attendee_2 = createAttendee('라마바', 'testAttendanceId', '라마바 학생', 5, user_1.id);
 
       const createdAttendee_1 = await attendeeRepository.save(attendee_1);
       const createdAttendee_2 = await attendeeRepository.save(attendee_2);
@@ -286,29 +251,11 @@ describe('AttendeesService', () => {
 
       const now = new Date();
 
-      const attendee_1 = createAttendee(
-        '가나다',
-        'testAttendanceId',
-        '가나다 학생',
-        3,
-        user_1.id,
-      );
+      const attendee_1 = createAttendee('가나다', 'testAttendanceId', '가나다 학생', 3, user_1.id);
 
-      const attendee_2 = createAttendee(
-        '라마바',
-        'testAttendanceId',
-        '라마바 학생',
-        5,
-        user_1.id,
-      );
+      const attendee_2 = createAttendee('라마바', 'testAttendanceId', '라마바 학생', 5, user_1.id);
 
-      const attendee_3 = createAttendee(
-        '아자차',
-        'notTestAttendanceId',
-        '아자차 학생',
-        7,
-        user_1.id,
-      );
+      const attendee_3 = createAttendee('아자차', 'notTestAttendanceId', '아자차 학생', 7, user_1.id);
 
       const createdAttendee_1 = await attendeeRepository.save(attendee_1);
       const createdAttendee_2 = await attendeeRepository.save(attendee_2);
@@ -316,17 +263,11 @@ describe('AttendeesService', () => {
 
       // When
       const deleteDto = new DeleteAttendeeDto();
-      deleteDto.ids = [
-        createdAttendee_1.id,
-        createdAttendee_2.id,
-        createdAttendee_3.id,
-      ];
+      deleteDto.ids = [createdAttendee_1.id, createdAttendee_2.id, createdAttendee_3.id];
       deleteDto.attendanceId = 'testAttendanceId';
 
       // Then
-      expect(
-        async () => await service.deleteAll(deleteDto),
-      ).rejects.toThrowError();
+      expect(async () => await service.deleteAll(deleteDto)).rejects.toThrowError();
     });
   });
 
