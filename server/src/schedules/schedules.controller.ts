@@ -53,7 +53,6 @@ export class SchedulesController {
     type: Array<Schedule>,
   })
   findByAttendanceId(@Param('attendanceId') attendanceId: string, @Query() scheduleFilterDto: ScheduleFilterDto): Promise<Schedule[]> {
-    console.log(scheduleFilterDto);
     return this.schedulesService.findByAttendanceId(attendanceId);
   }
 
