@@ -277,15 +277,35 @@ const Index: React.FC<CommonTableProps> = () => {
             </Box>
           </div>
         ) : (
-          <Box mt={2}>
+          // <Box mt={2}>
+          //   <Button
+          //     variant="contained"
+          //     color="error"
+          //     onClick={() => {
+          //       setIsCreate(false);
+          //     }}
+          //   >
+          //     삭제
+          //   </Button>
+          // </Box>
+          <Box mt={2} display={"flex"} gap={"5px"}>
             <Button
               variant="contained"
               color="error"
               onClick={() => {
-                setIsCreate(false);
+                alert("삭제하실 명단을 선택해주세요.");
               }}
             >
               삭제
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => {
+                router.back();
+              }}
+            >
+              대시보드
             </Button>
           </Box>
         )}

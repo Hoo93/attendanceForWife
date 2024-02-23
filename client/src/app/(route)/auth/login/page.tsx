@@ -1,7 +1,7 @@
 "use client";
 
 import { Box, Button, CircularProgress, Grid, TextField } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import axios from "axios";
 import { useMutation } from "@tanstack/react-query";
@@ -14,6 +14,7 @@ export interface Login {
 
 const index = () => {
   const router = useRouter();
+  const accessToken = Cookies.get("access-token");
   const [login, setLogin] = useState<Login>({
     username: "",
     password: "",
@@ -62,7 +63,9 @@ const index = () => {
     }));
   };
 
-  if (isLoading) return <CircularProgress color="inherit" />;
+  if (isLoading) {
+    return <CircularProgress color="inherit" />;
+  }
 
   return (
     <>

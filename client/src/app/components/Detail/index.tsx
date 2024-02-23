@@ -9,6 +9,7 @@ import useUser from "@/app/hooks/useUser";
 const CreateView = () => {
   // SearchParams
   const router = useRouter();
+
   const currentUrl = window.location.pathname;
   const id = Number(currentUrl.split("/").pop());
 
@@ -31,7 +32,7 @@ const CreateView = () => {
   };
 
   useEffect(() => {
-    fetchUserDetail(id);
+    if (id) fetchUserDetail(id);
   }, [id]);
 
   return (

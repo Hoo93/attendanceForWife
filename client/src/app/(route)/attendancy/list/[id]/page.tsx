@@ -30,7 +30,9 @@ const index = () => {
     queryKey: ["get-user-detail"],
     queryFn: async () => {
       const response = await axios.get(
-        `http://localhost:12310/attendances/${params.id}`,
+        // `http://localhost:12310/schedules/attendanceId/${params.id}?days=MONDAY&days=TUESDAY&days=WEDNESDAY&days=THURSDAY&days=FRIDAY&days=SATURDAY&days=SUNDAY&timeFrom=0900&timeTo=2315`,
+        `http://localhost:12310/schedules/attendee/${params.id}`,
+
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -102,6 +104,11 @@ const index = () => {
                 <TableCell align="right">비고</TableCell>
               </TableRow>
             ))} */}
+            <TableRow>
+              <TableCell align="center" colSpan={5}>
+                데이터가 없습니다.
+              </TableCell>
+            </TableRow>
           </TableBody>
         </Table>
       </TableContainer>
