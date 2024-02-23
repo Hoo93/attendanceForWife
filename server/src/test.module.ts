@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ormConfigTest } from './orm.config';
 import { User } from './users/entities/user.entity';
 import { Attendance } from './attendances/entities/attendance.entity';
 import { RolesModule } from './roles/roles.module';
@@ -15,20 +14,17 @@ import { SchedulesModule } from './schedules/schedules.module';
 import { Schedule } from './schedules/entities/schedule.entity';
 import { Record } from './records/entities/record.entity';
 import { RecordsModule } from './records/records.module';
+import { ConfigModule } from '@nestjs/config';
+import { getOrmConfig } from './orm.config';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      envFilePath: `.env.test`,
+    }),
     TypeOrmModule.forRoot({
-      ...ormConfigTest,
-      entities: [
-        User,
-        Role,
-        Attendance,
-        UserAttendance,
-        Attendee,
-        Schedule,
-        Record,
-      ],
+      ...getOrmConfig(),
+      entities: [User, Role, Attendance, UserAttendance, Attendee, Schedule, Record],
     }),
     UsersModule,
     AuthModule,
