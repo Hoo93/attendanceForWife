@@ -1,43 +1,20 @@
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
+import { ConfigService } from '@nestjs/config';
 
-export const ormConfig: TypeOrmModuleOptions = {
-  type: 'mysql',
-  port: 3306,
-  host: 'mysql-container',
-  username: 'test_user',
-  password: 'test_password',
-  database: 'attendance',
-  synchronize: true,
-  logging: true,
-  poolSize: 10,
-  charset: 'utf8mb4',
-  autoLoadEntities: true,
-};
+export const getOrmConfig = () => {
+  const configService = new ConfigService();
 
-export const ormConfigDevelopment: TypeOrmModuleOptions = {
-  type: 'mysql',
-  port: 12300,
-  host: 'localhost',
-  username: 'test_user',
-  password: 'test_password',
-  database: 'attendance',
-  synchronize: true,
-  logging: true,
-  poolSize: 10,
-  charset: 'utf8mb4',
-  autoLoadEntities: true,
-};
-
-export const ormConfigTest: TypeOrmModuleOptions = {
-  type: 'mysql',
-  port: 12300,
-  host: 'localhost',
-  username: 'root',
-  password: 'test',
-  database: 'attendanceTest',
-  synchronize: true,
-  logging: true,
-  poolSize: 10,
-  charset: 'utf8mb4',
-  autoLoadEntities: true,
+  return {
+    type: configService.get('DB_TYPE'),
+    host: configService.get('DB_HOST'),
+    port: +configService.get('DB_PORT'),
+    username: configService.get('DB_USERNAME'),
+    password: configService.get('DB_PASSWORD'),
+    database: configService.get('DB_NAME'),
+    synchronize: configService.get('DB_SYNCHRONIZE') === 'true',
+    logging: configService.get('DB_LOGGING') === 'true',
+    poolSize: +configService.get('DB_POOL_SIZE'),
+    charset: configService.get('DB_CHARSET'),
+    autoLoadEntities: true,
+  };
 };
