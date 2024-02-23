@@ -8,6 +8,8 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const logger = new Logger();
 
+  const port = process.env.PORT || 3000;
+
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -40,7 +42,7 @@ async function bootstrap() {
   SwaggerModule.setup('swagger', app, document);
 
   logger.verbose('====================================');
-  logger.verbose('==== SERVER IS RUNNING ON 3000 =====');
+  logger.verbose(`==== SERVER IS RUNNING ON ${port} =====`);
   logger.verbose('====================================');
   await app.listen(3000);
 }
