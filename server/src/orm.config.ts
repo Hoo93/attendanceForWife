@@ -4,7 +4,7 @@ import { ConfigService } from '@nestjs/config';
 export const getOrmConfig = () => {
   const configService = new ConfigService();
 
-  return {
+  const ormConfig = {
     type: configService.get('DB_TYPE'),
     host: configService.get('DB_HOST'),
     port: +configService.get('DB_PORT'),
@@ -17,4 +17,6 @@ export const getOrmConfig = () => {
     charset: configService.get('DB_CHARSET'),
     autoLoadEntities: true,
   };
+
+  return ormConfig;
 };
