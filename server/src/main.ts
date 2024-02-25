@@ -44,6 +44,6 @@ async function bootstrap() {
   logger.verbose('====================================');
   logger.verbose(`==== SERVER IS RUNNING ON ${port} =====`);
   logger.verbose('====================================');
-  await app.listen(3000);
+  await app.listen(port);
 }
 bootstrap();
