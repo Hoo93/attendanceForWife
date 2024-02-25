@@ -11,14 +11,6 @@ export class Invitation extends BaseTimeEntity {
   @ApiProperty({ description: '출석부 초대 PK', type: 'int' })
   id: number;
 
-  // @Column({ comment: '초대한 회원 ID', type: 'varchar' })
-  // @ApiProperty({ description: '초대한 회원 ID', type: 'string' })
-  // inviterId: string;
-  //
-  // @Column({ comment: '초대 받은 회원 ID', type: 'varchar' })
-  // @ApiProperty({ description: '초대 받은 회원 ID', type: 'string' })
-  // inviteeId: string;
-
   @Column({ comment: '초대 받은 출석부 ID', type: 'varchar' })
   @ApiProperty({ description: '초대 받은 출석부 ID', type: 'string' })
   attendanceId: string;
@@ -31,12 +23,13 @@ export class Invitation extends BaseTimeEntity {
   @ApiProperty({ description: '초대 상태', enum: InvitationStatusType })
   status: InvitationStatusType;
 
-  @ManyToOne(() => User)
+  // 조회를 위한 단방향 관게 설정
+  @ManyToOne(() => User, { eager: true })
   @JoinColumn({ name: 'inviterId', referencedColumnName: 'id' })
   @ApiProperty({ type: () => User })
   inviter: User;
 
-  @ManyToOne(() => User)
+  @ManyToOne(() => User, { eager: true })
   @JoinColumn({ name: 'inviteeId', referencedColumnName: 'id' })
   @ApiProperty({ type: () => User })
   invitee: User;
