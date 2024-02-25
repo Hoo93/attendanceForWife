@@ -15,6 +15,7 @@ import { Schedule } from './schedules/entities/schedule.entity';
 import { RecordsModule } from './records/records.module';
 import { Record } from './records/entities/record.entity';
 import { ConfigModule } from '@nestjs/config';
+import { InvitationsModule } from './invitations/invitations.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { ConfigModule } from '@nestjs/config';
     AttendeesModule,
     SchedulesModule,
     RecordsModule,
+    InvitationsModule,
   ],
 })
 export class AppModule {}
