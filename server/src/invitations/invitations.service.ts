@@ -1,10 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { CreateInvitationDto } from './dto/create-invitation.dto';
 import { UpdateInvitationDto } from './dto/update-invitation.dto';
+import { User } from '../users/entities/user.entity';
 
 @Injectable()
 export class InvitationsService {
-  create(createInvitationDto: CreateInvitationDto) {
+  async invite(attendanceId: string, inviteeId: string, user: User) {
     return 'This action adds a new invitation';
   }
 
