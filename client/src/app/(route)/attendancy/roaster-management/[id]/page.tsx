@@ -46,10 +46,10 @@ const Index: React.FC<CommonTableProps> = () => {
   const router = useRouter();
   const params = useParams<{ id: string }>();
   const accessToken = Cookies.get("access-token");
-  const [isCreate, setIsCreate] = useState<boolean>(false);
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
-
+  const [date, setDate] = useState<string>("");
+  const [isCreate, setIsCreate] = useState<boolean>(false);
   const [roaster, setRoaster] = useState({
     // 타입 지정 해야힘
     name: "",
@@ -68,6 +68,24 @@ const Index: React.FC<CommonTableProps> = () => {
     }));
   };
 
+  const fetchScheduleCreate = async (data: any) => {
+    const response = await axios.post(
+      "http://localhost:12310/schedules",
+      {
+        attendanceId: data.data.attendanceId,
+        attendeeId: data.data.id,
+        day: "TUESDAY",
+        time: "0930",
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+
+    console.log(response);
+  };
   const fetchRoasterCreate = async (params: Info) => {
     const {
       name,
@@ -77,7 +95,7 @@ const Index: React.FC<CommonTableProps> = () => {
       description,
       attendanceId,
     } = params;
-    await axios.post(
+    const response = await axios.post(
       "http://localhost:12310/attendees",
       {
         name: name,
@@ -93,15 +111,14 @@ const Index: React.FC<CommonTableProps> = () => {
         },
       }
     );
+    return response;
   };
 
-  const { mutate } = useMutation(fetchRoasterCreate, {
-    onSuccess: () => {
-      alert("등록되었습니다.");
-      setIsCreate(false);
-    },
-    onError: () => {
-      alert("빈칸을 전부 채워주세요");
+  const { mutate } = useMutation({
+    mutationKey: ["create-schedule"],
+    mutationFn: fetchRoasterCreate,
+    onSuccess: (data) => {
+      fetchScheduleCreate(data);
     },
   });
 
@@ -122,7 +139,6 @@ const Index: React.FC<CommonTableProps> = () => {
 
   if (isLoading) return <CircularProgress color="inherit" />;
 
-  console.log(data);
   return (
     <BasicLayout>
       <Box
@@ -210,18 +226,18 @@ const Index: React.FC<CommonTableProps> = () => {
                         }
                       />
                     </TableCell>
-                    {/* <TableCell component="th" scope="row">
+                    <TableCell component="th" scope="row">
                       <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <DemoContainer components={["DatePicker"]}>
                           <DatePicker
                             label="Controlled picker"
-                            value={login?.birthday}
-                            onChange={(e) => onChange("birthday", e)}
+                            // value={date || new Date()}
+                            onChange={(e) => setDate(e as string)}
                           />
                         </DemoContainer>
                       </LocalizationProvider>
-                    </TableCell> */}
-                    <TableCell component="th" scope="row">
+                    </TableCell>
+                    {/* <TableCell component="th" scope="row">
                       <TextField
                         id="outlined-basic"
                         label="description"
@@ -231,7 +247,7 @@ const Index: React.FC<CommonTableProps> = () => {
                           onChange("description", e.target.value)
                         }
                       />
-                    </TableCell>
+                    </TableCell> */}
                   </>
                 ) : (
                   <TableCell
