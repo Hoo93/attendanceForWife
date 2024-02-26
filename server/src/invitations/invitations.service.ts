@@ -5,7 +5,7 @@ import { User } from '../users/entities/user.entity';
 
 @Injectable()
 export class InvitationsService {
-  async invite(attendanceId: string, inviteeId: string, user: User) {
+  async invite(attendanceId: string, createInvitationDto: CreateInvitationDto, user: User) {
     return 'This action adds a new invitation';
   }
 
