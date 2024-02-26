@@ -59,6 +59,15 @@ export class CreateRecordDto {
   })
   lateReason: string;
 
+  @IsOptional()
+  @IsString()
+  @ApiProperty({
+    description: '비고',
+    type: 'text',
+    example: '출석체크의 특이사항 입니다.',
+  })
+  etc: string;
+
   createdAt: Date;
 
   toEntity(createId: string) {

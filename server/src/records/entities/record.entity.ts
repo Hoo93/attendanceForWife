@@ -42,6 +42,10 @@ export class Record extends BaseTimeEntity {
   @ApiProperty({ description: '지각사유', type: 'string', nullable: true })
   lateReason: string;
 
+  @Column({ comment: '비고', type: 'varchar', nullable: true })
+  @ApiProperty({ description: '비고', type: 'string', nullable: true })
+  etc: string;
+
   @ManyToOne(() => Attendee, (attendee) => attendee.records)
   @JoinColumn({ name: 'attendeeId', referencedColumnName: 'id' })
   @ApiProperty({ type: () => Attendee })
