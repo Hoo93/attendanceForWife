@@ -17,23 +17,17 @@ describe('InvitationsService', () => {
   let module: TestingModule;
   let service: InvitationsService;
   let invitationRepository: Repository<Invitation>;
-  let recordRepository: Repository<Record>;
-  let scheduleRepository: Repository<Schedule>;
-  let attendeeRepository;
   let attendanceRepository;
   let userRepository;
 
   beforeAll(async () => {
     module = await Test.createTestingModule({
       imports: [TestModule, TypeOrmModule.forFeature([Invitation])],
-      providers: [RecordsService, ExcelService],
+      providers: [InvitationsService],
     }).compile();
 
     service = module.get<InvitationsService>(InvitationsService);
     invitationRepository = module.get(getRepositoryToken(Invitation));
-    recordRepository = module.get(getRepositoryToken(Record));
-    scheduleRepository = module.get(getRepositoryToken(Schedule));
-    attendeeRepository = module.get(getRepositoryToken(Attendee));
     attendanceRepository = module.get(getRepositoryToken(Attendance));
     userRepository = module.get(getRepositoryToken(User));
   });
@@ -56,7 +50,7 @@ describe('InvitationsService', () => {
   });
 
   async function setupTest() {
-    await invitationRepository.query('DELETE FROM invitaion;');
+    await invitationRepository.query('DELETE FROM invitation;');
     await attendanceRepository.query('DELETE FROM attendance;');
     await userRepository.query(`DELETE FROM user;`);
 
@@ -86,13 +80,11 @@ describe('InvitationsService', () => {
     attendance_2.createId = 'user id 1';
     attendance_2.createdAt = new Date();
 
-    await attendanceRepository.save(attendance_1);
-    await attendanceRepository.save(attendance_2);
+    await attendanceRepository.save([attendance_1, attendance_2]);
   }
 
   async function clear() {
     await invitationRepository.query('DELETE FROM invitation;');
-    await attendeeRepository.query('DELETE FROM attendee;');
     await attendanceRepository.query('DELETE FROM attendance;');
     await userRepository.query(`DELETE FROM user;`);
   }
