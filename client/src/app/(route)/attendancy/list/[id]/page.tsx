@@ -16,42 +16,134 @@ import { useParams, useRouter } from "next/navigation";
 import useUser from "@/app/hooks/useUser";
 import axios from "axios";
 import Cookies from "js-cookie";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
+interface DateFormat {
+  dateFormat: {
+    date: string;
+    day: string;
+  };
+}
+function getFormattedDate(): DateFormat {
+  const today: Date = new Date();
+  const year: number = today.getFullYear();
+  const month: number = today.getMonth() + 1;
+  const day: number = today.getDate();
+
+  // 월과 일이 한 자리 숫자인 경우 앞에 0을 붙여 두 자리로 만듭니다.
+  const formattedMonth: string = month < 10 ? "0" + month : month.toString();
+  const formattedDay: string = day < 10 ? "0" + day : day.toString();
+
+  // 요일 가져오기
+  const dayOfWeek: number = today.getDay();
+  const daysOfWeek: string[] = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
+  const formattedDayOfWeek: string = daysOfWeek[dayOfWeek];
+
+  return {
+    dateFormat: {
+      date: `${year}-${formattedMonth}-${formattedDay}`,
+      day: formattedDayOfWeek,
+    },
+  };
+}
+
+function formatTime(time: string): string {
+  const hour: string = time.substring(0, 2);
+  const minute: string = time.substring(2);
+
+  return `${hour}시 ${minute}분`;
+}
+
+const koreanDaysOfWeek: Record<string, string> = {
+  SUNDAY: "일요일",
+  MONDAY: "월요일",
+  TUESDAY: "화요일",
+  WEDNESDAY: "수요일",
+  THURSDAY: "목요일",
+  FRIDAY: "금요일",
+  SATURDAY: "토요일",
+};
 const index = () => {
   const router = useRouter();
   const params = useParams<{ id: string }>();
-
+  const todayFormatted: DateFormat = getFormattedDate();
   const accessToken = Cookies.get("access-token");
 
   const { setUserInfo } = useUser();
 
-  const { isLoading } = useQuery({
-    queryKey: ["get-user-detail"],
+  const { data, refetch } = useQuery({
+    queryKey: ["dashboard-data"],
     queryFn: async () => {
       const response = await axios.get(
-        // `http://localhost:12310/schedules/attendanceId/${params.id}?days=MONDAY&days=TUESDAY&days=WEDNESDAY&days=THURSDAY&days=FRIDAY&days=SATURDAY&days=SUNDAY&timeFrom=0900&timeTo=2315`,
-        `http://localhost:12310/schedules/attendee/${params.id}`,
-
+        `http://localhost:12310/schedules/attendanceId/${params.id}?days=TUESDAY&days=MONDAY&timeFrom=0900&timeTo=1830`,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
         }
       );
-      return response?.data.result;
+      return response?.data;
     },
   });
 
-  // Hook
-  const onChange = (field: string, value: string) => {
-    setUserInfo((prevState) => ({
-      ...prevState,
-      [field]: value,
-    }));
-  };
+  const fetchRecord = async (attendeeId: string) =>
+    await axios.post(
+      "http://localhost:12310/records",
+      {
+        attendanceId: params.id,
+        status: "Present",
+        attendeeId: attendeeId,
+        date: todayFormatted.dateFormat.date,
+        day: todayFormatted.dateFormat.day,
+        lateReason: "",
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
 
-  // if (isLoading) return <CircularProgress color="inherit" />;
+  const fetchAllRecord = async () => {
+    await axios
+      .post(
+        "http://localhost:12310/records/create",
+        {
+          attendanceId: params.id,
+          status: "Present",
+          date: todayFormatted.dateFormat.date,
+          day: todayFormatted.dateFormat.day,
+          lateReason: "",
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      )
+      .then(() => {
+        alert("전원 출석하였습니다");
+        refetch();
+      });
+  };
+  const { mutate } = useMutation(fetchRecord, {
+    onSuccess: () => {
+      alert("출석하였습니다.");
+      refetch();
+    },
+    onError: () => {
+      alert("오류 관리자에게 문의하세요.");
+    },
+  });
+
   return (
     <BasicLayout>
       <TableContainer component={Paper}>
@@ -74,47 +166,67 @@ const index = () => {
               </TableCell>
             </TableRow>
             <TableRow>
-              <TableCell align="right">이름</TableCell>
-              <TableCell align="right">출석 상태</TableCell>
-              <TableCell align="right">지각</TableCell>
-              <TableCell align="right">등원시간</TableCell>
-              <TableCell align="right">비고</TableCell>
+              <TableCell align="center">이름</TableCell>
+              <TableCell align="center">출석 상태</TableCell>
+              <TableCell align="center">지각</TableCell>
+              <TableCell align="center">등원시간</TableCell>
+              <TableCell align="center">비고</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {/* {data?.map((item: Info) => (
+            {data?.map((item: any) => (
               <TableRow
                 key={item.id}
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                 hover
                 style={{ cursor: "pointer" }}
-                onClick={() => {
-                  //   fetchUserDetail(item.id);
-                  //   router.push(`/attendancy/list/${item.id}`);
-                }}
               >
-                <TableCell component="th" align="right" scope="row">
+                <TableCell component="th" align="center" scope="row">
                   {item.id}
                 </TableCell>
-                <TableCell component="th" align="right" scope="row">
-                  {item.name}
+                <TableCell component="th" align="center" scope="row">
+                  <Button
+                    variant="outlined"
+                    color="primary"
+                    onClick={() => mutate(data.attendeeId)}
+                  >
+                    출석
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    color="warning"
+                    onClick={() => mutate(data.attendeeId)}
+                  >
+                    지각
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    color="error"
+                    onClick={() => mutate(data.attendeeId)}
+                  >
+                    결석
+                  </Button>
                 </TableCell>
-                <TableCell align="right">{item.email}</TableCell>
-                <TableCell align="right">{item.password}</TableCell>ㅈㄷㄱ33김ㅂ
-                <TableCell align="right">비고</TableCell>
+                <TableCell align="center">{item.email}</TableCell>
+                <TableCell align="center">
+                  {koreanDaysOfWeek[item.day] + " "}
+                  {formatTime(item.time)}
+                </TableCell>
+                <TableCell align="center">비고</TableCell>
               </TableRow>
-            ))} */}
-            <TableRow>
-              <TableCell align="center" colSpan={5}>
-                데이터가 없습니다.
-              </TableCell>
-            </TableRow>
+            ))}
           </TableBody>
         </Table>
       </TableContainer>
       <Box mt={2} display={"flex"} justifyContent={"space-between"}>
-        <Button variant="contained" color="primary" onClick={() => {}}>
-          출석 체크
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => {
+            fetchAllRecord();
+          }}
+        >
+          전원 출석
         </Button>
         <Button variant="contained" color="primary" onClick={() => {}}>
           출석 통계
