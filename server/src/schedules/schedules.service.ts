@@ -34,12 +34,10 @@ export class SchedulesService {
     });
   }
 
-  async findByAttendanceId(attendanceId: string, date = new Date()): Promise<Schedule[]> {
+  async findAllByAttendanceId(attendanceId: string): Promise<Schedule[]> {
     return await this.scheduleRepository.find({
       relations: {
-        attendee: {
-          records: true,
-        },
+        attendee: true,
       },
       where: {
         attendee: {
@@ -49,10 +47,25 @@ export class SchedulesService {
       select: {
         attendee: {
           attendanceId: true,
-          records: true,
         },
       },
     });
+  }
+
+  async findTodayScheduleByAttendanceId(attendanceId: string, date = new Date()): Promise<Schedule[]> {
+    const formattedDate = date.toISOString().split('T')[0]; // 'YYYY-MM-DD' 형식으로 변환
+
+    return await this.scheduleRepository
+      .createQueryBuilder('schedule')
+      .leftJoinAndSelect('schedule.attendee', 'attendee')
+      .leftJoinAndSelect('attendee.records', 'records', 'records.date = :formattedDate', { formattedDate })
+      .where('attendee.attendanceId = :attendanceId', { attendanceId })
+      .select([
+        'schedule', // 필요한 schedule 필드 선택
+        'attendee.attendanceId',
+        'records', // 필요한 records 필드 선택
+      ])
+      .getMany();
   }
 
   async deleteAll(deleteScheduleDto: DeleteScheduleDto) {
