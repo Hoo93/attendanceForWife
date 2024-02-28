@@ -125,7 +125,41 @@ describe('SchedulesService', () => {
     });
   });
 
-  describe('findByAttendanceId Test', () => {
+  describe('findAllByAttendanceId Test', () => {
+    it('출석부에 속한 모든 출석대상의 스케쥴을 리턴한다.', async () => {
+      // Given
+      const targetAttendanceId = 'testAttendanceId';
+
+      const attendee_1 = new Attendee();
+      attendee_1.id = 'Attendee Id 1';
+      attendee_1.attendanceId = targetAttendanceId;
+
+      const attendee_2 = new Attendee();
+      attendee_2.id = 'Attendee Id 2';
+      attendee_2.attendanceId = 'notTestAttendanceId';
+
+      const attendee_3 = new Attendee();
+      attendee_3.id = 'Attendee Id 3';
+      attendee_3.attendanceId = targetAttendanceId;
+
+      const schedule_1 = createSchedule('Attendee Id 1', DayType.MONDAY, '1230');
+      const schedule_2 = createSchedule('Attendee Id 2', DayType.TUESDAY, '1330');
+
+      const schedule_3 = createSchedule('Attendee Id 3', DayType.WEDNESDAY, '1430');
+      await scheduleRepository.insert([schedule_1, schedule_2, schedule_3]);
+
+      // When
+      const sut = await service.findAllByAttendanceId(targetAttendanceId);
+
+      // Then
+      expect(sut).toHaveLength(2);
+      sut.map((schedule) => {
+        expect(schedule.attendee.attendanceId).toBe(targetAttendanceId);
+      });
+    });
+  });
+
+  describe('findTodayScheduleByAttendanceId', () => {
     it('출석부에 스케쥴과 조회 날짜의 record를 리턴한다.', async () => {
       // Given
       const targetAttendanceId = 'testAttendanceId';
@@ -164,7 +198,7 @@ describe('SchedulesService', () => {
       await recordRepository.insert([record_1, record_2]);
 
       // When
-      const sut = await service.findByAttendanceId(targetAttendanceId, new Date('2024-02-06'));
+      const sut = await service.findTodayScheduleByAttendanceId(targetAttendanceId, new Date('2024-02-06'));
 
       // Then
       expect(sut).toHaveLength(2);
@@ -174,66 +208,33 @@ describe('SchedulesService', () => {
         expect(schedule?.attendee.records.length).toBeLessThanOrEqual(1);
       });
     });
-
-    it('출석부에 속한 모든 출석대상의 스케쥴을 리턴한다.', async () => {
+  });
+  describe('deleteAll TEST', () => {
+    it('배열에 입력한 모든 스케쥴을 soft delete 한다.', async () => {
       // Given
-      const targetAttendanceId = 'testAttendanceId';
-
       const attendee_1 = new Attendee();
       attendee_1.id = 'Attendee Id 1';
-      attendee_1.attendanceId = targetAttendanceId;
-
-      const attendee_2 = new Attendee();
-      attendee_2.id = 'Attendee Id 2';
-      attendee_2.attendanceId = 'notTestAttendanceId';
-
-      const attendee_3 = new Attendee();
-      attendee_3.id = 'Attendee Id 3';
-      attendee_3.attendanceId = targetAttendanceId;
 
       const schedule_1 = createSchedule('Attendee Id 1', DayType.MONDAY, '1230');
-      const schedule_2 = createSchedule('Attendee Id 2', DayType.TUESDAY, '1330');
+      const schedule_2 = createSchedule('Attendee Id 1', DayType.TUESDAY, '1330');
 
-      const schedule_3 = createSchedule('Attendee Id 3', DayType.WEDNESDAY, '1430');
-      await scheduleRepository.insert([schedule_1, schedule_2, schedule_3]);
+      const createdAttendee_1 = await attendeeRepository.save(attendee_1);
+
+      const createdSchedule_1 = await scheduleRepository.save(schedule_1);
+      const createdSchedule_2 = await scheduleRepository.save(schedule_2);
 
       // When
-      const sut = await service.findByAttendanceId(targetAttendanceId);
+      const deleteDto = new DeleteScheduleDto();
+      deleteDto.ids = [schedule_2.id, schedule_2.id];
+
+      await service.deleteAll(deleteDto);
+
+      const sut = await attendeeRepository.findBy({
+        id: In(deleteDto.ids),
+      });
 
       // Then
-      expect(sut).toHaveLength(2);
-      sut.map((schedule) => {
-        expect(schedule.attendee.attendanceId).toBe(targetAttendanceId);
-      });
-    });
-
-    describe('deleteAll TEST', () => {
-      it('배열에 입력한 모든 스케쥴을 soft delete 한다.', async () => {
-        // Given
-        const attendee_1 = new Attendee();
-        attendee_1.id = 'Attendee Id 1';
-
-        const schedule_1 = createSchedule('Attendee Id 1', DayType.MONDAY, '1230');
-        const schedule_2 = createSchedule('Attendee Id 1', DayType.TUESDAY, '1330');
-
-        const createdAttendee_1 = await attendeeRepository.save(attendee_1);
-
-        const createdSchedule_1 = await scheduleRepository.save(schedule_1);
-        const createdSchedule_2 = await scheduleRepository.save(schedule_2);
-
-        // When
-        const deleteDto = new DeleteScheduleDto();
-        deleteDto.ids = [schedule_2.id, schedule_2.id];
-
-        await service.deleteAll(deleteDto);
-
-        const sut = await attendeeRepository.findBy({
-          id: In(deleteDto.ids),
-        });
-
-        // Then
-        expect(sut).toHaveLength(0);
-      });
+      expect(sut).toHaveLength(0);
     });
   });
 
