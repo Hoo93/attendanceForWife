@@ -58,11 +58,7 @@ describe('SchedulesService', () => {
       const user = new User();
       user.id = 'user id 1';
 
-      const scheduleDto = generateCreateScheduleDto(
-        'Attendee Id 1',
-        DayType.MONDAY,
-        '1000',
-      );
+      const scheduleDto = generateCreateScheduleDto('Attendee Id 1', DayType.MONDAY, '1000');
 
       // When
       const sut = await service.create(scheduleDto, user);
@@ -78,18 +74,12 @@ describe('SchedulesService', () => {
       const user = new User();
       user.id = 'user id 1';
 
-      const scheduleDto = generateCreateScheduleDto(
-        'Attendee Id 1',
-        DayType.MONDAY,
-        '4500',
-      );
+      const scheduleDto = generateCreateScheduleDto('Attendee Id 1', DayType.MONDAY, '4500');
 
       // Then
       await expect(async () => {
         await service.create(scheduleDto, user);
-      }).rejects.toThrowError(
-        new BadRequestException('유효하지 않은 시간 포맷입니다.'),
-      );
+      }).rejects.toThrowError(new BadRequestException('유효하지 않은 시간 포맷입니다.'));
     });
   });
 
@@ -99,22 +89,10 @@ describe('SchedulesService', () => {
       const attendee_1 = new Attendee();
       attendee_1.id = 'Attendee Id 1';
 
-      const schedule_1 = createSchedule(
-        'Attendee Id 1',
-        DayType.MONDAY,
-        '1230',
-      );
-      const schedule_2 = createSchedule(
-        'Attendee Id 1',
-        DayType.TUESDAY,
-        '1330',
-      );
+      const schedule_1 = createSchedule('Attendee Id 1', DayType.MONDAY, '1230');
+      const schedule_2 = createSchedule('Attendee Id 1', DayType.TUESDAY, '1330');
 
-      const schedule_3 = createSchedule(
-        'Attendee Id 2',
-        DayType.TUESDAY,
-        '1330',
-      );
+      const schedule_3 = createSchedule('Attendee Id 2', DayType.TUESDAY, '1330');
 
       await scheduleRepository.insert(schedule_1);
       await scheduleRepository.insert(schedule_2);
@@ -145,6 +123,39 @@ describe('SchedulesService', () => {
   });
 
   describe('findByAttendanceId Test', () => {
+    it('출석부에 스케쥴과 조회 날짜의 record를 리턴한다.', async () => {
+      // Given
+      const targetAttendanceId = 'testAttendanceId';
+
+      const attendee_1 = new Attendee();
+      attendee_1.id = 'Attendee Id 1';
+      attendee_1.attendanceId = targetAttendanceId;
+
+      const attendee_2 = new Attendee();
+      attendee_2.id = 'Attendee Id 2';
+      attendee_2.attendanceId = 'notTestAttendanceId';
+
+      const attendee_3 = new Attendee();
+      attendee_3.id = 'Attendee Id 3';
+      attendee_3.attendanceId = targetAttendanceId;
+
+      const schedule_1 = createSchedule('Attendee Id 1', DayType.MONDAY, '1230');
+      const schedule_2 = createSchedule('Attendee Id 2', DayType.TUESDAY, '1330');
+
+      const schedule_3 = createSchedule('Attendee Id 3', DayType.WEDNESDAY, '1430');
+      await scheduleRepository.insert([schedule_1, schedule_2, schedule_3]);
+
+      // When
+      const sut = await service.findByAttendanceId(targetAttendanceId);
+
+      // Then
+      expect(sut).toHaveLength(2);
+      sut.map((schedule) => {
+        expect(schedule.attendee.attendanceId).toBe(targetAttendanceId);
+        expect(schedule.record).toBeDefined();
+      });
+    });
+
     it('출석부에 속한 모든 출석대상의 스케쥴을 리턴한다.', async () => {
       // Given
       const targetAttendanceId = 'testAttendanceId';
@@ -161,22 +172,10 @@ describe('SchedulesService', () => {
       attendee_3.id = 'Attendee Id 3';
       attendee_3.attendanceId = targetAttendanceId;
 
-      const schedule_1 = createSchedule(
-        'Attendee Id 1',
-        DayType.MONDAY,
-        '1230',
-      );
-      const schedule_2 = createSchedule(
-        'Attendee Id 2',
-        DayType.TUESDAY,
-        '1330',
-      );
+      const schedule_1 = createSchedule('Attendee Id 1', DayType.MONDAY, '1230');
+      const schedule_2 = createSchedule('Attendee Id 2', DayType.TUESDAY, '1330');
 
-      const schedule_3 = createSchedule(
-        'Attendee Id 3',
-        DayType.WEDNESDAY,
-        '1430',
-      );
+      const schedule_3 = createSchedule('Attendee Id 3', DayType.WEDNESDAY, '1430');
       await scheduleRepository.insert([schedule_1, schedule_2, schedule_3]);
 
       // When
@@ -195,16 +194,8 @@ describe('SchedulesService', () => {
         const attendee_1 = new Attendee();
         attendee_1.id = 'Attendee Id 1';
 
-        const schedule_1 = createSchedule(
-          'Attendee Id 1',
-          DayType.MONDAY,
-          '1230',
-        );
-        const schedule_2 = createSchedule(
-          'Attendee Id 1',
-          DayType.TUESDAY,
-          '1330',
-        );
+        const schedule_1 = createSchedule('Attendee Id 1', DayType.MONDAY, '1230');
+        const schedule_2 = createSchedule('Attendee Id 1', DayType.TUESDAY, '1330');
 
         const createdAttendee_1 = await attendeeRepository.save(attendee_1);
 
@@ -296,11 +287,7 @@ describe('SchedulesService', () => {
   }
 });
 
-function generateCreateScheduleDto(
-  attendeeId: string,
-  day: DayType,
-  time: string,
-) {
+function generateCreateScheduleDto(attendeeId: string, day: DayType, time: string) {
   const createScheduleDto = new CreateScheduleDto();
   createScheduleDto.attendeeId = attendeeId;
   createScheduleDto.day = day;
