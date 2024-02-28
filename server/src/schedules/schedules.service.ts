@@ -25,9 +25,7 @@ export class SchedulesService {
     if (!this.verifyAttendTime(schedule.time)) {
       throw new BadRequestException('유효하지 않은 시간 포맷입니다.');
     }
-    const createdSchedule = await this.scheduleRepository.save(schedule);
-
-    return createdSchedule;
+    return this.scheduleRepository.save(schedule);
   }
 
   async findByAttendeeId(attendeeId: string): Promise<Schedule[]> {
@@ -36,10 +34,12 @@ export class SchedulesService {
     });
   }
 
-  async findByAttendanceId(attendanceId: string): Promise<Schedule[]> {
+  async findByAttendanceId(attendanceId: string, date = new Date()): Promise<Schedule[]> {
     return await this.scheduleRepository.find({
       relations: {
-        attendee: true,
+        attendee: {
+          records: true,
+        },
       },
       where: {
         attendee: {
@@ -49,6 +49,7 @@ export class SchedulesService {
       select: {
         attendee: {
           attendanceId: true,
+          records: true,
         },
       },
     });
