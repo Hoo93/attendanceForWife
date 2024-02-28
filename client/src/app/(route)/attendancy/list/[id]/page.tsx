@@ -13,7 +13,6 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 
 import { useParams, useRouter } from "next/navigation";
-import useUser from "@/app/hooks/useUser";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -37,13 +36,13 @@ function getFormattedDate(): DateFormat {
   // 요일 가져오기
   const dayOfWeek: number = today.getDay();
   const daysOfWeek: string[] = [
-    "Sunday",
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
+    "SUNDAY",
+    "MONDAY",
+    "TUESDAY",
+    "WEDNESDAY",
+    "THURSDAY",
+    "FRIDAY",
+    "SATURDAY",
   ];
   const formattedDayOfWeek: string = daysOfWeek[dayOfWeek];
 
@@ -76,8 +75,6 @@ const index = () => {
   const params = useParams<{ id: string }>();
   const todayFormatted: DateFormat = getFormattedDate();
   const accessToken = Cookies.get("access-token");
-
-  const { setUserInfo } = useUser();
 
   const { data, refetch } = useQuery({
     queryKey: ["dashboard-data"],
@@ -119,7 +116,7 @@ const index = () => {
         {
           attendanceId: params.id,
           status: "Present",
-          date: todayFormatted.dateFormat.date,
+          date: new Date(todayFormatted.dateFormat.date),
           day: todayFormatted.dateFormat.day,
           lateReason: "",
         },

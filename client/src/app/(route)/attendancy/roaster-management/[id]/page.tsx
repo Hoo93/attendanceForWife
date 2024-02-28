@@ -4,6 +4,8 @@ import {
   Box,
   Button,
   CircularProgress,
+  Dialog,
+  styled,
   useMediaQuery,
   useTheme,
 } from "@mui/material";
@@ -27,6 +29,7 @@ import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { DatePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import Cookies from "js-cookie";
+import ClassScheduleContainer from "@/app/components/Schedule";
 
 interface Info {
   name: string;
@@ -59,7 +62,7 @@ const Index: React.FC<CommonTableProps> = () => {
     description: "",
     attendanceId: params.id,
   });
-
+  const [open, setOpen] = useState(true);
   // Hook
   const onChange = (field: string, value: string | any) => {
     setRoaster((prevState) => ({
@@ -237,17 +240,6 @@ const Index: React.FC<CommonTableProps> = () => {
                         </DemoContainer>
                       </LocalizationProvider>
                     </TableCell>
-                    {/* <TableCell component="th" scope="row">
-                      <TextField
-                        id="outlined-basic"
-                        label="description"
-                        variant="outlined"
-                        value={roaster?.description}
-                        onChange={(e) =>
-                          onChange("description", e.target.value)
-                        }
-                      />
-                    </TableCell> */}
                   </>
                 ) : (
                   <TableCell
@@ -267,6 +259,9 @@ const Index: React.FC<CommonTableProps> = () => {
           </Table>
         </TableContainer>
 
+        <Dialog open={open} onClose={() => setOpen(false)} fullWidth>
+          <ClassScheduleContainer />
+        </Dialog>
         {isCreate ? (
           <div style={{ display: "flex", gap: "10px" }}>
             <Box mt={2}>
@@ -293,17 +288,6 @@ const Index: React.FC<CommonTableProps> = () => {
             </Box>
           </div>
         ) : (
-          // <Box mt={2}>
-          //   <Button
-          //     variant="contained"
-          //     color="error"
-          //     onClick={() => {
-          //       setIsCreate(false);
-          //     }}
-          //   >
-          //     삭제
-          //   </Button>
-          // </Box>
           <Box mt={2} display={"flex"} gap={"5px"}>
             <Button
               variant="contained"
@@ -327,12 +311,18 @@ const Index: React.FC<CommonTableProps> = () => {
         )}
       </Box>
     </BasicLayout>
-    // <Grid container display={"flex"} justifyContent={"space-around"}>
-    //   <Grid item xs={12} md={6}>
-
-    //   </Grid>
-    // </Grid>
   );
 };
 
 export default Index;
+
+const BoxST = styled(Box)(({ theme }) => {
+  return {
+    padding: "24px 32px",
+    display: "flex",
+    flexDirection: "column",
+    [theme.breakpoints.up("md")]: {
+      padding: "48px 40px",
+    },
+  };
+});

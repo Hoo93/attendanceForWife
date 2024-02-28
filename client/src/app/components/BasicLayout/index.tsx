@@ -21,7 +21,7 @@ export default function BasicLayout({
         height: "100vh",
         scrollBehavior: isScrollSnap ? "smooth" : "none",
         scrollSnapType: isScrollSnap ? "y mandatory" : "none",
-        overflowY: "scroll",
+        // overflowY: "scroll",
 
         // paddingTop: HEADER_HEIGHT,
       }}
