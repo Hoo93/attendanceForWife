@@ -10,14 +10,16 @@ import { AttendanceType } from '../../../src/attendances/const/attendance-type.e
 import { DayType } from '../../../src/schedules/const/day-type.enum';
 import { CreateScheduleDto } from '../../../src/schedules/dto/create-schedule.dto';
 import { BadRequestException } from '@nestjs/common';
-import { DeleteAttendeeDto } from '../../../src/attendees/dto/delete-attendee.dto';
 import { In } from 'typeorm';
 import { DeleteScheduleDto } from '../../../src/schedules/dto/delete-schedule.dto';
+import { Record } from '../../../src/records/entities/record.entity';
+import { AttendanceStatus } from '../../../src/records/record-type.enum';
 
 describe('SchedulesService', () => {
   let module: TestingModule;
   let service: SchedulesService;
   let scheduleRepository;
+  let recordRepository;
   let attendeeRepository;
   let attendanceRepository;
   let userRepository;
@@ -30,6 +32,7 @@ describe('SchedulesService', () => {
 
     service = module.get<SchedulesService>(SchedulesService);
     scheduleRepository = module.get(getRepositoryToken(Schedule));
+    recordRepository = module.get(getRepositoryToken(Record));
     attendeeRepository = module.get(getRepositoryToken(Attendee));
     attendanceRepository = module.get(getRepositoryToken(Attendance));
     userRepository = module.get(getRepositoryToken(User));
@@ -141,18 +144,34 @@ describe('SchedulesService', () => {
 
       const schedule_1 = createSchedule('Attendee Id 1', DayType.MONDAY, '1230');
       const schedule_2 = createSchedule('Attendee Id 2', DayType.TUESDAY, '1330');
-
       const schedule_3 = createSchedule('Attendee Id 3', DayType.WEDNESDAY, '1430');
       await scheduleRepository.insert([schedule_1, schedule_2, schedule_3]);
 
+      const record_1 = new Record();
+      record_1.attendeeId = attendee_1.id;
+      record_1.status = AttendanceStatus.PRESENT;
+      record_1.date = '2024-02-06';
+      record_1.day = DayType.MONDAY;
+      record_1.createId = 'user id 1';
+
+      const record_2 = new Record();
+      record_2.attendeeId = attendee_1.id;
+      record_2.status = AttendanceStatus.PRESENT;
+      record_2.date = '2024-02-07';
+      record_2.day = DayType.TUESDAY;
+      record_2.createId = 'user id 1';
+
+      await recordRepository.insert([record_1, record_2]);
+
       // When
-      const sut = await service.findByAttendanceId(targetAttendanceId);
+      const sut = await service.findByAttendanceId(targetAttendanceId, new Date('2024-02-06'));
 
       // Then
       expect(sut).toHaveLength(2);
       sut.map((schedule) => {
         expect(schedule.attendee.attendanceId).toBe(targetAttendanceId);
-        expect(schedule.record).toBeDefined();
+        expect(schedule?.attendee.records).toBeDefined();
+        expect(schedule?.attendee.records.length).toBeLessThanOrEqual(1);
       });
     });
 
@@ -280,6 +299,7 @@ describe('SchedulesService', () => {
   }
 
   async function clear() {
+    await recordRepository.query('DELETE FROM record;');
     await scheduleRepository.query('DELETE FROM schedule;');
     await attendeeRepository.query('DELETE FROM attendee;');
     await attendanceRepository.query('DELETE FROM attendance;');
