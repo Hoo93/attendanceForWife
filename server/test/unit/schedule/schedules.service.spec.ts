@@ -14,6 +14,7 @@ import { In } from 'typeorm';
 import { DeleteScheduleDto } from '../../../src/schedules/dto/delete-schedule.dto';
 import { Record } from '../../../src/records/entities/record.entity';
 import { AttendanceStatus } from '../../../src/records/record-type.enum';
+import { createAttendee } from '../attendee/createAttendee';
 
 describe('SchedulesService', () => {
   let module: TestingModule;
@@ -214,28 +215,37 @@ describe('SchedulesService', () => {
       // Given
       const targetAttendanceId = 'testAttendanceId';
 
-      const attendee_1 = new Attendee();
+      await attendeeRepository.query('DELETE FROM attendee;');
+
+      const attendee_1 = createAttendee('name_1', targetAttendanceId, 'description', 15, 'user id 1');
       attendee_1.id = 'Attendee Id 1';
-      attendee_1.attendanceId = targetAttendanceId;
 
-      const attendee_2 = new Attendee();
+      const attendee_2 = createAttendee('name_2', targetAttendanceId, 'description', 15, 'user id 1');
       attendee_2.id = 'Attendee Id 2';
-      attendee_2.attendanceId = 'notTestAttendanceId';
 
-      const attendee_3 = new Attendee();
+      const attendee_3 = createAttendee('name_3', targetAttendanceId, 'description', 15, 'user id 1');
       attendee_3.id = 'Attendee Id 3';
-      attendee_3.attendanceId = targetAttendanceId;
 
-      const schedule_1 = createSchedule('Attendee Id 1', DayType.MONDAY, '1230');
-      const schedule_2 = createSchedule('Attendee Id 2', DayType.MONDAY, '1330');
-      const schedule_3 = createSchedule('Attendee Id 3', DayType.MONDAY, '1430');
-      await scheduleRepository.insert([schedule_1, schedule_2, schedule_3]);
+      const attendee_4 = createAttendee('name_4', targetAttendanceId, 'description', 15, 'user id 1');
+      attendee_4.id = 'Attendee Id 4';
+
+      const attendee_5 = createAttendee('name_5', targetAttendanceId, 'description', 15, 'user id 1');
+      attendee_5.id = 'Attendee Id 5';
+
+      await attendeeRepository.save([attendee_1, attendee_2, attendee_3, attendee_4, attendee_5]);
+
+      const schedule_1 = createSchedule('Attendee Id 1', DayType.MONDAY, '1330');
+      const schedule_2 = createSchedule('Attendee Id 2', DayType.MONDAY, '1300');
+      const schedule_3 = createSchedule('Attendee Id 3', DayType.MONDAY, '1200');
+      const schedule_4 = createSchedule('Attendee Id 4', DayType.MONDAY, '1700');
+      const schedule_5 = createSchedule('Attendee Id 5', DayType.MONDAY, '1000');
+      await scheduleRepository.insert([schedule_1, schedule_2, schedule_3, schedule_4, schedule_5]);
 
       // When
       const sut = await service.findTodayScheduleByAttendanceId(targetAttendanceId, new Date('2024-02-05'));
 
       // Then
-      expect(sut).toHaveLength(3);
+      expect(sut).toHaveLength(5);
       const isOrderedByTimeAscend = sut.every((schedule, index, array) => {
         if (index === 0) return true;
         return schedule.time >= array[index - 1].time;
@@ -304,8 +314,7 @@ describe('SchedulesService', () => {
     attendance_2.createId = 'user id 1';
     attendance_2.createdAt = new Date();
 
-    await attendanceRepository.save(attendance_1);
-    await attendanceRepository.save(attendance_2);
+    await attendanceRepository.save([attendance_1, attendance_2]);
 
     const attendee_1 = new Attendee();
     attendee_1.id = 'Attendee Id 1';
