@@ -5,7 +5,7 @@ import { UpdateScheduleDto } from './dto/update-schedule.dto';
 import { GetUser } from '../common/user.decorator';
 import { User } from '../users/entities/user.entity';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiBearerAuth, ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Attendee } from '../attendees/entities/attendee.entity';
 import { CreateAttendeeDto } from '../attendees/dto/create-attendee.dto';
 import { Schedule } from './entities/schedule.entity';
