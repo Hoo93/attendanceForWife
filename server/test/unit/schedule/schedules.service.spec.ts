@@ -160,7 +160,7 @@ describe('SchedulesService', () => {
   });
 
   describe('findTodayScheduleByAttendanceId', () => {
-    it('출석부에 스케쥴과 조회 날짜의 record를 리턴한다.', async () => {
+    it('출석부에 스케쥴 중 조회날짜의 요일과의 스케줄과 조회 날짜의 record를 리턴한다.', async () => {
       // Given
       const targetAttendanceId = 'testAttendanceId';
 
@@ -209,7 +209,42 @@ describe('SchedulesService', () => {
         expect(schedule?.attendee.records.length).toBeLessThanOrEqual(1);
       });
     });
+
+    it('해당 요일의 스케쥴을 시간오름차순으로 정렬한다.', async () => {
+      // Given
+      const targetAttendanceId = 'testAttendanceId';
+
+      const attendee_1 = new Attendee();
+      attendee_1.id = 'Attendee Id 1';
+      attendee_1.attendanceId = targetAttendanceId;
+
+      const attendee_2 = new Attendee();
+      attendee_2.id = 'Attendee Id 2';
+      attendee_2.attendanceId = 'notTestAttendanceId';
+
+      const attendee_3 = new Attendee();
+      attendee_3.id = 'Attendee Id 3';
+      attendee_3.attendanceId = targetAttendanceId;
+
+      const schedule_1 = createSchedule('Attendee Id 1', DayType.MONDAY, '1230');
+      const schedule_2 = createSchedule('Attendee Id 2', DayType.MONDAY, '1330');
+      const schedule_3 = createSchedule('Attendee Id 3', DayType.MONDAY, '1430');
+      await scheduleRepository.insert([schedule_1, schedule_2, schedule_3]);
+
+      // When
+      const sut = await service.findTodayScheduleByAttendanceId(targetAttendanceId, new Date('2024-02-05'));
+
+      // Then
+      expect(sut).toHaveLength(3);
+      const isOrderedByTimeAscend = sut.every((schedule, index, array) => {
+        if (index === 0) return true;
+        return schedule.time >= array[index - 1].time;
+      });
+
+      expect(isOrderedByTimeAscend).toBeTruthy();
+    });
   });
+
   describe('deleteAll TEST', () => {
     it('배열에 입력한 모든 스케쥴을 soft delete 한다.', async () => {
       // Given
