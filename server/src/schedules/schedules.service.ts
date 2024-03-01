@@ -81,10 +81,10 @@ export class SchedulesService {
       .andWhere('schedule.day = :day', { day: dayType })
       .select([
         'schedule', // 필요한 schedule 필드 선택
-        'attendee.attendanceId',
+        'attendee',
         'records', // 필요한 records 필드 선택
       ])
-      .orderBy('schedule.time', 'ASC')
+      .orderBy('schedule.time , attendee.name', 'ASC')
       .getMany();
   }
 
