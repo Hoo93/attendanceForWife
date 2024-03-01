@@ -2,14 +2,16 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { InvitationsService } from './invitations.service';
 import { CreateInvitationDto } from './dto/create-invitation.dto';
 import { UpdateInvitationDto } from './dto/update-invitation.dto';
+import { GetUser } from '../common/user.decorator';
+import { User } from '../users/entities/user.entity';
 
 @Controller('invitations')
 export class InvitationsController {
   constructor(private readonly invitationsService: InvitationsService) {}
 
   @Post()
-  create(@Body() createInvitationDto: CreateInvitationDto) {
-    return this.invitationsService.create(createInvitationDto);
+  create(@Body() createInvitationDto: CreateInvitationDto, @GetUser() user: User) {
+    return this.invitationsService.invite(createInvitationDto, user);
   }
 
   @Get()
