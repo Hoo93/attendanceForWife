@@ -253,6 +253,49 @@ describe('SchedulesService', () => {
 
       expect(isOrderedByTimeAscend).toBeTruthy();
     });
+
+    it('시간이 같은 경우 이름 오름차순으로 정렬한다.', async () => {
+      // Given
+      const targetAttendanceId = 'testAttendanceId';
+
+      await attendeeRepository.query('DELETE FROM attendee;');
+
+      const attendee_1 = createAttendee('name_1', targetAttendanceId, 'description', 15, 'user id 1');
+      attendee_1.id = 'Attendee Id 1';
+
+      const attendee_2 = createAttendee('name_2', targetAttendanceId, 'description', 15, 'user id 1');
+      attendee_2.id = 'Attendee Id 2';
+
+      const attendee_3 = createAttendee('name_3', targetAttendanceId, 'description', 15, 'user id 1');
+      attendee_3.id = 'Attendee Id 3';
+
+      const attendee_4 = createAttendee('name_4', targetAttendanceId, 'description', 15, 'user id 1');
+      attendee_4.id = 'Attendee Id 4';
+
+      const attendee_5 = createAttendee('name_5', targetAttendanceId, 'description', 15, 'user id 1');
+      attendee_5.id = 'Attendee Id 5';
+
+      await attendeeRepository.save([attendee_1, attendee_2, attendee_3, attendee_4, attendee_5]);
+
+      const schedule_1 = createSchedule('Attendee Id 3', DayType.MONDAY, '2220');
+      const schedule_2 = createSchedule('Attendee Id 2', DayType.MONDAY, '2220');
+      const schedule_3 = createSchedule('Attendee Id 4', DayType.MONDAY, '2220');
+      const schedule_4 = createSchedule('Attendee Id 5', DayType.MONDAY, '2220');
+      const schedule_5 = createSchedule('Attendee Id 1', DayType.MONDAY, '2220');
+      await scheduleRepository.insert([schedule_1, schedule_2, schedule_3, schedule_4, schedule_5]);
+
+      // When
+      const sut = await service.findTodayScheduleByAttendanceId(targetAttendanceId, new Date('2024-02-05'));
+
+      // Then
+      expect(sut).toHaveLength(5);
+      const isOrderedByTimeAscend = sut.every((schedule, index, array) => {
+        if (index === 0) return true;
+        return schedule.time >= array[index - 1].time && schedule.attendee.name >= array[index - 1].attendee.name;
+      });
+
+      expect(isOrderedByTimeAscend).toBeTruthy();
+    });
   });
 
   describe('deleteAll TEST', () => {
