@@ -45,6 +45,20 @@ export class SchedulesController {
     return this.schedulesService.findByAttendeeId(attendeeId);
   }
 
+  @Get('/attendanceId/:attendanceId/today')
+  @ApiOperation({ summary: '해당 출석부의 오늘의 스케쥴과 출석내역 조회' })
+  @ApiResponse({
+    status: 200,
+    description: '해당 출석부의 오늘의 스케쥴과 출석내역 조회',
+    type: Array<Schedule>,
+  })
+  findTodayScheduleByAttendanceId(
+    @Param('attendanceId') attendanceId: string,
+    @Query() scheduleFilterDto: ScheduleFilterDto,
+  ): Promise<Schedule[]> {
+    return this.schedulesService.findTodayScheduleByAttendanceId(attendanceId);
+  }
+
   @Get('/attendanceId/:attendanceId')
   @ApiOperation({ summary: '출석부에 속한 모든 스케쥴 조회' })
   @ApiResponse({
@@ -53,7 +67,7 @@ export class SchedulesController {
     type: Array<Schedule>,
   })
   findByAttendanceId(@Param('attendanceId') attendanceId: string, @Query() scheduleFilterDto: ScheduleFilterDto): Promise<Schedule[]> {
-    return this.schedulesService.findByAttendanceId(attendanceId);
+    return this.schedulesService.findAllByAttendanceId(attendanceId);
   }
 
   @Delete()
