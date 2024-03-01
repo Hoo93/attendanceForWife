@@ -11,6 +11,7 @@ import { DataSource, In, Repository } from 'typeorm';
 import * as module from 'module';
 import { UpdateAttendeeDto } from '../../../src/attendees/dto/update-attendee.dto';
 import { DeleteAttendeeDto } from '../../../src/attendees/dto/delete-attendee.dto';
+import { createAttendee } from './createAttendee';
 
 describe('AttendeesService', () => {
   let module: TestingModule;
@@ -319,14 +320,4 @@ function createAttendeeDto(name, attendanceId, description, age) {
   createAttendeeDto.description = description;
   createAttendeeDto.age = age;
   return createAttendeeDto;
-}
-
-function createAttendee(name, attendanceId, description, age, createId) {
-  const attendee = new Attendee();
-  attendee.name = name;
-  attendee.attendanceId = attendanceId;
-  attendee.description = description;
-  attendee.age = age;
-  attendee.createId = createId;
-  return attendee;
 }
