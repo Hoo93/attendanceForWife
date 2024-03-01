@@ -184,26 +184,27 @@ describe('SchedulesService', () => {
       const record_1 = new Record();
       record_1.attendeeId = attendee_1.id;
       record_1.status = AttendanceStatus.PRESENT;
-      record_1.date = '2024-02-06';
+      record_1.date = '2024-02-05';
       record_1.day = DayType.MONDAY;
       record_1.createId = 'user id 1';
 
       const record_2 = new Record();
       record_2.attendeeId = attendee_1.id;
       record_2.status = AttendanceStatus.PRESENT;
-      record_2.date = '2024-02-07';
+      record_2.date = '2024-02-06';
       record_2.day = DayType.TUESDAY;
       record_2.createId = 'user id 1';
 
       await recordRepository.insert([record_1, record_2]);
 
       // When
-      const sut = await service.findTodayScheduleByAttendanceId(targetAttendanceId, new Date('2024-02-06'));
+      const sut = await service.findTodayScheduleByAttendanceId(targetAttendanceId, new Date('2024-02-05'));
 
       // Then
-      expect(sut).toHaveLength(2);
+      expect(sut).toHaveLength(1);
       sut.map((schedule) => {
         expect(schedule.attendee.attendanceId).toBe(targetAttendanceId);
+        expect(schedule.day).toBe(DayType.MONDAY);
         expect(schedule?.attendee.records).toBeDefined();
         expect(schedule?.attendee.records.length).toBeLessThanOrEqual(1);
       });
