@@ -24,7 +24,7 @@ export class Invitation extends BaseTimeEntity {
   status: InvitationStatusType;
 
   // 조회를 위한 단방향 관게 설정
-  @ManyToOne(() => User, { eager: true })
+  @ManyToOne(() => User, { eager: true, nullable: false })
   @JoinColumn({ name: 'inviteeId', referencedColumnName: 'id' })
   @ApiProperty({ type: () => User })
   invitee: User;
