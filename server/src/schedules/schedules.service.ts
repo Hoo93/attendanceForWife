@@ -84,6 +84,7 @@ export class SchedulesService {
         'attendee.attendanceId',
         'records', // 필요한 records 필드 선택
       ])
+      .orderBy('schedule.time', 'ASC')
       .getMany();
   }
 
