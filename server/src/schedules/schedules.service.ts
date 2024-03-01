@@ -11,6 +11,7 @@ import { ResponseScheduleDto } from './dto/response-schedule.dto';
 import { Attendance } from '../attendances/entities/attendance.entity';
 import { DeleteAttendeeDto } from '../attendees/dto/delete-attendee.dto';
 import { DeleteScheduleDto } from './dto/delete-schedule.dto';
+import { DayType } from './const/day-type.enum';
 
 @Injectable()
 export class SchedulesService {
@@ -54,12 +55,30 @@ export class SchedulesService {
 
   async findTodayScheduleByAttendanceId(attendanceId: string, date = new Date()): Promise<Schedule[]> {
     const formattedDate = date.toISOString().split('T')[0]; // 'YYYY-MM-DD' 형식으로 변환
+    const day = date.getDay().toString();
+
+    const convertNumberToDay = (dayNumber) => {
+      const days = [
+        DayType.SUNDAY,
+        DayType.MONDAY,
+        DayType.TUESDAY,
+        DayType.WEDNESDAY,
+        DayType.THURSDAY,
+        DayType.FRIDAY,
+        DayType.SATURDAY,
+      ];
+
+      return days[dayNumber % 7];
+    };
+
+    const dayType = convertNumberToDay(day);
 
     return await this.scheduleRepository
       .createQueryBuilder('schedule')
       .leftJoinAndSelect('schedule.attendee', 'attendee')
       .leftJoinAndSelect('attendee.records', 'records', 'records.date = :formattedDate', { formattedDate })
       .where('attendee.attendanceId = :attendanceId', { attendanceId })
+      .andWhere('schedule.day = :day', { day: dayType })
       .select([
         'schedule', // 필요한 schedule 필드 선택
         'attendee.attendanceId',
