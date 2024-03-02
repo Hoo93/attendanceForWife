@@ -6,6 +6,7 @@ import Cookies from "js-cookie";
 import axios from "axios";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
+import { API_BASE_URL } from "@/app/utils";
 
 export interface Login {
   username: string;
@@ -27,7 +28,7 @@ const index = () => {
     });
     try {
       const response = await axios.post(
-        "http://localhost:12310/auth/signin",
+        `${API_BASE_URL}/auth/signin`,
         {
           username: username,
           password: password,

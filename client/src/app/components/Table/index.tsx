@@ -15,6 +15,7 @@ import axios from "axios";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
+import { API_BASE_URL } from "@/app/utils";
 
 interface Info {
   attendanceId: number;
@@ -56,7 +57,7 @@ const CommonTable: React.FC<CommonTableProps> = ({
   const fetchListCreate = async (params: listCreate) => {
     const { title, description, type } = params;
     await axios.post(
-      "http://localhost:12310/attendances",
+      `${API_BASE_URL}/attendances`,
       {
         title: title,
         description: description,

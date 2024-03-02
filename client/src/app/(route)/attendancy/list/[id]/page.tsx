@@ -16,6 +16,7 @@ import { useParams, useRouter } from "next/navigation";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { API_BASE_URL } from "@/app/utils";
 
 interface DateFormat {
   dateFormat: {
@@ -80,7 +81,7 @@ const index = () => {
     queryKey: ["dashboard-data"],
     queryFn: async () => {
       const response = await axios.get(
-        `http://localhost:12310/schedules/attendanceId/${params.id}?days=TUESDAY&days=MONDAY&timeFrom=0900&timeTo=1830`,
+        `${API_BASE_URL}/schedules/attendanceId/${params.id}?days=TUESDAY&days=MONDAY&timeFrom=0900&timeTo=1830`,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -93,7 +94,7 @@ const index = () => {
 
   const fetchRecord = async (attendeeId: string) =>
     await axios.post(
-      "http://localhost:12310/records",
+      `${API_BASE_URL}/records`,
       {
         attendanceId: params.id,
         status: "Present",
@@ -112,7 +113,7 @@ const index = () => {
   const fetchAllRecord = async () => {
     await axios
       .post(
-        "http://localhost:12310/records/create",
+        `${API_BASE_URL}/create`,
         {
           attendanceId: params.id,
           status: "Present",
