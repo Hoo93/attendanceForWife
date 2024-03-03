@@ -43,11 +43,11 @@ const index = () => {
     }
   };
   const { mutate, isLoading } = useMutation(fetchLogin, {
-    onSuccess: (data, variables, context) => {
+    onSuccess: () => {
       alert("로그인 되었습니다.");
       router.push("/attendancy/list");
     },
-    onError: (error, variables, context) => {
+    onError: () => {
       alert("존재하지 않는 계정이거나 비밀번호가 다릅니다.");
     },
   });
