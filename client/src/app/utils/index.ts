@@ -22,6 +22,6 @@ export const DateUtil = ({ url }: { url: string }) => {
   return formattedDateString;
 };
 
-export const API_BASE_URL = process.env.NODE_ENV;
+export const API_BASE_URL = process.env.NEXT_PUBLIC_API_ROOT;
 
 export const accessToken = Cookies.get("access-token");
