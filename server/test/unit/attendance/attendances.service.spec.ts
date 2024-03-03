@@ -10,22 +10,19 @@ import { TestModule } from '../../../src/test.module';
 import { RoleType } from '../../../src/roles/entities/role-type.enum';
 import { UpdateAttendanceDto } from '../../../src/attendances/dto/update-attendance.dto';
 import { Attendee } from '../../../src/attendees/entities/attendee.entity';
+import { Repository } from 'typeorm';
 
 describe('AttendancesService', () => {
   let module: TestingModule;
   let service: AttendancesService;
-  let attendanceRepository;
-  let attendeeRepository;
-  let userAttendanceRepository;
-  let userRepository;
+  let attendanceRepository: Repository<Attendance>;
+  let attendeeRepository: Repository<Attendee>;
+  let userAttendanceRepository: Repository<UserAttendance>;
+  let userRepository: Repository<User>;
 
   beforeAll(async () => {
     module = await Test.createTestingModule({
-      imports: [
-        // TypeOrmModule.forRoot <- DB 커넥션을 위해 AppModule import
-        TestModule,
-        TypeOrmModule.forFeature([Attendance, UserAttendance, User]),
-      ],
+      imports: [TestModule, TypeOrmModule.forFeature([Attendance, UserAttendance, User])],
       providers: [AttendancesService],
     }).compile();
 
@@ -72,7 +69,7 @@ describe('AttendancesService', () => {
       expect(newAttendance.type).toBe(AttendanceType.WEEKDAY);
     });
 
-    it('UserAttendance 테이블에 Admin 권한으로 데이터가 생성된다.', async () => {
+    it('UserAttendance 테이블에 MASTER 권한으로 데이터가 생성된다.', async () => {
       // given
       const attendanceDto = createAttendanceDto('test title 1', 'test description', AttendanceType.WEEKDAY);
 
