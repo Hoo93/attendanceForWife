@@ -10,6 +10,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import axios from "axios";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
+import { API_BASE_URL } from "@/app/utils";
 
 export interface Register {
   username: string;
@@ -53,20 +54,22 @@ const index = () => {
 
   const fetchRegister = async (params: Register) => {
     const { username, password, mobileNumber, name, birthday, email } = params;
-    await axios.post(
-      "http://localhost:12310/auth/signup",
-      {
-        username: username,
-        password: password,
-        mobileNumber: mobileNumber,
-        birthday: convertToBirthdate(birthday.$d),
-        name: name,
-        email: email,
-      },
-      {
-        headers: { "Content-Type": "application/json" },
-      }
-    );
+    await axios
+      .post(
+        `${API_BASE_URL}/auth/signup`,
+        {
+          username: username,
+          password: password,
+          mobileNumber: mobileNumber,
+          birthday: convertToBirthdate(birthday.$d),
+          name: name,
+          email: email,
+        },
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      )
+      .then((res) => res?.data.message);
   };
 
   const { mutate, data, isLoading } = useMutation(fetchRegister, {
@@ -75,7 +78,12 @@ const index = () => {
       router.push("/auth/login");
     },
     onError: (error, variables, context) => {
-      alert("빈칸없이 전부 입력해주세요.");
+      console.log(error?.response.data.message);
+      alert(
+        error?.response.data.message.map((item, index) => {
+          return item + "\n";
+        })
+      );
     },
     onSettled: (data, error, variables, context) => {},
   });

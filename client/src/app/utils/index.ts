@@ -1,5 +1,6 @@
+import Cookies from "js-cookie";
 
-const DateUtil = ({ url }: { url: string }) => {
+export const DateUtil = ({ url }: { url: string }) => {
   console.log(url);
   const originalDate: Date = new Date(url);
 
@@ -17,7 +18,10 @@ const DateUtil = ({ url }: { url: string }) => {
 
   // 포맷팅된 날짜 문자열 생성
   const formattedDateString: string = `${year}-${formattedMonth}-${formattedDay}`;
-  
+
   return formattedDateString;
-}
-export default DateUtil;
+};
+
+export const API_BASE_URL = process.env.NEXT_PUBLIC_API_ROOT;
+
+export const accessToken = Cookies.get("access-token");

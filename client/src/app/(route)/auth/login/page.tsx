@@ -1,11 +1,12 @@
 "use client";
 
 import { Box, Button, CircularProgress, Grid, TextField } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Cookies from "js-cookie";
 import axios from "axios";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
+import { API_BASE_URL } from "@/app/utils";
 
 export interface Login {
   username: string;
@@ -14,7 +15,6 @@ export interface Login {
 
 const index = () => {
   const router = useRouter();
-  const accessToken = Cookies.get("access-token");
   const [login, setLogin] = useState<Login>({
     username: "",
     password: "",
@@ -22,12 +22,10 @@ const index = () => {
 
   const fetchLogin = async (params: Login) => {
     const { username, password } = params;
-    const axiosInstance = axios.create({
-      baseURL: "http://localhost:3000",
-    });
+
     try {
       const response = await axios.post(
-        "http://localhost:12310/auth/signin",
+        `${API_BASE_URL}/auth/signin`,
         {
           username: username,
           password: password,
@@ -45,14 +43,13 @@ const index = () => {
     }
   };
   const { mutate, isLoading } = useMutation(fetchLogin, {
-    onSuccess: (data, variables, context) => {
+    onSuccess: () => {
       alert("로그인 되었습니다.");
       router.push("/attendancy/list");
     },
-    onError: (error, variables, context) => {
+    onError: () => {
       alert("존재하지 않는 계정이거나 비밀번호가 다릅니다.");
     },
-    onSettled: (data, error, variables, context) => {},
   });
 
   // Hook

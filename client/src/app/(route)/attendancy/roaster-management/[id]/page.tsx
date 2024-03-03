@@ -30,6 +30,7 @@ import { DatePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import Cookies from "js-cookie";
 import ClassScheduleContainer from "@/app/components/Schedule";
+import { API_BASE_URL, accessToken } from "@/app/utils";
 
 interface Info {
   name: string;
@@ -48,7 +49,6 @@ interface CommonTableProps {
 const Index: React.FC<CommonTableProps> = () => {
   const router = useRouter();
   const params = useParams<{ id: string }>();
-  const accessToken = Cookies.get("access-token");
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const [date, setDate] = useState<string>("");
@@ -73,7 +73,7 @@ const Index: React.FC<CommonTableProps> = () => {
 
   const fetchScheduleCreate = async (data: any) => {
     const response = await axios.post(
-      "http://localhost:12310/schedules",
+      `${API_BASE_URL}/schedules`,
       {
         attendanceId: data.data.attendanceId,
         attendeeId: data.data.id,
@@ -99,7 +99,7 @@ const Index: React.FC<CommonTableProps> = () => {
       attendanceId,
     } = params;
     const response = await axios.post(
-      "http://localhost:12310/attendees",
+      `${API_BASE_URL}/attendees`,
       {
         name: name,
         age: age,
@@ -129,7 +129,7 @@ const Index: React.FC<CommonTableProps> = () => {
     queryKey: ["get-user", params.id],
     queryFn: async () => {
       const response = await axios.get(
-        `http://localhost:12310/attendees/attendanceId/${params.id}`,
+        `${API_BASE_URL}/attendees/attendanceId/${params.id}`,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
