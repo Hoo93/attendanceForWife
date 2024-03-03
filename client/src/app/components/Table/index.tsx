@@ -4,6 +4,7 @@ import React, { useState } from "react";
 
 import AddIcon from "@mui/icons-material/Add";
 import Paper from "@mui/material/Paper";
+
 // Component
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -15,7 +16,7 @@ import axios from "axios";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
-import { API_BASE_URL } from "@/app/utils";
+import { API_BASE_URL, accessToken } from "@/app/utils";
 
 interface Info {
   attendanceId: number;
@@ -47,7 +48,6 @@ const CommonTable: React.FC<CommonTableProps> = ({
   setIsCreate,
 }) => {
   const router = useRouter();
-  const accessToken = Cookies.get("access-token");
   const [listCreate, setListCreate] = useState<listCreate>({
     title: "",
     description: "",
@@ -71,7 +71,7 @@ const CommonTable: React.FC<CommonTableProps> = ({
     );
   };
 
-  const { mutate, data, isLoading } = useMutation(fetchListCreate, {
+  const { mutate, data } = useMutation(fetchListCreate, {
     onSuccess: () => {
       alert("생성 되었습니다.");
       setIsCreate(false);

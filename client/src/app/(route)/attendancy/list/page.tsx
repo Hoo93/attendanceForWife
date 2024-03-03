@@ -7,11 +7,9 @@ import CommonTable from "@/app/components/Table";
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
-import Cookies from "js-cookie";
-import { API_BASE_URL } from "@/app/utils";
+import { API_BASE_URL, accessToken } from "@/app/utils";
 
 const Index = () => {
-  const accessToken = Cookies.get("access-token");
   const [isCreate, setIsCreate] = useState<boolean>(false);
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));

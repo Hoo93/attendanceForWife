@@ -1,3 +1,5 @@
+import Cookies from "js-cookie";
+
 export const DateUtil = ({ url }: { url: string }) => {
   console.log(url);
   const originalDate: Date = new Date(url);
@@ -21,3 +23,5 @@ export const DateUtil = ({ url }: { url: string }) => {
 };
 
 export const API_BASE_URL = process.env.NODE_ENV;
+
+export const accessToken = Cookies.get("access-token");

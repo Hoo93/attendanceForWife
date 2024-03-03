@@ -16,7 +16,7 @@ import { useParams, useRouter } from "next/navigation";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { API_BASE_URL } from "@/app/utils";
+import { API_BASE_URL, accessToken } from "@/app/utils";
 
 interface DateFormat {
   dateFormat: {
@@ -75,7 +75,6 @@ const index = () => {
   const router = useRouter();
   const params = useParams<{ id: string }>();
   const todayFormatted: DateFormat = getFormattedDate();
-  const accessToken = Cookies.get("access-token");
 
   const { data, refetch } = useQuery({
     queryKey: ["dashboard-data"],
