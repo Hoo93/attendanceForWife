@@ -37,17 +37,17 @@ export class MockUserRepository {
     return this.users;
   }
 
-  public async save(createAuthDto: CreateAuthDto) {
-    const { password, ...result } = createAuthDto;
-    return result;
+  public async save(user: User) {
+    // const { password, ...result } = createAuthDto;
+    user.id = 'TEST_' + this.users.length + 1;
+    this.users.push(user);
+    return user;
   }
 
   public async findOne(options) {
     const property = Object.keys(options.where)[0];
 
-    const user: User = this.users.find(
-      (user) => user[property] === options.where[property],
-    );
+    const user: User = this.users.find((user) => user[property] === options.where[property]);
     if (!user) {
       throw new NotFoundException('해당 ID의 유저가 없습니다.');
     }

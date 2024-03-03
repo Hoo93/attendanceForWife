@@ -20,7 +20,7 @@ describe('AuthService Test', function () {
   let userRepository: MockUserRepository;
   let jwtService: MockJwtService;
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AuthService,
@@ -67,9 +67,7 @@ describe('AuthService Test', function () {
 
   describe('Validate Method Test', () => {
     it('should return User without password', async () => {
-      jest
-        .spyOn(bcrypt, 'compare')
-        .mockImplementationOnce(() => Promise.resolve(true));
+      jest.spyOn(bcrypt, 'compare').mockImplementationOnce(() => Promise.resolve(true));
 
       const username = 'TestUser1';
 
@@ -84,9 +82,7 @@ describe('AuthService Test', function () {
 
   describe('signin method test', () => {
     it('should return access-token', async () => {
-      jest
-        .spyOn(bcrypt, 'compare')
-        .mockImplementationOnce(() => Promise.resolve(true));
+      jest.spyOn(bcrypt, 'compare').mockImplementationOnce(() => Promise.resolve(true));
 
       const signinDto: SigninDto = new SigninDto();
       signinDto.username = 'TestUser1';
