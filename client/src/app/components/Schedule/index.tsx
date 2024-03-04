@@ -31,7 +31,6 @@ export default function ClassScheduleContainer() {
   const [schedules, setSchedules] = useState(INITIAL_SCHEDULES);
   const [schedulesFix, setSchedulesFix] = useState(INITIAL_SCHEDULES);
 
-  console.log(schedules);
   const applyDate = dayjs().add(1, "day").format(t("YYYY년 MM월 DD일")); // TODO: 서버에서 가져오기
   // 일정 서버 데이터로 되돌리기
   const reset = () => {

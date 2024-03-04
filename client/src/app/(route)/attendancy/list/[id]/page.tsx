@@ -141,7 +141,6 @@ const index = () => {
     },
   });
 
-  console.log(data);
   return (
     <BasicLayout>
       <TableContainer component={Paper}>
