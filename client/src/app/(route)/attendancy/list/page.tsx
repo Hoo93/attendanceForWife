@@ -25,7 +25,6 @@ const Index = () => {
       return response.data;
     },
   });
-
   if (isLoading) return <CircularProgress color="inherit" />;
 
   return (
