@@ -141,6 +141,7 @@ const index = () => {
     },
   });
 
+  console.log(data);
   return (
     <BasicLayout>
       <TableContainer component={Paper}>
@@ -171,47 +172,53 @@ const index = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {data?.map((item: any) => (
-              <TableRow
-                key={item.id}
-                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                hover
-                style={{ cursor: "pointer" }}
-              >
-                <TableCell component="th" align="center" scope="row">
-                  {item.id}
-                </TableCell>
-                <TableCell component="th" align="center" scope="row">
-                  <Button
-                    variant="outlined"
-                    color="primary"
-                    onClick={() => mutate(data.attendeeId)}
-                  >
-                    출석
-                  </Button>
-                  <Button
-                    variant="outlined"
-                    color="warning"
-                    onClick={() => mutate(data.attendeeId)}
-                  >
-                    지각
-                  </Button>
-                  <Button
-                    variant="outlined"
-                    color="error"
-                    onClick={() => mutate(data.attendeeId)}
-                  >
-                    결석
-                  </Button>
-                </TableCell>
-                <TableCell align="center">{item.email}</TableCell>
-                <TableCell align="center">
-                  {koreanDaysOfWeek[item.day] + " "}
-                  {formatTime(item.time)}
-                </TableCell>
-                <TableCell align="center">비고</TableCell>
-              </TableRow>
-            ))}
+            {data ? (
+              data?.map((item: any) => (
+                <TableRow
+                  key={item.id}
+                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                  hover
+                  style={{ cursor: "pointer" }}
+                >
+                  <TableCell component="th" align="center" scope="row">
+                    {item.id}
+                  </TableCell>
+                  <TableCell component="th" align="center" scope="row">
+                    <Button
+                      variant="outlined"
+                      color="primary"
+                      onClick={() => mutate(data.attendeeId)}
+                    >
+                      출석
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      color="warning"
+                      onClick={() => mutate(data.attendeeId)}
+                    >
+                      지각
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      color="error"
+                      onClick={() => mutate(data.attendeeId)}
+                    >
+                      결석
+                    </Button>
+                  </TableCell>
+                  <TableCell align="center">{item.email}</TableCell>
+                  <TableCell align="center">
+                    {koreanDaysOfWeek[item.day] + " "}
+                    {formatTime(item.time)}
+                  </TableCell>
+                  <TableCell align="center">비고</TableCell>
+                </TableRow>
+              ))
+            ) : (
+              <TableCell align="center" colSpan={5}>
+                조회된 데이터가 없습니다.
+              </TableCell>
+            )}
           </TableBody>
         </Table>
       </TableContainer>

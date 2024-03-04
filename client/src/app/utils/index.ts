@@ -1,7 +1,6 @@
 import Cookies from "js-cookie";
 
 export const DateUtil = ({ url }: { url: string }) => {
-  console.log(url);
   const originalDate: Date = new Date(url);
 
   // 년, 월, 일 정보 추출
@@ -9,9 +8,6 @@ export const DateUtil = ({ url }: { url: string }) => {
   const month: number = originalDate.getMonth() + 1; // getMonth()는 0부터 시작하므로 1을 더함
   const day: number = originalDate.getDate();
 
-  console.log(year);
-  console.log(month);
-  console.log(day);
   // 월과 일이 한 자리 숫자일 경우 앞에 0을 붙이기
   const formattedMonth: string = month < 10 ? "0" + month : month.toString();
   const formattedDay: string = day < 10 ? "0" + day : day.toString();
