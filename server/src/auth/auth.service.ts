@@ -7,6 +7,7 @@ import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { SigninDto } from './dto/signin.dto';
 import { jwtConstants } from './const/auth.const';
+import { JwtPayload } from './const/jwtPayload.interface';
 
 @Injectable()
 export class AuthService {
@@ -22,7 +23,7 @@ export class AuthService {
   }
 
   async validateUser(username: string, password: string) {
-    const user = await this.userRepository.findOne({ relations:{userAttendance:true},where: { username } });
+    const user = await this.userRepository.findOne({ relations: { userAttendance: true }, where: { username } });
     if (user && (await bcrypt.compare(password, user.password))) {
       return user;
     }
@@ -30,22 +31,22 @@ export class AuthService {
   }
 
   async signin(signinDto: SigninDto) {
-    const user = await this.validateUser(
-      signinDto.username,
-      signinDto.password,
-    );
+    const user = await this.validateUser(signinDto.username, signinDto.password);
 
-    const payload = {
+    const payload: JwtPayload = {
       id: user.id,
       username: user.username,
-      userAttendances: user.userAttendance
+      userAttendance: user.userAttendance,
     };
 
-    const result = {
-      access_token: this.jwtService.sign(payload, {
-        secret: jwtConstants.secret,
-      }),
+    return {
+      access_token: this.generateAccessToken(payload),
     };
-    return result;
+  }
+
+  public generateAccessToken(payload: JwtPayload) {
+    return this.jwtService.sign(payload, {
+      secret: jwtConstants.secret,
+    });
   }
 }

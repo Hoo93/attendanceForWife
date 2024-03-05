@@ -1,11 +1,4 @@
-import {
-  IsEmail,
-  IsOptional,
-  IsString,
-  Matches,
-  MaxLength,
-  MinLength,
-} from 'class-validator';
+import { IsEmail, IsOptional, IsString, Matches, MaxLength, MinLength } from 'class-validator';
 import {
   INVALID_BIRTHDAY_MESSAGE,
   INVALID_EMAIL_MESSAGE,
@@ -97,7 +90,7 @@ export class CreateAuthDto {
   })
   email?: string;
 
-  toEntity(createdAt = new Date()) {
+  public toEntity(createdAt = new Date()) {
     const user = new User();
     user.username = this.username;
     user.password = this.password;
