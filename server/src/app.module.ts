@@ -16,6 +16,7 @@ import { RecordsModule } from './records/records.module';
 import { Record } from './records/entities/record.entity';
 import { ConfigModule } from '@nestjs/config';
 import { InvitationsModule } from './invitations/invitations.module';
+import { Invitation } from './invitations/entities/invitation.entity';
 
 @Module({
   imports: [
@@ -25,7 +26,7 @@ import { InvitationsModule } from './invitations/invitations.module';
     }),
     TypeOrmModule.forRoot({
       ...getOrmConfig(),
-      entities: [User, Role, Attendance, UserAttendance, Schedule, Record],
+      entities: [User, Role, Attendance, UserAttendance, Schedule, Record, Invitation],
     }),
     UsersModule,
     AuthModule,
