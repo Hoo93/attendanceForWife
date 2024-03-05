@@ -6,7 +6,7 @@ import Cookies from "js-cookie";
 import axios from "axios";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { API_BASE_URL } from "@/app/utils";
+import { API_BASE_URL, accessToken } from "@/app/utils";
 
 export interface Login {
   username: string;
@@ -15,6 +15,7 @@ export interface Login {
 
 const index = () => {
   const router = useRouter();
+  const [sessionLoading, setSessionLoading] = useState<boolean>(false);
   const [login, setLogin] = useState<Login>({
     username: "",
     password: "",
@@ -60,10 +61,16 @@ const index = () => {
     }));
   };
 
-  if (isLoading) {
+  if (isLoading || sessionLoading) {
     return <CircularProgress color="inherit" />;
   }
 
+  if (accessToken !== undefined) {
+    setSessionLoading(true);
+    router.push("/attendancy/list");
+  } else {
+    false;
+  }
   return (
     <>
       <Box>

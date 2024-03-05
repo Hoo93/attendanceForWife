@@ -51,7 +51,8 @@ const Index: React.FC<CommonTableProps> = () => {
   const params = useParams<{ id: string }>();
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
-  const [date, setDate] = useState<string>("");
+
+  const [open, setOpen] = useState(false);
   const [isCreate, setIsCreate] = useState<boolean>(false);
   const [roaster, setRoaster] = useState({
     // 타입 지정 해야힘
@@ -62,7 +63,7 @@ const Index: React.FC<CommonTableProps> = () => {
     description: "",
     attendanceId: params.id,
   });
-  const [open, setOpen] = useState(true);
+
   // Hook
   const onChange = (field: string, value: string | any) => {
     setRoaster((prevState) => ({
@@ -86,8 +87,6 @@ const Index: React.FC<CommonTableProps> = () => {
         },
       }
     );
-
-    console.log(response);
   };
   const fetchRoasterCreate = async (params: Info) => {
     const {
@@ -158,7 +157,7 @@ const Index: React.FC<CommonTableProps> = () => {
                 <TableCell>나이</TableCell>
                 <TableCell>휴대폰번호</TableCell>
                 <TableCell>서브휴대폰번호</TableCell>
-                <TableCell>설명</TableCell>
+                <TableCell>스케줄</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -230,15 +229,15 @@ const Index: React.FC<CommonTableProps> = () => {
                       />
                     </TableCell>
                     <TableCell component="th" scope="row">
-                      <LocalizationProvider dateAdapter={AdapterDayjs}>
-                        <DemoContainer components={["DatePicker"]}>
-                          <DatePicker
-                            label="Controlled picker"
-                            // value={date || new Date()}
-                            onChange={(e) => setDate(e as string)}
-                          />
-                        </DemoContainer>
-                      </LocalizationProvider>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => {
+                          setOpen(true);
+                        }}
+                      >
+                        스케줄 지정하기
+                      </Button>
                     </TableCell>
                   </>
                 ) : (

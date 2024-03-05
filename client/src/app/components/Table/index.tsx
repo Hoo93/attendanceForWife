@@ -1,4 +1,10 @@
-import { Button, TextField } from "@mui/material";
+import {
+  Button,
+  FormControlLabel,
+  Radio,
+  RadioGroup,
+  TextField,
+} from "@mui/material";
 // Libraries
 import React, { useState } from "react";
 
@@ -96,11 +102,10 @@ const CommonTable: React.FC<CommonTableProps> = ({
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
         <TableHead>
           <TableRow>
-            <TableCell>이름</TableCell>
-            <TableCell>출석부 이름</TableCell>
-            <TableCell>설명</TableCell>
-            <TableCell>타입</TableCell>
-            <TableCell>총원</TableCell>
+            <TableCell align="center">출석부 이름</TableCell>
+            <TableCell align="center">설명</TableCell>
+            <TableCell align="center">타입</TableCell>
+            <TableCell align="center">총원</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -114,15 +119,19 @@ const CommonTable: React.FC<CommonTableProps> = ({
                 router.push(`/attendancy/list/${item.attendanceId}`);
               }}
             >
-              <TableCell component="th" scope="row">
-                {index}
-              </TableCell>
-              <TableCell component="th" scope="row">
+              <TableCell component="th" scope="row" align="center">
                 {item.attendance.title}
               </TableCell>
-              <TableCell> {item.attendance.description}</TableCell>
-              <TableCell> {item.attendance.type}</TableCell>
-              <TableCell>0</TableCell>
+              <TableCell component="th" scope="row" align="center">
+                {" "}
+                {item.attendance.description}
+              </TableCell>
+              <TableCell component="th" scope="row" align="center">
+                {item.attendance.type === "weekday" ? "평일부" : "주말부"}
+              </TableCell>
+              <TableCell component="th" scope="row" align="center">
+                0
+              </TableCell>
             </TableRow>
           ))}
           <TableRow
@@ -161,13 +170,30 @@ const CommonTable: React.FC<CommonTableProps> = ({
                   />
                 </TableCell>
                 <TableCell component="th" scope="row">
-                  <TextField
+                  {/* <TextField
                     id="outlined-basic"
                     label="타입"
                     variant="outlined"
                     value={listCreate?.type}
                     onChange={(e) => onChange("type", e.target.value)}
-                  />
+                  /> */}
+                  <RadioGroup
+                    row
+                    aria-labelledby="demo-row-radio-buttons-group-label"
+                    name="row-radio-buttons-group"
+                    onChange={(e) => onChange("type", e.target.value)}
+                  >
+                    <FormControlLabel
+                      value="weekday"
+                      control={<Radio />}
+                      label="평일부"
+                    />
+                    <FormControlLabel
+                      value="weeken"
+                      control={<Radio />}
+                      label="주말부"
+                    />
+                  </RadioGroup>
                 </TableCell>
               </>
             ) : (

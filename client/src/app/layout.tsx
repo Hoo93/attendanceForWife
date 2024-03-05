@@ -13,6 +13,7 @@ export default function RootLayout({
   if (accessToken === undefined) {
     router.push("/auth/login");
   }
+
   return (
     <html lang="en">
       <body>
