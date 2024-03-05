@@ -7,6 +7,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../users/entities/user.entity';
 import { UserAttendance } from './entities/user-attendance.entity';
 import { RoleType } from '../roles/entities/role-type.enum';
+import { JwtService } from '@nestjs/jwt';
+import { AuthService } from '../auth/auth.service';
+import { JwtPayload } from '../auth/const/jwtPayload.interface';
 
 @Injectable()
 export class AttendancesService {
@@ -15,22 +18,34 @@ export class AttendancesService {
     private attendanceRepository: Repository<Attendance>,
     @InjectRepository(UserAttendance)
     private userAttendanceRepository: Repository<UserAttendance>,
+    private authService: AuthService,
   ) {}
   async create(createAttendanceDto: CreateAttendanceDto, user: User) {
     const attendance = createAttendanceDto.toEntity();
     attendance.createId = user.id;
 
-    const newAttendance = await this.attendanceRepository.save(attendance);
+    const createdAttendance = await this.attendanceRepository.save(attendance);
 
     const newUserAttendance = new UserAttendance();
-    newUserAttendance.attendanceId = newAttendance.id;
+    newUserAttendance.attendanceId = createdAttendance.id;
     newUserAttendance.userId = user.id;
     newUserAttendance.role = RoleType.MASTER;
     newUserAttendance.createId = user.id;
 
-    await this.userAttendanceRepository.save(newUserAttendance);
+    const createdUserAttendance = await this.userAttendanceRepository.save(newUserAttendance);
 
-    return newAttendance;
+    !!user.userAttendance ? user.userAttendance.push(createdUserAttendance) : (user.userAttendance = [createdUserAttendance]);
+
+    const jwtPayload: JwtPayload = {
+      id: user.id,
+      username: user.username,
+      userAttendance: user.userAttendance,
+    };
+
+    return {
+      result: createdAttendance,
+      access_token: this.authService.generateAccessToken(jwtPayload),
+    };
   }
 
   async findAllByUserId(userId: string): Promise<any> {
