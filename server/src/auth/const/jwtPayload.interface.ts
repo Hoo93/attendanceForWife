@@ -3,5 +3,5 @@ import { UserAttendance } from '../../attendances/entities/user-attendance.entit
 export interface JwtPayload {
   id: string;
   username: string;
-  userAttendances: UserAttendance[];
+  userAttendance: UserAttendance[];
 }
