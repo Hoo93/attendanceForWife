@@ -73,19 +73,19 @@ const index = () => {
   };
 
   const { mutate, data, isLoading } = useMutation(fetchRegister, {
-    onSuccess: (data, variables, context) => {
+    onSuccess: () => {
       alert("회원가입이 되었습니다.");
       router.push("/auth/login");
     },
-    onError: (error, variables, context) => {
-      console.log(error?.response.data.message);
+    onError: (error) => {
       alert(
-        error?.response.data.message.map((item, index) => {
-          return item + "\n";
-        })
+        "에러가 발생하였습니다."
+        // error?.response.data.message.map((item : string) => {
+        //   return item + "\n";
+        // })
       );
     },
-    onSettled: (data, error, variables, context) => {},
+    onSettled: () => {},
   });
   if (isLoading) return <CircularProgress color="inherit" />;
 

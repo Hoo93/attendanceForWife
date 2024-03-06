@@ -24,11 +24,7 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import { TextField } from "@mui/material";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
-import { DatePicker } from "@mui/x-date-pickers";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import Cookies from "js-cookie";
+
 import ClassScheduleContainer from "@/app/components/Schedule";
 import { API_BASE_URL, accessToken } from "@/app/utils";
 
@@ -41,12 +37,7 @@ interface Info {
   attendanceId: string;
 }
 
-interface CommonTableProps {
-  isCreate: boolean;
-  setIsCreate: React.Dispatch<React.SetStateAction<boolean>>;
-}
-
-const Index: React.FC<CommonTableProps> = () => {
+const Index = () => {
   const router = useRouter();
   const params = useParams<{ id: string }>();
   const theme = useTheme();
