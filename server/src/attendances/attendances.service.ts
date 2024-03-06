@@ -26,13 +26,13 @@ export class AttendancesService {
 
     const createdAttendance = await this.attendanceRepository.save(attendance);
 
-    const newUserAttendance = new UserAttendance();
-    newUserAttendance.attendanceId = createdAttendance.id;
-    newUserAttendance.userId = user.id;
-    newUserAttendance.role = RoleType.MASTER;
-    newUserAttendance.createId = user.id;
+    const userAttendance = new UserAttendance();
+    userAttendance.attendanceId = createdAttendance.id;
+    userAttendance.userId = user.id;
+    userAttendance.role = RoleType.MASTER;
+    userAttendance.createId = user.id;
 
-    const createdUserAttendance = await this.userAttendanceRepository.save(newUserAttendance);
+    const createdUserAttendance = await this.userAttendanceRepository.save(userAttendance);
 
     !!user.userAttendance ? user.userAttendance.push(createdUserAttendance) : (user.userAttendance = [createdUserAttendance]);
 
