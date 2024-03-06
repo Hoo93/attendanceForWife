@@ -80,52 +80,31 @@ const index = () => {
     queryKey: ["dashboard-data"],
     queryFn: async () => {
       const response = await axios.get(
-        `${API_BASE_URL}/schedules/attendanceId/${params.id}?days=TUESDAY&days=MONDAY&timeFrom=0900&timeTo=1830`,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
+        `${API_BASE_URL}/schedules/attendanceId/${params.id}?days=TUESDAY&days=MONDAY&timeFrom=0900&timeTo=1830`
       );
       return response?.data;
     },
   });
 
   const fetchRecord = async (attendeeId: string) =>
-    await axios.post(
-      `${API_BASE_URL}/records`,
-      {
-        attendanceId: params.id,
-        status: "Present",
-        attendeeId: attendeeId,
-        date: todayFormatted.dateFormat.date,
-        day: todayFormatted.dateFormat.day,
-        lateReason: "",
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      }
-    );
+    await axios.post(`${API_BASE_URL}/records`, {
+      attendanceId: params.id,
+      status: "Present",
+      attendeeId: attendeeId,
+      date: todayFormatted.dateFormat.date,
+      day: todayFormatted.dateFormat.day,
+      lateReason: "",
+    });
 
   const fetchAllRecord = async () => {
     await axios
-      .post(
-        `${API_BASE_URL}/create`,
-        {
-          attendanceId: params.id,
-          status: "Present",
-          date: new Date(todayFormatted.dateFormat.date),
-          day: todayFormatted.dateFormat.day,
-          lateReason: "",
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      )
+      .post(`${API_BASE_URL}/create`, {
+        attendanceId: params.id,
+        status: "Present",
+        date: new Date(todayFormatted.dateFormat.date),
+        day: todayFormatted.dateFormat.day,
+        lateReason: "",
+      })
       .then(() => {
         alert("전원 출석하였습니다");
         refetch();

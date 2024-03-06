@@ -64,20 +64,12 @@ const Index = () => {
   };
 
   const fetchScheduleCreate = async (data: any) => {
-    const response = await axios.post(
-      `${API_BASE_URL}/schedules`,
-      {
-        attendanceId: data.data.attendanceId,
-        attendeeId: data.data.id,
-        day: "TUESDAY",
-        time: "0930",
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      }
-    );
+    const response = await axios.post(`${API_BASE_URL}/schedules`, {
+      attendanceId: data.data.attendanceId,
+      attendeeId: data.data.id,
+      day: "TUESDAY",
+      time: "0930",
+    });
   };
   const fetchRoasterCreate = async (params: Info) => {
     const {
@@ -88,22 +80,14 @@ const Index = () => {
       description,
       attendanceId,
     } = params;
-    const response = await axios.post(
-      `${API_BASE_URL}/attendees`,
-      {
-        name: name,
-        age: age,
-        mobileNumber: mobileNumber,
-        subMobileNumber: subMobileNumber,
-        description: description,
-        attendanceId: attendanceId,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      }
-    );
+    const response = await axios.post(`${API_BASE_URL}/attendees`, {
+      name: name,
+      age: age,
+      mobileNumber: mobileNumber,
+      subMobileNumber: subMobileNumber,
+      description: description,
+      attendanceId: attendanceId,
+    });
     return response;
   };
 
@@ -119,12 +103,7 @@ const Index = () => {
     queryKey: ["get-user", params.id],
     queryFn: async () => {
       const response = await axios.get(
-        `${API_BASE_URL}/attendees/attendanceId/${params.id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
+        `${API_BASE_URL}/attendees/attendanceId/${params.id}`
       );
       return response?.data[0];
     },
