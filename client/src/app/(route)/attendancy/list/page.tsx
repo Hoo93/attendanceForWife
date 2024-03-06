@@ -17,16 +17,13 @@ const Index = () => {
   const { isLoading, data, isError } = useQuery({
     queryKey: ["get-user"],
     queryFn: async () => {
-      const response = await axios.get(`${API_BASE_URL}/attendances`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
+      const response = await axios.get(`${API_BASE_URL}/attendances`);
       return response.data;
     },
   });
   if (isLoading) return <CircularProgress color="inherit" />;
 
+  console.log(accessToken);
   return (
     <BasicLayout>
       <Box

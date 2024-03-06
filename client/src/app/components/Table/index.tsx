@@ -62,23 +62,19 @@ const CommonTable: React.FC<CommonTableProps> = ({
 
   const fetchListCreate = async (params: listCreate) => {
     const { title, description, type } = params;
-    await axios.post(
-      `${API_BASE_URL}/attendances`,
-      {
+    const response = await axios
+      .post(`${API_BASE_URL}/attendances`, {
         title: title,
         description: description,
         type: type,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      }
-    );
+      })
+      .then((res) => res.data);
+
+    return response;
   };
 
-  const { mutate, data } = useMutation(fetchListCreate, {
-    onSuccess: () => {
+  const { mutate } = useMutation(fetchListCreate, {
+    onSuccess: (data) => {
       alert("생성 되었습니다.");
       setIsCreate(false);
     },
@@ -170,13 +166,6 @@ const CommonTable: React.FC<CommonTableProps> = ({
                   />
                 </TableCell>
                 <TableCell component="th" scope="row">
-                  {/* <TextField
-                    id="outlined-basic"
-                    label="타입"
-                    variant="outlined"
-                    value={listCreate?.type}
-                    onChange={(e) => onChange("type", e.target.value)}
-                  /> */}
                   <RadioGroup
                     row
                     aria-labelledby="demo-row-radio-buttons-group-label"
@@ -189,7 +178,7 @@ const CommonTable: React.FC<CommonTableProps> = ({
                       label="평일부"
                     />
                     <FormControlLabel
-                      value="weeken"
+                      value="weekend"
                       control={<Radio />}
                       label="주말부"
                     />
