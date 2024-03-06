@@ -37,7 +37,7 @@ const index = () => {
           onClick={() => {
             Cookies.remove("access-token");
             alert("로그아웃 되었습니다");
-            router.push("/auth/login");
+            router.push("/");
           }}
           variant="outlined"
         >

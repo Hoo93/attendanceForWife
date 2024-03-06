@@ -75,7 +75,7 @@ const index = () => {
   const { mutate, data, isLoading } = useMutation(fetchRegister, {
     onSuccess: () => {
       alert("회원가입이 되었습니다.");
-      router.push("/auth/login");
+      router.push("/");
     },
     onError: (error) => {
       alert(
@@ -199,7 +199,7 @@ const index = () => {
             variant="contained"
             color="error"
             onClick={() => {
-              router.push("/auth/login");
+              router.push("/");
             }}
           >
             취소

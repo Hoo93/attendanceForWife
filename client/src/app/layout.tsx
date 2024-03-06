@@ -3,6 +3,7 @@ import Providers from ".";
 import "./globals.css";
 import { useRouter } from "next/navigation";
 import { accessToken } from "./utils";
+import { useEffect } from "react";
 
 export default function RootLayout({
   children,
@@ -10,10 +11,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   const router = useRouter();
-  if (accessToken === undefined) {
-    router.push("/auth/login");
-  }
 
+  useEffect(() => {
+    if (accessToken === undefined) {
+      router.push("/");
+    }
+  }, [accessToken]);
   return (
     <html lang="en">
       <body>
