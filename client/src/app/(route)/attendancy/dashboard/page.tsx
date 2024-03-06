@@ -26,10 +26,6 @@ interface Info {
   password: string;
 }
 
-interface CommonTableProps {
-  infoList: Info[];
-}
-
 const index = () => {
   const router = useRouter();
   // const { infoList, fetchInfoList } = useUser(); <- react query로 인한 주석

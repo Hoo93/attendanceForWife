@@ -42,7 +42,7 @@ interface listCreate {
   type: string; // 지각
 }
 
-interface CommonTableProps {
+export interface CommonTableProps {
   infoList: any;
   isCreate: boolean;
   setIsCreate: React.Dispatch<React.SetStateAction<boolean>>;
