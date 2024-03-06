@@ -23,7 +23,6 @@ const Index = () => {
   });
   if (isLoading) return <CircularProgress color="inherit" />;
 
-  console.log(accessToken);
   return (
     <BasicLayout>
       <Box
