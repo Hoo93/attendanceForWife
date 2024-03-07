@@ -54,13 +54,14 @@ describe('UserService Test', function () {
   });
 
   it('findAll returns all users', async () => {
-    const pagination: Pagination = {
-      skip: 0,
-      take: 2,
-    };
+    const pagination = new TestingPagination();
+    pagination.pageNo = 1;
+    pagination.pageSize = 2;
+
     const result = await service.findAll(pagination);
 
     expect(result.count).toBe(3);
     expect(result.list.length).toBe(2);
   });
 });
+class TestingPagination extends Pagination {}
