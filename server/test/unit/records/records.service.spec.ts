@@ -571,7 +571,7 @@ describe('RecordsService', () => {
       await recordRepository.save([record1_1, record1_2, record1_3, record2_1, record2_2, record2_3, record3_1, record3_2, record3_3]);
 
       const recordFilterDto = new RecordFilterDto();
-      recordFilterDto.take = 5;
+      recordFilterDto.pageSize = 5;
 
       // When
       const [sut, count] = await service.findByAttendanceId(targetAttendanceId, recordFilterDto);
@@ -611,7 +611,8 @@ describe('RecordsService', () => {
       await recordRepository.save([record1_1, record1_2, record1_3, record2_1, record2_2, record2_3, record3_1, record3_2, record3_3]);
 
       const recordFilterDto = new RecordFilterDto();
-      recordFilterDto.skip = 5;
+      recordFilterDto.pageNo = 2;
+      recordFilterDto.pageSize = 5;
 
       // When
       const [sut, count] = await service.findByAttendanceId(targetAttendanceId, recordFilterDto);
