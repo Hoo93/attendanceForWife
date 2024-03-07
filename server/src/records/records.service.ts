@@ -87,8 +87,10 @@ export class RecordsService {
     }
 
     // Pagination
-    queryBuilder.take(recordFilterDto.take);
-    queryBuilder.skip(recordFilterDto.skip);
+    if (recordFilterDto.pageNo && recordFilterDto.pageSize) {
+      queryBuilder.take(recordFilterDto.getLimit());
+      queryBuilder.skip(recordFilterDto.getOffset());
+    }
 
     return queryBuilder.getManyAndCount();
   }

@@ -572,6 +572,7 @@ describe('RecordsService', () => {
 
       const recordFilterDto = new RecordFilterDto();
       recordFilterDto.pageSize = 5;
+      recordFilterDto.pageNo = 1;
 
       // When
       const [sut, count] = await service.findByAttendanceId(targetAttendanceId, recordFilterDto);
