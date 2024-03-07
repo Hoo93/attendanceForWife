@@ -7,13 +7,12 @@ import { Pagination } from '../common/pagination';
 
 @Injectable()
 export class UsersService {
-  constructor(
-    @InjectRepository(User) private userRepository: Repository<User>,
-  ) {}
+  constructor(@InjectRepository(User) private userRepository: Repository<User>) {}
 
   async findAll(pagination: Pagination) {
     const [list, count] = await this.userRepository.findAndCount({
-      ...pagination,
+      skip: pagination.getOffset(),
+      take: pagination.getLimit(),
     });
 
     return {
