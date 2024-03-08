@@ -44,6 +44,19 @@ export class AuthService {
     };
   }
 
+  async regenerateAccessToken(user: User) {
+    const found = await this.userRepository.findOne({ relations: { userAttendance: true }, where: { id: user.id } });
+
+    const payload: JwtPayload = {
+      id: found.id,
+      username: found.username,
+      userAttendance: found.userAttendance,
+    };
+    return {
+      access_token: this.generateAccessToken(payload),
+    };
+  }
+
   public generateAccessToken(payload: JwtPayload) {
     return this.jwtService.sign(payload, {
       secret: jwtConstants.secret,
