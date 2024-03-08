@@ -92,4 +92,14 @@ describe('AuthService Test', function () {
       expect(result).toHaveProperty('access_token');
     });
   });
+
+  describe('regenerateAccessToken method test', () => {
+    it('should return access-token', async () => {
+      const user = new User();
+      user.username = 'TestUser1';
+
+      const sut = await service.regenerateAccessToken(user);
+      expect(sut).toHaveProperty('access_token');
+    });
+  });
 });
