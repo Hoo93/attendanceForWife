@@ -97,6 +97,7 @@ describe('AuthService Test', function () {
     it('should return access-token', async () => {
       const user = new User();
       user.username = 'TestUser1';
+      user.id = 'TEST_1';
 
       const sut = await service.regenerateAccessToken(user);
       expect(sut).toHaveProperty('access_token');
