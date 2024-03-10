@@ -1,4 +1,4 @@
-export class PageReponseDto<T> {
+export class PageResponseDto<T> {
   pageSize: number;
   count: number;
   totalPage: number;
