@@ -372,11 +372,11 @@ describe('RecordsService', () => {
 
       // When
       const recordFilterDto = new RecordFilterDto();
-      const [sut, count] = await service.findByAttendanceId(targetAttendanceId, recordFilterDto);
+      const sut = await service.findByAttendanceId(targetAttendanceId, recordFilterDto);
 
       // Then
-      expect(count).toBe(9);
-      sut.map((result) => {
+      expect(sut.count).toBe(9);
+      sut.items.map((result) => {
         expect(['2024-01-31', '2024-02-01', '2024-02-02']).toContain(result.date);
         expect([createdAttendee1.id, createdAttendee2.id, createdAttendee3.id]).toContain(result.attendeeId);
         expect(result.attendee.id).not.toBeNull();
@@ -414,8 +414,8 @@ describe('RecordsService', () => {
       const sut = await service.findByAttendanceId(targetAttendanceId, recordFilterDto);
 
       // Then
-      expect(sut[1]).toBe(6);
-      sut[0].map((result) => {
+      expect(sut.count).toBe(6);
+      sut.items.map((result) => {
         expect([createdAttendee1.id, createdAttendee2.id]).toContain(result.attendeeId);
       });
     });
@@ -455,8 +455,8 @@ describe('RecordsService', () => {
       const sut = await service.findByAttendanceId(targetAttendanceId, recordFilterDto);
 
       // Then
-      expect(sut[1]).toBe(3);
-      sut[0].map((result) => {
+      expect(sut.count).toBe(3);
+      sut.items.map((result) => {
         expect(result.date).toBe('2024-01-31');
         expect([createdAttendee1.id, createdAttendee2.id, createdAttendee3.id]).toContain(result.attendeeId);
       });
@@ -495,8 +495,8 @@ describe('RecordsService', () => {
       const sut = await service.findByAttendanceId(targetAttendanceId, recordFilterDto);
 
       // Then
-      expect(sut[1]).toBe(3);
-      sut[0].map((result) => {
+      expect(sut.count).toBe(3);
+      sut.items.map((result) => {
         expect(result.day).toBe(DayType.WEDNESDAY);
         expect([createdAttendee1.id, createdAttendee2.id, createdAttendee3.id]).toContain(result.attendeeId);
       });
@@ -532,11 +532,11 @@ describe('RecordsService', () => {
       recordFilterDto.status = AttendanceStatus.PRESENT;
 
       // When
-      const [sut, count] = await service.findByAttendanceId(targetAttendanceId, recordFilterDto);
+      const sut = await service.findByAttendanceId(targetAttendanceId, recordFilterDto);
 
       // Then
-      expect(count).toBe(3);
-      sut.map((result) => {
+      expect(sut.count).toBe(3);
+      sut.items.map((result) => {
         expect(result.status).toBe(AttendanceStatus.PRESENT);
         expect([createdAttendee1.id, createdAttendee2.id, createdAttendee3.id]).toContain(result.attendeeId);
       });
@@ -575,12 +575,12 @@ describe('RecordsService', () => {
       recordFilterDto.pageNo = 1;
 
       // When
-      const [sut, count] = await service.findByAttendanceId(targetAttendanceId, recordFilterDto);
+      const sut = await service.findByAttendanceId(targetAttendanceId, recordFilterDto);
 
       // Then
-      expect(count).toBe(9);
-      expect(sut.length).toBe(5);
-      sut.map((result) => {
+      expect(sut.count).toBe(9);
+      expect(sut.items.length).toBe(5);
+      sut.items.map((result) => {
         expect([createdAttendee1.id, createdAttendee2.id, createdAttendee3.id]).toContain(result.attendeeId);
       });
     });
@@ -616,12 +616,12 @@ describe('RecordsService', () => {
       recordFilterDto.pageSize = 5;
 
       // When
-      const [sut, count] = await service.findByAttendanceId(targetAttendanceId, recordFilterDto);
+      const sut = await service.findByAttendanceId(targetAttendanceId, recordFilterDto);
 
       // Then
-      expect(count).toBe(9);
-      expect(sut.length).toBe(4);
-      sut.map((result) => {
+      expect(sut.count).toBe(9);
+      expect(sut.items.length).toBe(4);
+      sut.items.map((result) => {
         expect([createdAttendee1.id, createdAttendee2.id, createdAttendee3.id]).toContain(result.attendeeId);
       });
     });
