@@ -16,6 +16,8 @@ import { DeleteRecordDto } from './dto/delete-record.dto';
 import { DeleteAttendeeDto } from '../attendees/dto/delete-attendee.dto';
 import { CreateAllRecordDto } from './dto/createAll-record.dto';
 import { RecordFilterDto } from './dto/record-filter.dto';
+import { PageResponseDto } from '../common/pageResponse.dto';
+import { ResponseWithoutPaginationDto } from '../common/responseWithoutPagination.dto';
 
 @UseGuards(AuthGuard('jwt'))
 @Controller('records')
@@ -91,7 +93,7 @@ export class RecordsController {
   async findByAttendeeId(
     @Param('attendeeId') attendeeId: string,
     @Query() recordFilterDto: RecordFilterDto,
-  ): Promise<[Record[], number]> {
+  ): Promise<ResponseWithoutPaginationDto<Record>> {
     return this.recordsService.findByAttendeeId(attendeeId, recordFilterDto);
   }
 
@@ -108,7 +110,7 @@ export class RecordsController {
   async findByAttendanceId(
     @Param('attendanceId') attendanceId: string,
     @Query() recordFilterDto: RecordFilterDto,
-  ): Promise<[Record[], number]> {
+  ): Promise<PageResponseDto<Record>> {
     return this.recordsService.findByAttendanceId(attendanceId, recordFilterDto);
   }
 
