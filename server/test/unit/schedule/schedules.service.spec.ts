@@ -10,7 +10,7 @@ import { AttendanceType } from '../../../src/attendances/const/attendance-type.e
 import { DayType } from '../../../src/schedules/const/day-type.enum';
 import { CreateScheduleDto } from '../../../src/schedules/dto/create-schedule.dto';
 import { BadRequestException } from '@nestjs/common';
-import { In } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { DeleteScheduleDto } from '../../../src/schedules/dto/delete-schedule.dto';
 import { Record } from '../../../src/records/entities/record.entity';
 import { AttendanceStatus } from '../../../src/records/record-type.enum';
@@ -19,11 +19,11 @@ import { createAttendee } from '../attendee/createAttendee';
 describe('SchedulesService', () => {
   let module: TestingModule;
   let service: SchedulesService;
-  let scheduleRepository;
-  let recordRepository;
-  let attendeeRepository;
-  let attendanceRepository;
-  let userRepository;
+  let scheduleRepository: Repository<Schedule>;
+  let recordRepository: Repository<Record>;
+  let attendeeRepository: Repository<Attendee>;
+  let attendanceRepository: Repository<Attendance>;
+  let userRepository: Repository<User>;
 
   beforeAll(async () => {
     module = await Test.createTestingModule({

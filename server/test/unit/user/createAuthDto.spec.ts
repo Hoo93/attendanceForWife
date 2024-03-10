@@ -17,7 +17,7 @@ import {
 import { User } from '../../../src/users/entities/user.entity';
 
 describe('create-auth.dto TEST', () => {
-  let createAuthDto;
+  let createAuthDto: CreateAuthDto;
 
   beforeEach(() => {
     const dto = {
@@ -57,9 +57,7 @@ describe('create-auth.dto TEST', () => {
 
     const validationErrors = await validate(createAuthDto);
 
-    expect(validationErrors[0].constraints.minLength).toBe(
-      INVALID_NAME_MIN_LENGTH_MESSAGE,
-    );
+    expect(validationErrors[0].constraints.minLength).toBe(INVALID_NAME_MIN_LENGTH_MESSAGE);
   });
 
   it('이름은 20글자 이하이어야 합니다.', async () => {
@@ -68,9 +66,7 @@ describe('create-auth.dto TEST', () => {
 
     const validationErrors = await validate(createAuthDto);
 
-    expect(validationErrors[0].constraints.maxLength).toBe(
-      INVALID_NAME_MAX_LENGTH_MESSAGE,
-    );
+    expect(validationErrors[0].constraints.maxLength).toBe(INVALID_NAME_MAX_LENGTH_MESSAGE);
   });
 
   it('비밀번호는 각각 최소 1개 이상의 한글,영문,숫자로 이루어져야 합니다.', async () => {
@@ -79,9 +75,7 @@ describe('create-auth.dto TEST', () => {
 
     const validationErrors = await validate(createAuthDto);
 
-    expect(validationErrors[0].constraints.matches).toBe(
-      INVALID_PASSWORD_MESSAGE,
-    );
+    expect(validationErrors[0].constraints.matches).toBe(INVALID_PASSWORD_MESSAGE);
   });
 
   it('비밀번호는 6글자 이상이어야 합니다.', async () => {
@@ -90,9 +84,7 @@ describe('create-auth.dto TEST', () => {
 
     const validationErrors = await validate(createAuthDto);
 
-    expect(validationErrors[0].constraints.minLength).toBe(
-      INVALID_PASSWORD_MIN_LENGTH_MESSAGE,
-    );
+    expect(validationErrors[0].constraints.minLength).toBe(INVALID_PASSWORD_MIN_LENGTH_MESSAGE);
   });
 
   it('비밀번호는 12글자 이하이어야 합니다.', async () => {
@@ -101,9 +93,7 @@ describe('create-auth.dto TEST', () => {
 
     const validationErrors = await validate(createAuthDto);
 
-    expect(validationErrors[0].constraints.maxLength).toBe(
-      INVALID_PASSWORD_MAX_LENGTH_MESSAGE,
-    );
+    expect(validationErrors[0].constraints.maxLength).toBe(INVALID_PASSWORD_MAX_LENGTH_MESSAGE);
   });
 
   it('아이디는 영문,숫자로 이루어져야 합니다.', async () => {
@@ -121,9 +111,7 @@ describe('create-auth.dto TEST', () => {
 
     const validationErrors = await validate(createAuthDto);
 
-    expect(validationErrors[0].constraints.minLength).toBe(
-      INVALID_ID_MIN_LENGTH_MESSAGE,
-    );
+    expect(validationErrors[0].constraints.minLength).toBe(INVALID_ID_MIN_LENGTH_MESSAGE);
   });
 
   it('아이디는 12글자 이하이어야 합니다.', async () => {
@@ -132,9 +120,7 @@ describe('create-auth.dto TEST', () => {
 
     const validationErrors = await validate(createAuthDto);
 
-    expect(validationErrors[0].constraints.maxLength).toBe(
-      INVALID_ID_MAX_LENGTH_MESSAGE,
-    );
+    expect(validationErrors[0].constraints.maxLength).toBe(INVALID_ID_MAX_LENGTH_MESSAGE);
   });
 
   it('휴대폰 번호의 공백과 - 을 제거한다.', async () => {

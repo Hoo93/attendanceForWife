@@ -9,12 +9,6 @@ import { SigninDto } from '../../../src/auth/dto/signin.dto';
 import { JwtService } from '@nestjs/jwt';
 import { MockJwtService } from './mockJwtService';
 
-// type MockRepository<T = any> = Partial<Record<keyof T, jest.Mock>>;
-// const mockRepository = () => ({
-//   findOne: jest.fn(),
-//   save: jest.fn(),
-//   create: jest.fn(),
-// });
 describe('AuthService Test', function () {
   let service: AuthService;
   let userRepository: MockUserRepository;

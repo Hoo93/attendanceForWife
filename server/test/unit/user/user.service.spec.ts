@@ -6,12 +6,6 @@ import { MockJwtService } from './mockJwtService';
 import { UsersService } from '../../../src/users/users.service';
 import { Pagination } from '../../../src/common/pagination';
 
-// type MockRepository<T = any> = Partial<Record<keyof T, jest.Mock>>;
-// const mockRepository = () => ({
-//   findOne: jest.fn(),
-//   save: jest.fn(),
-//   create: jest.fn(),
-// });
 describe('UserService Test', function () {
   let service: UsersService;
   let userRepository: MockUserRepository;
