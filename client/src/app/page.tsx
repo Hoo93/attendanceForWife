@@ -6,7 +6,8 @@ import Cookies from "js-cookie";
 import axios from "axios";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { API_BASE_URL, accessToken } from "@/app/utils";
+import { API_BASE_URL, accessToken } from "@/app/utils/common";
+import { pushNotification } from "./utils/notification";
 
 export interface Login {
   username: string;
@@ -52,11 +53,14 @@ const index = () => {
 
   const { mutate, isLoading } = useMutation(fetchLogin, {
     onSuccess: () => {
-      alert("로그인 되었습니다.");
+      pushNotification("로그인 되었습니다.", "success");
       router.push("/attendancy/list");
     },
     onError: () => {
-      alert("존재하지 않는 계정이거나 비밀번호가 다릅니다.");
+      pushNotification(
+        "존재하지 않는 계정이거나 비밀번호가 다릅니다.",
+        "error"
+      );
     },
   });
 

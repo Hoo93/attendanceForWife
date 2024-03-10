@@ -2,9 +2,8 @@
 import Providers from ".";
 import "./globals.css";
 import { useRouter } from "next/navigation";
-import { accessToken } from "./utils";
+import { accessToken } from "./utils/common";
 import { useEffect } from "react";
-
 export default function RootLayout({
   children,
 }: {

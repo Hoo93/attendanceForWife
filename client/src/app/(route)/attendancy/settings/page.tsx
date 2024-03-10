@@ -9,6 +9,7 @@ import { Button } from "@mui/material";
 import Stack from "@mui/material/Stack";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
+import { pushNotification } from "@/app/utils/notification";
 
 const index = () => {
   const router = useRouter();
@@ -27,7 +28,7 @@ const index = () => {
           출석이 출석부
         </Button>
         <Button
-          onClick={() => alert("준비중인 기능입니다.")}
+          onClick={() => pushNotification("준비중인 기능입니다.", "warning")}
           variant="outlined"
         >
           기타 등등
@@ -36,7 +37,7 @@ const index = () => {
         <Button
           onClick={() => {
             Cookies.remove("access-token");
-            alert("로그아웃 되었습니다");
+            pushNotification("로그아웃 되었습니다.", "success");
             router.push("/");
           }}
           variant="outlined"

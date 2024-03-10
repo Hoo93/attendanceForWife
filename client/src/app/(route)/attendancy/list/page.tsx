@@ -7,7 +7,7 @@ import CommonTable from "@/app/components/Table";
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
-import { API_BASE_URL, accessToken } from "@/app/utils";
+import { API_BASE_URL, accessToken } from "@/app/utils/common";
 
 const Index = () => {
   const [isCreate, setIsCreate] = useState<boolean>(false);

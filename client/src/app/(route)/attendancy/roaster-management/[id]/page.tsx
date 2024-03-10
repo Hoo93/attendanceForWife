@@ -26,12 +26,13 @@ import TableRow from "@mui/material/TableRow";
 import { TextField } from "@mui/material";
 
 import ClassScheduleContainer from "@/app/components/Schedule";
-import { API_BASE_URL, accessToken } from "@/app/utils";
+import { API_BASE_URL, accessToken } from "@/app/utils/common";
+import { pushNotification } from "@/app/utils/notification";
 
-interface Info {
+interface RoasterData {
   name: string;
-  mobileNumber: string;
   age: string;
+  mobileNumber: string;
   subMobileNumber: string;
   description: string;
   attendanceId: string;
@@ -45,8 +46,7 @@ const Index = () => {
 
   const [open, setOpen] = useState(false);
   const [isCreate, setIsCreate] = useState<boolean>(false);
-  const [roaster, setRoaster] = useState({
-    // 타입 지정 해야힘
+  const [roaster, setRoaster] = useState<RoasterData>({
     name: "",
     age: "",
     mobileNumber: "",
@@ -71,7 +71,7 @@ const Index = () => {
       time: "0930",
     });
   };
-  const fetchRoasterCreate = async (params: Info) => {
+  const fetchRoasterCreate = async (params: RoasterData) => {
     const {
       name,
       age,
@@ -96,6 +96,19 @@ const Index = () => {
     mutationFn: fetchRoasterCreate,
     onSuccess: (data) => {
       fetchScheduleCreate(data);
+      pushNotification("생성되었습니다.", "success");
+    },
+    onError: (data) => {
+      pushNotification("생성에 실패하였습니다.", "error");
+      setIsCreate(false);
+      setRoaster({
+        name: "",
+        age: "",
+        mobileNumber: "",
+        subMobileNumber: "",
+        description: "",
+        attendanceId: params.id,
+      });
     },
   });
 
@@ -131,7 +144,7 @@ const Index = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {data?.map((item: Info, index: number) => (
+              {data?.map((item: RoasterData, index: number) => (
                 <TableRow
                   key={index}
                   sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
@@ -262,7 +275,7 @@ const Index = () => {
               variant="contained"
               color="error"
               onClick={() => {
-                alert("삭제하실 명단을 선택해주세요.");
+                pushNotification("삭제하실 명단을 선택해주세요.", "error");
               }}
             >
               삭제
