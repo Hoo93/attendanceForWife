@@ -1,7 +1,7 @@
 import { Controller, Post, Body, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateAuthDto } from './dto/create-auth.dto';
-import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { User } from '../users/entities/user.entity';
 import { SigninDto } from './dto/signin.dto';
 import { AuthGuard } from '@nestjs/passport';
@@ -42,6 +42,7 @@ export class AuthController {
     return this.authService.signin(signinDto);
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Post('/regenerate')
   @ApiOperation({ summary: '토큰 재발급' })
   @ApiResponse({
@@ -49,7 +50,7 @@ export class AuthController {
     description: '토큰 재발급',
     type: String,
   })
-  @UseGuards(AuthGuard('jwt'))
+  @ApiBearerAuth()
   async regenerateAccessToken(@GetUser() user: User) {
     return this.authService.regenerateAccessToken(user);
   }
