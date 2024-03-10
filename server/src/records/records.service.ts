@@ -11,6 +11,7 @@ import { AttendanceStatus } from './record-type.enum';
 import { RecordFilterDto } from './dto/record-filter.dto';
 import { NumberToDayString } from './numberToDayString';
 import { ExcelService } from '../common/excel.service';
+import { PageResponseDto } from '../common/pageResponse.dto';
 
 @Injectable()
 export class RecordsService {
@@ -66,7 +67,7 @@ export class RecordsService {
     return this.recordRepository.findOneBy({ id });
   }
 
-  async findByAttendanceId(attendanceId: string, recordFilterDto: RecordFilterDto): Promise<[Record[], number]> {
+  async findByAttendanceId(attendanceId: string, recordFilterDto: RecordFilterDto): Promise<PageResponseDto<Record>> {
     let queryBuilder: SelectQueryBuilder<Record>;
     queryBuilder = this.recordRepository
       .createQueryBuilder('record')
@@ -92,7 +93,9 @@ export class RecordsService {
       queryBuilder.skip(recordFilterDto.getOffset());
     }
 
-    return queryBuilder.getManyAndCount();
+    const [items, count] = await queryBuilder.getManyAndCount();
+
+    return new PageResponseDto<Record>(recordFilterDto.pageSize, count, items);
   }
 
   async findByAttendeeId(attendeeId: string, recordFilterDto: RecordFilterDto): Promise<[Record[], number]> {
