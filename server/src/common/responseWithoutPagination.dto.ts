@@ -1,4 +1,4 @@
-export class PageWithoutCountResponseDto<T> {
+export class ResponseWithoutPaginationDto<T> {
   count: number;
   items: T[];
 

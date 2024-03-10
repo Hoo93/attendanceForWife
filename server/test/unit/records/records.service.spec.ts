@@ -25,9 +25,9 @@ describe('RecordsService', () => {
   let service: RecordsService;
   let recordRepository: Repository<Record>;
   let scheduleRepository: Repository<Schedule>;
-  let attendeeRepository;
-  let attendanceRepository;
-  let userRepository;
+  let attendeeRepository: Repository<Attendee>;
+  let attendanceRepository: Repository<Attendance>;
+  let userRepository: Repository<User>;
 
   beforeAll(async () => {
     module = await Test.createTestingModule({
@@ -648,11 +648,11 @@ describe('RecordsService', () => {
 
       // When
       const recordFilterDto = new RecordFilterDto();
-      const [records, count] = await service.findByAttendeeId(targetAttendeeId, recordFilterDto);
+      const sut = await service.findByAttendeeId(targetAttendeeId, recordFilterDto);
 
       // Then
-      expect(count).toBe(3);
-      records.map((record) => {
+      expect(sut.count).toBe(3);
+      sut.items.map((record) => {
         expect(record.attendeeId).toBe(targetAttendeeId);
         expect(record.attendee.id).not.toBeNull();
       });
@@ -677,11 +677,11 @@ describe('RecordsService', () => {
       // When
       const recordFilterDto = new RecordFilterDto();
       recordFilterDto.year = 2024;
-      const [records, count] = await service.findByAttendeeId(targetAttendeeId, recordFilterDto);
+      const sut = await service.findByAttendeeId(targetAttendeeId, recordFilterDto);
 
       // Then
-      expect(count).toBe(2);
-      records.map((record) => {
+      expect(sut.count).toBe(2);
+      sut.items.map((record) => {
         expect(record.date.split('-')[0]).toBe('2024');
       });
     });
@@ -708,11 +708,11 @@ describe('RecordsService', () => {
       recordFilterDto.year = 2024;
       recordFilterDto.month = 2;
 
-      const [records, count] = await service.findByAttendeeId(targetAttendeeId, recordFilterDto);
+      const sut = await service.findByAttendeeId(targetAttendeeId, recordFilterDto);
 
       // Then
-      expect(count).toBe(2);
-      records.map((record) => {
+      expect(sut.count).toBe(2);
+      sut.items.map((record) => {
         expect(record.date.substring(0, 7)).toBe('2024-02');
       });
     });
@@ -738,11 +738,11 @@ describe('RecordsService', () => {
       const recordFilterDto = new RecordFilterDto();
       recordFilterDto.dateFrom = '2024-02-01';
 
-      const [records, count] = await service.findByAttendeeId(targetAttendeeId, recordFilterDto);
+      const sut = await service.findByAttendeeId(targetAttendeeId, recordFilterDto);
 
       // Then
-      expect(count).toBe(3);
-      records.map((record) => {
+      expect(sut.count).toBe(3);
+      sut.items.map((record) => {
         expect(new Date(record.date).getTime()).toBeGreaterThanOrEqual(new Date('2024-02-01').getTime());
       });
     });
@@ -768,11 +768,11 @@ describe('RecordsService', () => {
       const recordFilterDto = new RecordFilterDto();
       recordFilterDto.dateTo = '2024-02-02';
 
-      const [records, count] = await service.findByAttendeeId(targetAttendeeId, recordFilterDto);
+      const sut = await service.findByAttendeeId(targetAttendeeId, recordFilterDto);
 
       // Then
-      expect(count).toBe(2);
-      records.map((record) => {
+      expect(sut.count).toBe(2);
+      sut.items.map((record) => {
         expect(new Date(record.date).getTime()).toBeLessThanOrEqual(new Date('2024-02-02').getTime());
       });
     });
@@ -799,11 +799,11 @@ describe('RecordsService', () => {
       recordFilterDto.dateFrom = '2024-02-01';
       recordFilterDto.dateTo = '2024-02-03';
 
-      const [records, count] = await service.findByAttendeeId(targetAttendeeId, recordFilterDto);
+      const sut = await service.findByAttendeeId(targetAttendeeId, recordFilterDto);
 
       // Then
-      expect(count).toBe(2);
-      records.map((record) => {
+      expect(sut.count).toBe(2);
+      sut.items.map((record) => {
         expect(['2024-02-01', '2024-02-02']).toContain(record.date);
       });
     });

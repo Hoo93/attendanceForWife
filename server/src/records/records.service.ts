@@ -12,7 +12,7 @@ import { RecordFilterDto } from './dto/record-filter.dto';
 import { NumberToDayString } from './numberToDayString';
 import { ExcelService } from '../common/excel.service';
 import { PageResponseDto } from '../common/pageResponse.dto';
-import { PageWithoutCountResponseDto } from '../common/pageWithoutCountResponse.dto';
+import { ResponseWithoutPaginationDto } from '../common/responseWithoutPagination.dto';
 
 @Injectable()
 export class RecordsService {
@@ -99,7 +99,7 @@ export class RecordsService {
     return new PageResponseDto<Record>(recordFilterDto.pageSize, count, items);
   }
 
-  async findByAttendeeId(attendeeId: string, recordFilterDto: RecordFilterDto): Promise<PageWithoutCountResponseDto<Record>> {
+  async findByAttendeeId(attendeeId: string, recordFilterDto: RecordFilterDto): Promise<ResponseWithoutPaginationDto<Record>> {
     let queryBuilder: SelectQueryBuilder<Record>;
     queryBuilder = this.recordRepository
       .createQueryBuilder('record')
@@ -123,7 +123,7 @@ export class RecordsService {
     }
 
     const result = await queryBuilder.getManyAndCount();
-    return new PageWithoutCountResponseDto<Record>(result[1], result[0]);
+    return new ResponseWithoutPaginationDto<Record>(result[1], result[0]);
   }
 
   private async findByAttendeeIdForExcelDownload(attendeeId: string, recordFilterDto: RecordFilterDto): Promise<Record[]> {
