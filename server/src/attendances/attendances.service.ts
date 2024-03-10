@@ -32,20 +32,9 @@ export class AttendancesService {
     userAttendance.role = RoleType.MASTER;
     userAttendance.createId = user.id;
 
-    const createdUserAttendance = await this.userAttendanceRepository.save(userAttendance);
+    await this.userAttendanceRepository.save(userAttendance);
 
-    !!user.userAttendance ? user.userAttendance.push(createdUserAttendance) : (user.userAttendance = [createdUserAttendance]);
-
-    const jwtPayload: JwtPayload = {
-      id: user.id,
-      username: user.username,
-      userAttendance: user.userAttendance,
-    };
-
-    return {
-      result: createdAttendance,
-      access_token: this.authService.generateAccessToken(jwtPayload),
-    };
+    return createdAttendance;
   }
 
   async findAllByUserId(userId: string): Promise<any> {
