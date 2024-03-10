@@ -7,9 +7,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../users/entities/user.entity';
 import { UserAttendance } from './entities/user-attendance.entity';
 import { RoleType } from '../roles/entities/role-type.enum';
-import { JwtService } from '@nestjs/jwt';
-import { AuthService } from '../auth/auth.service';
-import { JwtPayload } from '../auth/const/jwtPayload.interface';
 
 @Injectable()
 export class AttendancesService {
@@ -18,7 +15,6 @@ export class AttendancesService {
     private attendanceRepository: Repository<Attendance>,
     @InjectRepository(UserAttendance)
     private userAttendanceRepository: Repository<UserAttendance>,
-    private authService: AuthService,
   ) {}
   async create(createAttendanceDto: CreateAttendanceDto, user: User) {
     const attendance = createAttendanceDto.toEntity();
