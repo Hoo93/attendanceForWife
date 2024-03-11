@@ -10,7 +10,8 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import axios from "axios";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { API_BASE_URL } from "@/app/utils";
+import { API_BASE_URL } from "@/app/utils/common";
+import { pushNotification } from "@/app/utils/notification";
 
 export interface Register {
   username: string;
@@ -74,16 +75,11 @@ const index = () => {
 
   const { mutate, data, isLoading } = useMutation(fetchRegister, {
     onSuccess: () => {
-      alert("회원가입이 되었습니다.");
+      pushNotification("회원가입이 되었습니다.", "success");
       router.push("/");
     },
     onError: (error) => {
-      alert(
-        "에러가 발생하였습니다."
-        // error?.response.data.message.map((item : string) => {
-        //   return item + "\n";
-        // })
-      );
+      pushNotification("에러가 발생하였습니다.", "error");
     },
     onSettled: () => {},
   });

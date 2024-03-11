@@ -15,8 +15,9 @@ import TableRow from "@mui/material/TableRow";
 import { useParams, useRouter } from "next/navigation";
 import axios from "axios";
 import Cookies from "js-cookie";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { API_BASE_URL, accessToken } from "@/app/utils";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { API_BASE_URL, accessToken } from "@/app/utils/common";
+import { pushNotification } from "@/app/utils/notification";
 
 interface DateFormat {
   dateFormat: {
@@ -75,7 +76,7 @@ const index = () => {
   const router = useRouter();
   const params = useParams<{ id: string }>();
   const todayFormatted: DateFormat = getFormattedDate();
-
+  const queryClient = useQueryClient();
   const { data, refetch } = useQuery({
     queryKey: ["dashboard-data"],
     queryFn: async () => {
@@ -106,17 +107,17 @@ const index = () => {
         lateReason: "",
       })
       .then(() => {
-        alert("전원 출석하였습니다");
-        refetch();
+        pushNotification("전원 출석하였습니다", "success");
+        queryClient.invalidateQueries(["dashboard-data"]);
       });
   };
   const { mutate } = useMutation(fetchRecord, {
     onSuccess: () => {
-      alert("출석하였습니다.");
-      refetch();
+      pushNotification("출석하였습니다.", "success");
+      queryClient.invalidateQueries(["dashboard-data"]);
     },
     onError: () => {
-      alert("오류 관리자에게 문의하세요.");
+      pushNotification("오류 관리자에게 문의하세요.", "error");
     },
   });
 

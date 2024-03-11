@@ -22,7 +22,8 @@ import axios from "axios";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
-import { API_BASE_URL, accessToken } from "@/app/utils";
+import { API_BASE_URL, accessToken } from "@/app/utils/common";
+import { pushNotification } from "@/app/utils/notification";
 
 interface Info {
   attendanceId: number;
@@ -69,7 +70,6 @@ const CommonTable: React.FC<CommonTableProps> = ({
         type: type,
       })
       .then((res) => res.data);
-
     return response;
   };
 
@@ -79,12 +79,13 @@ const CommonTable: React.FC<CommonTableProps> = ({
       axios.defaults.headers.common[
         "Authorization"
       ] = `Bearer ${data.access_token}`;
-      alert("생성 되었습니다.");
+      pushNotification("생성 되었습니다.", "success");
       setIsCreate(false);
       router.prefetch("/attendancy/list");
     },
     onError: () => {
       alert("빈칸을 전부 채워주세요");
+      pushNotification("빈칸을 전부 채워주세요", "warning");
     },
   });
 

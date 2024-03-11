@@ -14,7 +14,7 @@ import BasicLayout from "@/app/components/BasicLayout";
 import AddIcon from "@mui/icons-material/Add";
 import Paper from "@mui/material/Paper";
 import axios from "axios";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import Table from "@mui/material/Table";
@@ -26,12 +26,13 @@ import TableRow from "@mui/material/TableRow";
 import { TextField } from "@mui/material";
 
 import ClassScheduleContainer from "@/app/components/Schedule";
-import { API_BASE_URL, accessToken } from "@/app/utils";
+import { API_BASE_URL, accessToken } from "@/app/utils/common";
+import { pushNotification } from "@/app/utils/notification";
 
-interface Info {
+interface RoasterData {
   name: string;
-  mobileNumber: string;
   age: string;
+  mobileNumber: string;
   subMobileNumber: string;
   description: string;
   attendanceId: string;
@@ -42,11 +43,10 @@ const Index = () => {
   const params = useParams<{ id: string }>();
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
-
+  const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
   const [isCreate, setIsCreate] = useState<boolean>(false);
-  const [roaster, setRoaster] = useState({
-    // 타입 지정 해야힘
+  const [roaster, setRoaster] = useState<RoasterData>({
     name: "",
     age: "",
     mobileNumber: "",
@@ -71,7 +71,7 @@ const Index = () => {
       time: "0930",
     });
   };
-  const fetchRoasterCreate = async (params: Info) => {
+  const fetchRoasterCreate = async (params: RoasterData) => {
     const {
       name,
       age,
@@ -92,15 +92,30 @@ const Index = () => {
   };
 
   const { mutate } = useMutation({
-    mutationKey: ["create-schedule"],
+    mutationKey: ["roaster-list"],
     mutationFn: fetchRoasterCreate,
     onSuccess: (data) => {
+      queryClient.invalidateQueries(["roaster-list"]);
       fetchScheduleCreate(data);
+      pushNotification("생성되었습니다.", "success");
+      setIsCreate(false);
+    },
+    onError: () => {
+      pushNotification("생성에 실패하였습니다.", "error");
+      setIsCreate(false);
+      setRoaster({
+        name: "",
+        age: "",
+        mobileNumber: "",
+        subMobileNumber: "",
+        description: "",
+        attendanceId: params.id,
+      });
     },
   });
 
-  const { isLoading, data } = useQuery({
-    queryKey: ["get-user", params.id],
+  const { isLoading, data: roasterData } = useQuery({
+    queryKey: ["roaster-list", params.id],
     queryFn: async () => {
       const response = await axios.get(
         `${API_BASE_URL}/attendees/attendanceId/${params.id}`
@@ -127,11 +142,11 @@ const Index = () => {
                 <TableCell>나이</TableCell>
                 <TableCell>휴대폰번호</TableCell>
                 <TableCell>서브휴대폰번호</TableCell>
-                <TableCell>스케줄</TableCell>
+                {/* <TableCell>스케줄</TableCell> */}
               </TableRow>
             </TableHead>
             <TableBody>
-              {data?.map((item: Info, index: number) => (
+              {roasterData?.map((item: RoasterData, index: number) => (
                 <TableRow
                   key={index}
                   sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
@@ -149,7 +164,7 @@ const Index = () => {
                   </TableCell>
                   <TableCell>{item.mobileNumber}</TableCell>
                   <TableCell>{item.subMobileNumber}</TableCell>
-                  <TableCell>{item.description}</TableCell>
+                  {/* <TableCell>{item.description}</TableCell> */}
                 </TableRow>
               ))}
               <TableRow
@@ -179,7 +194,7 @@ const Index = () => {
                     <TableCell component="th" scope="row">
                       <TextField
                         id="outlined-basic"
-                        label="mobileNumber"
+                        label="휴대폰 번호"
                         variant="outlined"
                         value={roaster?.mobileNumber}
                         onChange={(e) =>
@@ -190,7 +205,7 @@ const Index = () => {
                     <TableCell component="th" scope="row">
                       <TextField
                         id="outlined-basic"
-                        label="subMobileNumber"
+                        label="서브 휴대폰 번호"
                         variant="outlined"
                         value={roaster?.subMobileNumber}
                         onChange={(e) =>
@@ -198,7 +213,7 @@ const Index = () => {
                         }
                       />
                     </TableCell>
-                    <TableCell component="th" scope="row">
+                    {/* <TableCell component="th" scope="row">
                       <Button
                         variant="contained"
                         color="primary"
@@ -206,9 +221,9 @@ const Index = () => {
                           setOpen(true);
                         }}
                       >
-                        스케줄 지정하기
+                        스케줄
                       </Button>
-                    </TableCell>
+                    </TableCell> */}
                   </>
                 ) : (
                   <TableCell
@@ -262,7 +277,7 @@ const Index = () => {
               variant="contained"
               color="error"
               onClick={() => {
-                alert("삭제하실 명단을 선택해주세요.");
+                pushNotification("삭제하실 명단을 선택해주세요.", "error");
               }}
             >
               삭제
