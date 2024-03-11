@@ -1,5 +1,7 @@
 export const SALT = 13;
 export const jwtConstants = {
-  secret: 'This is my super secret',
-  expiresIn: '3600s',
+  accessTokenSecret: 'This is my super secret',
+  refreshTokenSecret: 'This is my super super secret',
+  accessTokenExpiresIn: '300s',
+  refreshTokenExpiresIn: '1d',
 };
