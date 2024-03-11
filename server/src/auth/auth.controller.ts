@@ -6,6 +6,7 @@ import { User } from '../users/entities/user.entity';
 import { SigninDto } from './dto/signin.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { GetUser } from '../common/user.decorator';
+import { RefreshTokenDto } from './dto/refresh-token.dto';
 
 @Controller('auth')
 @ApiTags('인증')
@@ -53,5 +54,20 @@ export class AuthController {
   })
   async regenerateAccessToken(@GetUser() user: User) {
     return this.authService.regenerateAccessToken(user);
+  }
+
+  @Post('/refresh-token')
+  @ApiOperation({ summary: '리프레시 토큰' })
+  @ApiResponse({
+    status: 200,
+    description: '리프레시 토큰',
+    type: String,
+  })
+  @ApiBody({
+    type: RefreshTokenDto,
+    description: '로그인 DTO',
+  })
+  async refreshAccessToken(@Body() refreshTokenDto: RefreshTokenDto) {
+    return this.authService.refreshToken(refreshTokenDto.refreshToken);
   }
 }
