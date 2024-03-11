@@ -1,10 +1,4 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  ManyToOne,
-  JoinColumn,
-} from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
 import { Attendance } from './attendance.entity';
 import { ApiProperty } from '@nestjs/swagger';
@@ -25,7 +19,7 @@ export class UserAttendance extends BaseTimeEntity {
   @ApiProperty({ description: '출석부 번호', type: 'string' })
   attendanceId: string;
 
-  @Column({ comment: '회원별 출석부별 권한', type: 'enum', enum: RoleType })
+  @Column({ comment: '회원별 출석부별 권한', type: 'varchar' })
   @ApiProperty({ description: '회원별 출석부별 권한', enum: RoleType })
   role: RoleType; // Additional column for the role
 

@@ -1,12 +1,5 @@
 import { BaseTimeEntity } from '../../BaseTimeEntity';
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  OneToMany,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { AttendanceType } from '../const/attendance-type.enum';
 import { UserAttendance } from './user-attendance.entity';
@@ -26,14 +19,11 @@ export class Attendance extends BaseTimeEntity {
   @ApiProperty({ description: '출석부 설명', type: 'string' })
   description: string;
 
-  @Column({ comment: '출석부 타입', type: 'enum', enum: AttendanceType })
+  @Column({ comment: '출석부 타입', type: 'varchar' })
   @ApiProperty({ description: '출석부 타입', enum: AttendanceType })
   type: AttendanceType;
 
-  @OneToMany(
-    () => UserAttendance,
-    (userAttendance) => userAttendance.attendance,
-  )
+  @OneToMany(() => UserAttendance, (userAttendance) => userAttendance.attendance)
   @ApiProperty({ type: () => UserAttendance })
   userAttendance: UserAttendance[];
 

@@ -1,11 +1,4 @@
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-  Unique,
-} from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, Unique } from 'typeorm';
 import { BaseTimeEntity } from '../../BaseTimeEntity';
 import { ApiProperty } from '@nestjs/swagger';
 import { Attendee } from '../../attendees/entities/attendee.entity';
@@ -22,7 +15,7 @@ export class Schedule extends BaseTimeEntity {
   @ApiProperty({ description: '출석 대상 ID', type: 'string' })
   attendeeId: string;
 
-  @Column({ comment: '출석 요일', type: 'enum', enum: DayType })
+  @Column({ comment: '출석 요일', type: 'varchar' })
   @ApiProperty({ description: '출석 요일', type: 'enum', enum: DayType })
   day: DayType;
 

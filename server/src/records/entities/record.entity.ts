@@ -18,7 +18,7 @@ export class Record extends BaseTimeEntity {
   @ApiProperty({ description: '출석 대상 ID', type: 'string' })
   attendeeId: string;
 
-  @Column({ comment: '출석 상태', type: 'enum', enum: AttendanceStatus })
+  @Column({ comment: '출석 상태', type: 'varchar' })
   @ApiProperty({
     description: '출석 상태',
     type: 'enum',
