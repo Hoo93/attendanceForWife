@@ -73,16 +73,17 @@ describe('AuthService Test', function () {
     });
   });
 
-  describe('signin method test', () => {
+  describe('signIn method test', () => {
     it('should return access-token', async () => {
       jest.spyOn(bcrypt, 'compare').mockImplementationOnce(() => Promise.resolve(true));
 
-      const signinDto: SignInDto = new SignInDto();
-      signinDto.username = 'TestUser1';
-      signinDto.password = 'pwd123!@#';
+      const signInDto: SignInDto = new SignInDto();
+      signInDto.username = 'TestUser1';
+      signInDto.password = 'pwd123!@#';
 
-      const result = await service.signIn(signinDto);
-      expect(result).toHaveProperty('access_token');
+      const result = await service.signIn(signInDto);
+      expect(result).toHaveProperty('accessToken');
+      expect(result).toHaveProperty('refreshToken');
     });
   });
 
@@ -93,7 +94,15 @@ describe('AuthService Test', function () {
       user.id = 'TEST_1';
 
       const sut = await service.regenerateAccessToken(user);
-      expect(sut).toHaveProperty('access_token');
+      expect(sut).toHaveProperty('accessToken');
+    });
+  });
+
+  describe('refreshToken method test', () => {
+    it('should return ', async () => {
+      // Given
+      // When
+      // Then
     });
   });
 });
