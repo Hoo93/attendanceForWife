@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../users/entities/user.entity';
@@ -15,14 +15,14 @@ export class AuthService {
     @InjectRepository(User) private userRepository: Repository<User>,
     private jwtService: JwtService,
   ) {}
-  async signup(createAuthDto: CreateAuthDto): Promise<Partial<User>> {
+  public async signup(createAuthDto: CreateAuthDto): Promise<Partial<User>> {
     const user = createAuthDto.toEntity();
     await user.hashPassword();
     const { password, ...result } = await this.userRepository.save(user);
     return result;
   }
 
-  async validateUser(username: string, password: string) {
+  private async validateUser(username: string, password: string) {
     const user = await this.userRepository.findOne({ relations: { userAttendance: true }, where: { username } });
     if (user && (await bcrypt.compare(password, user.password))) {
       return user;
@@ -30,7 +30,7 @@ export class AuthService {
     throw new BadRequestException('ID 또는 비밀번호가 정확하지 않습니다.');
   }
 
-  async signin(signinDto: SigninDto) {
+  public async signin(signinDto: SigninDto) {
     const user = await this.validateUser(signinDto.username, signinDto.password);
 
     const payload: JwtPayload = {
@@ -40,7 +40,8 @@ export class AuthService {
     };
 
     return {
-      access_token: this.generateAccessToken(payload),
+      accessToken: this.generateAccessToken(payload),
+      refreshToken: this.generateRefreshToken(payload),
     };
   }
 
@@ -53,13 +54,50 @@ export class AuthService {
       userAttendance: found.userAttendance,
     };
     return {
-      access_token: this.generateAccessToken(payload),
+      accessToken: this.generateAccessToken(payload),
     };
   }
 
-  public generateAccessToken(payload: JwtPayload) {
+  private generateAccessToken(payload: JwtPayload) {
     return this.jwtService.sign(payload, {
-      secret: jwtConstants.secret,
+      secret: jwtConstants.accessTokenSecret,
+      expiresIn: jwtConstants.accessTokenExpiresIn,
     });
+  }
+
+  private generateRefreshToken(payload: JwtPayload) {
+    return this.jwtService.sign(payload, {
+      secret: jwtConstants.refreshTokenSecret,
+      expiresIn: jwtConstants.refreshTokenExpiresIn,
+    });
+  }
+
+  private async saveRefreshToken(userId: string, refreshToken: string) {
+    await this.userRepository.update(userId, { refreshToken });
+  }
+
+  public async refreshToken(oldRefreshToken: string) {
+    const decoded: JwtPayload = this.jwtService.verify(oldRefreshToken, { secret: jwtConstants.refreshTokenSecret });
+    const user = await this.userRepository.findOneBy({ id: decoded.id });
+
+    if (!user || user.refreshToken !== oldRefreshToken) {
+      throw new UnauthorizedException();
+    }
+
+    const jwtPayload: JwtPayload = {
+      id: user.id,
+      username: user.username,
+      userAttendance: user.userAttendance,
+    };
+
+    const newAccessToken = this.generateAccessToken(jwtPayload);
+    const newRefreshToken = this.generateRefreshToken(jwtPayload);
+
+    await this.saveRefreshToken(user.id, newRefreshToken);
+
+    return {
+      accessToken: newAccessToken,
+      refreshToken: newRefreshToken,
+    };
   }
 }
