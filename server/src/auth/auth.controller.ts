@@ -3,7 +3,7 @@ import { AuthService } from './auth.service';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { User } from '../users/entities/user.entity';
-import { SigninDto } from './dto/signin.dto';
+import { SignInDto } from './dto/sign-in.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { GetUser } from '../common/user.decorator';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
@@ -36,11 +36,11 @@ export class AuthController {
     type: String,
   })
   @ApiBody({
-    type: SigninDto,
+    type: SignInDto,
     description: '로그인 DTO',
   })
-  async signin(@Body() signinDto: SigninDto) {
-    return this.authService.signin(signinDto);
+  async signIn(@Body() signInDto: SignInDto) {
+    return this.authService.signIn(signInDto);
   }
 
   @UseGuards(AuthGuard('jwt'))

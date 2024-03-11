@@ -5,7 +5,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AuthService } from '../../../src/auth/auth.service';
 import { CreateAuthDto } from '../../../src/auth/dto/create-auth.dto';
 import * as bcrypt from 'bcrypt';
-import { SigninDto } from '../../../src/auth/dto/signin.dto';
+import { SignInDto } from '../../../src/auth/dto/sign-in.dto';
 import { JwtService } from '@nestjs/jwt';
 import { MockJwtService } from './mockJwtService';
 
@@ -36,7 +36,6 @@ describe('AuthService Test', function () {
 
   it('authService should be defined', function () {
     expect(service).toBeDefined();
-    expect(service.validateUser).toBeDefined();
     expect(service.signup).toBeDefined();
   });
 
@@ -78,11 +77,11 @@ describe('AuthService Test', function () {
     it('should return access-token', async () => {
       jest.spyOn(bcrypt, 'compare').mockImplementationOnce(() => Promise.resolve(true));
 
-      const signinDto: SigninDto = new SigninDto();
+      const signinDto: SignInDto = new SignInDto();
       signinDto.username = 'TestUser1';
       signinDto.password = 'pwd123!@#';
 
-      const result = await service.signin(signinDto);
+      const result = await service.signIn(signinDto);
       expect(result).toHaveProperty('access_token');
     });
   });

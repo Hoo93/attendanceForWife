@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString } from 'class-validator';
 
-export class SigninDto {
+export class SignInDto {
   @ApiProperty({
     description: '로그인 ID',
     type: 'string',

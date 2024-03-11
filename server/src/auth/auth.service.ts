@@ -5,7 +5,7 @@ import { User } from '../users/entities/user.entity';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
-import { SignInDto } from './dto/signin.dto';
+import { SignInDto } from './dto/sign-in.dto';
 import { jwtConstants } from './const/auth.const';
 import { JwtPayload } from './const/jwtPayload.interface';
 
@@ -22,7 +22,7 @@ export class AuthService {
     return result;
   }
 
-  private async validateUser(username: string, password: string) {
+  public async validateUser(username: string, password: string) {
     const user = await this.userRepository.findOne({ relations: { userAttendance: true }, where: { username } });
     if (user && (await bcrypt.compare(password, user.password))) {
       return user;
