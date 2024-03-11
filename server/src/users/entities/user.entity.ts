@@ -1,12 +1,4 @@
-import {
-  Column,
-  Entity,
-  JoinTable,
-  ManyToMany,
-  OneToMany,
-  PrimaryGeneratedColumn,
-  Unique,
-} from 'typeorm';
+import { Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn, Unique } from 'typeorm';
 import { BaseTimeEntity } from '../../BaseTimeEntity';
 import * as bcrypt from 'bcrypt';
 import { SALT } from '../../auth/const/auth.const';
@@ -46,6 +38,10 @@ export class User extends BaseTimeEntity {
   @Column({ nullable: true, comment: '회원 이메일', type: 'varchar' })
   @ApiPropertyOptional({ description: '회원 이메일', type: 'string' })
   email?: string;
+
+  @Column({ nullable: true, comment: '리프레시토큰', type: 'varchar' })
+  @ApiPropertyOptional({ description: '리프레시토큰', type: 'string' })
+  refreshToken?: string;
 
   @OneToMany(() => UserAttendance, (userAttendance) => userAttendance.user)
   @ApiProperty({ type: () => UserAttendance })
