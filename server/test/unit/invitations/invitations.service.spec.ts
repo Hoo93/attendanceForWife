@@ -2,11 +2,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { InvitationsService } from '../../../src/invitations/invitations.service';
 import { TestModule } from '../../../src/test.module';
 import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm';
-import { Record } from '../../../src/records/entities/record.entity';
-import { RecordsService } from '../../../src/records/records.service';
-import { ExcelService } from '../../../src/common/excel.service';
-import { Schedule } from '../../../src/schedules/entities/schedule.entity';
-import { Attendee } from '../../../src/attendees/entities/attendee.entity';
 import { Attendance } from '../../../src/attendances/entities/attendance.entity';
 import { User } from '../../../src/users/entities/user.entity';
 import { Repository } from 'typeorm';
@@ -17,8 +12,8 @@ describe('InvitationsService', () => {
   let module: TestingModule;
   let service: InvitationsService;
   let invitationRepository: Repository<Invitation>;
-  let attendanceRepository;
-  let userRepository;
+  let attendanceRepository: Repository<Attendance>;
+  let userRepository: Repository<User>;
 
   beforeAll(async () => {
     module = await Test.createTestingModule({
