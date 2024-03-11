@@ -5,7 +5,7 @@ import { User } from '../users/entities/user.entity';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
-import { SigninDto } from './dto/signin.dto';
+import { SignInDto } from './dto/signin.dto';
 import { jwtConstants } from './const/auth.const';
 import { JwtPayload } from './const/jwtPayload.interface';
 
@@ -30,8 +30,8 @@ export class AuthService {
     throw new BadRequestException('ID 또는 비밀번호가 정확하지 않습니다.');
   }
 
-  public async signin(signinDto: SigninDto) {
-    const user = await this.validateUser(signinDto.username, signinDto.password);
+  public async signIn(signInDto: SignInDto) {
+    const user = await this.validateUser(signInDto.username, signInDto.password);
 
     const payload: JwtPayload = {
       id: user.id,
@@ -77,7 +77,7 @@ export class AuthService {
   }
 
   public async refreshToken(oldRefreshToken: string) {
-    const decoded: JwtPayload = this.jwtService.verify(oldRefreshToken, { secret: jwtConstants.refreshTokenSecret });
+    const decoded: JwtPayload = this.verifyRefreshToken(oldRefreshToken);
     const user = await this.userRepository.findOneBy({ id: decoded.id });
 
     if (!user || user.refreshToken !== oldRefreshToken) {
@@ -99,5 +99,13 @@ export class AuthService {
       accessToken: newAccessToken,
       refreshToken: newRefreshToken,
     };
+  }
+
+  private verifyRefreshToken(oldRefreshToken: string) {
+    try {
+      return this.jwtService.verify(oldRefreshToken, { secret: jwtConstants.refreshTokenSecret });
+    } catch (err) {
+      throw new UnauthorizedException('토큰이 만료되었습니다.');
+    }
   }
 }
