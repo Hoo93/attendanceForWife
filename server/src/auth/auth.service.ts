@@ -39,9 +39,13 @@ export class AuthService {
       userAttendance: user.userAttendance,
     };
 
+    const refreshToken = this.generateRefreshToken(payload);
+
+    await this.saveRefreshToken(user.id, refreshToken);
+
     return {
       accessToken: this.generateAccessToken(payload),
-      refreshToken: this.generateRefreshToken(payload),
+      refreshToken: refreshToken,
     };
   }
 
@@ -78,7 +82,12 @@ export class AuthService {
 
   public async refreshToken(oldRefreshToken: string) {
     const decoded: JwtPayload = this.verifyRefreshToken(oldRefreshToken);
-    const user = await this.userRepository.findOneBy({ id: decoded.id });
+    const user = await this.userRepository.findOne({
+      relations: { userAttendance: true },
+      where: {
+        id: decoded.id,
+      },
+    });
 
     if (!user || user.refreshToken !== oldRefreshToken) {
       throw new UnauthorizedException();
