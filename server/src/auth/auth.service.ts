@@ -36,6 +36,7 @@ export class AuthService {
     const payload: JwtPayload = {
       id: user.id,
       username: user.username,
+      userType: user.type,
       userAttendance: user.userAttendance,
     };
 
@@ -46,19 +47,6 @@ export class AuthService {
     return {
       accessToken: this.generateAccessToken(payload),
       refreshToken: refreshToken,
-    };
-  }
-
-  async regenerateAccessToken(user: User) {
-    const found = await this.userRepository.findOne({ relations: { userAttendance: true }, where: { id: user.id } });
-
-    const payload: JwtPayload = {
-      id: found.id,
-      username: found.username,
-      userAttendance: found.userAttendance,
-    };
-    return {
-      accessToken: this.generateAccessToken(payload),
     };
   }
 
@@ -96,6 +84,7 @@ export class AuthService {
     const jwtPayload: JwtPayload = {
       id: user.id,
       username: user.username,
+      userType: user.type,
       userAttendance: user.userAttendance,
     };
 

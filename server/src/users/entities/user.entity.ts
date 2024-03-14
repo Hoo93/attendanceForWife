@@ -5,6 +5,7 @@ import { SALT } from '../../auth/const/auth.const';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Attendance } from '../../attendances/entities/attendance.entity';
 import { UserAttendance } from '../../attendances/entities/user-attendance.entity';
+import { UserType } from '../user-type.enum';
 
 @Entity()
 @Unique(['mobileNumber'])
@@ -14,6 +15,10 @@ export class User extends BaseTimeEntity {
   @PrimaryGeneratedColumn('uuid', { comment: '회원번호' })
   @ApiProperty({ description: '회원번호' })
   id: string;
+
+  @Column({ comment: '회원 타입', type: 'varchar', nullable: false, default: UserType.GENERAL })
+  @ApiProperty({ description: '회원 타입', type: 'string' })
+  type: UserType;
 
   @Column({ comment: '회원 아이디', type: 'varchar' })
   @ApiProperty({ description: '회원 아이디', type: 'string' })

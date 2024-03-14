@@ -43,19 +43,6 @@ export class AuthController {
     return this.authService.signIn(signInDto);
   }
 
-  @UseGuards(AuthGuard('jwt'))
-  @ApiBearerAuth('token')
-  @Post('/regenerate')
-  @ApiOperation({ summary: '토큰 재발급' })
-  @ApiResponse({
-    status: 200,
-    description: '토큰 재발급',
-    type: String,
-  })
-  async regenerateAccessToken(@GetUser() user: User) {
-    return this.authService.regenerateAccessToken(user);
-  }
-
   @Post('/refresh-token')
   @ApiOperation({ summary: '리프레시 토큰' })
   @ApiResponse({
