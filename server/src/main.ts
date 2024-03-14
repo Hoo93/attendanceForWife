@@ -23,7 +23,7 @@ async function bootstrap() {
   app.enableCors();
 
   const config = new DocumentBuilder()
-    .setTitle('Attendance example')
+    .setTitle('Attendance')
     .setDescription('Attendance API 서버 설명')
     .setVersion('v1.0')
     .addTag('Attendances')
