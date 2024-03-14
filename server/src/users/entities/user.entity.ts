@@ -39,7 +39,7 @@ export class User extends BaseTimeEntity {
   @ApiPropertyOptional({ description: '회원 이메일', type: 'string' })
   email?: string;
 
-  @Column({ nullable: true, comment: '리프레시토큰', type: 'varchar' })
+  @Column({ nullable: true, comment: '리프레시토큰', type: 'text' })
   @ApiPropertyOptional({ description: '리프레시토큰', type: 'string' })
   refreshToken?: string;
 
