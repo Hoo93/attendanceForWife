@@ -440,6 +440,44 @@ describe('UserAuthService Test', function () {
     });
   });
 
+  describe('isAvailableMobileNumber method test', () => {
+    it('이미 핸드폰번호가 존재하는 경우 false를 반환한다.', async () => {
+      // Given
+      const validationTargetMobileNumber = '01080981398';
+
+      const testUser = new User();
+      testUser.mobileNumber = '01080981398';
+      testUser.id = 'test';
+      testUser.name = '박상후';
+      testUser.username = 'TestUser1';
+      testUser.password = 'pwd123!@#';
+      testUser.email = 'myEmail@naver.com';
+      testUser.createId = 'test';
+      testUser.refreshToken = 'refresh_token';
+
+      await userRepository.insert(testUser);
+
+      // When
+      const sut = await service.isAvailableMobileNumber(validationTargetMobileNumber);
+
+      // Then
+      expect(sut.success).toBeTruthy();
+      expect(sut.data.isAvailable).toBe(false);
+    });
+
+    it('핸드폰번호가 존재하지 않는 경우 true를 반환한다.', async () => {
+      // Given
+      const validationTargetMobileNumber = '01080981398';
+
+      // When
+      const sut = await service.isAvailableMobileNumber(validationTargetMobileNumber);
+
+      // Then
+      expect(sut.success).toBeTruthy();
+      expect(sut.data.isAvailable).toBe(true);
+    });
+  });
+
   async function setupTest() {}
 
   async function clear() {
