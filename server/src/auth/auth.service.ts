@@ -11,6 +11,7 @@ import { JwtPayload } from './const/jwtPayload.interface';
 import { CommonResponseDto } from '../common/response/common-response.dto';
 import { TokenResponseDto } from './dto/token-response.dto';
 import { LoginHistory } from './entity/login-history.entity';
+import { AvailabilityResult } from '../common/response/is-available-res';
 
 @Injectable()
 export class AuthService {
@@ -55,7 +56,7 @@ export class AuthService {
     return new CommonResponseDto('SUCCESS SIGN IN', new TokenResponseDto(accessToken, refreshToken));
   }
 
-  public async refreshToken(oldRefreshToken: string): Promise<CommonResponseDto<TokenResponseDto>> {
+  public async refreshToken(oldRefreshToken: string, ip: string): Promise<CommonResponseDto<TokenResponseDto>> {
     const decoded: JwtPayload = this.verifyRefreshToken(oldRefreshToken);
     const user = await this.userRepository.findOne({
       relations: { userAttendance: true },
@@ -81,6 +82,13 @@ export class AuthService {
     await this.saveRefreshToken(user.id, newRefreshToken);
 
     return new CommonResponseDto('SUCCESS REFRESH TOKEN', new TokenResponseDto(newAccessToken, newRefreshToken));
+  }
+
+  public async isAvailableEmail(email: string) {
+    return new CommonResponseDto('', new AvailabilityResult(true));
+  }
+  public async isAvailableMobileNumber(mobileNumber: string): Promise<CommonResponseDto<AvailabilityResult>> {
+    return new CommonResponseDto('', new AvailabilityResult(true));
   }
 
   private generateAccessToken(payload: JwtPayload) {

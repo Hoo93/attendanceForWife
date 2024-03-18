@@ -10,6 +10,7 @@ import { RefreshTokenDto } from './dto/refresh-token.dto';
 import { CommonResponseDto } from '../common/response/common-response.dto';
 import { AvailabilityResult } from '../common/response/is-available-res';
 import { TokenResponseDto } from './dto/token-response.dto';
+import { CurrentIp } from '../common/decorator/current-ip.decorator';
 
 @Controller('auth')
 @ApiTags('인증')
@@ -42,8 +43,8 @@ export class AuthController {
     type: SignInDto,
     description: '로그인 DTO',
   })
-  async signIn(@Body() signInDto: SignInDto): Promise<CommonResponseDto<TokenResponseDto>> {
-    return this.authService.signIn(signInDto);
+  async signIn(@Body() signInDto: SignInDto, @CurrentIp() ip: string): Promise<CommonResponseDto<TokenResponseDto>> {
+    return this.authService.signIn(signInDto, ip);
   }
 
   @Post('/refresh-token')
@@ -57,7 +58,10 @@ export class AuthController {
     type: RefreshTokenDto,
     description: '로그인 DTO',
   })
-  async refreshAccessToken(@Body() refreshTokenDto: RefreshTokenDto): Promise<CommonResponseDto<TokenResponseDto>> {
-    return this.authService.refreshToken(refreshTokenDto.refreshToken);
+  async refreshAccessToken(
+    @Body() refreshTokenDto: RefreshTokenDto,
+    @CurrentIp() ip: string,
+  ): Promise<CommonResponseDto<TokenResponseDto>> {
+    return this.authService.refreshToken(refreshTokenDto.refreshToken, ip);
   }
 }
