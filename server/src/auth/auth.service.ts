@@ -48,12 +48,14 @@ export class AuthService {
       userAttendance: user.userAttendance,
     };
 
-    const refreshToken = this.generateRefreshToken(payload);
     const accessToken = this.generateAccessToken(payload);
+    const refreshToken = this.generateRefreshToken(payload, signInDto.isAutoLogin);
 
     await this.saveRefreshToken(user.id, refreshToken);
 
     await this.createLoginHistory(user.id, ip, loginAt);
+
+    await this.userRepository.update(user.id, { isAutoLogin: signInDto.isAutoLogin ?? false });
 
     return new CommonResponseDto('SUCCESS SIGN IN', new TokenResponseDto(accessToken, refreshToken));
   }
@@ -83,7 +85,7 @@ export class AuthService {
     };
 
     const newAccessToken = this.generateAccessToken(jwtPayload);
-    const newRefreshToken = this.generateRefreshToken(jwtPayload);
+    const newRefreshToken = this.generateRefreshToken(jwtPayload, recentLoginHistory.user.isAutoLogin);
 
     await this.saveRefreshToken(recentLoginHistory.user.id, newRefreshToken);
 
@@ -104,10 +106,10 @@ export class AuthService {
     });
   }
 
-  private generateRefreshToken(payload: JwtPayload) {
+  private generateRefreshToken(payload: JwtPayload, isAutoLogin: boolean) {
     return this.jwtService.sign(payload, {
       secret: jwtConstants.refreshTokenSecret,
-      expiresIn: jwtConstants.refreshTokenExpiresIn,
+      expiresIn: isAutoLogin ? jwtConstants.autoLoginRefreshTokenExpiresIn : jwtConstants.refreshTokenExpiresIn,
     });
   }
 
