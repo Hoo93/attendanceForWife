@@ -1,12 +1,5 @@
-import { BaseTimeEntity } from '../../BaseTimeEntity';
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  OneToMany,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { BaseTimeEntity } from '../../common/BaseTimeEntity';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { Attendance } from '../../attendances/entities/attendance.entity';
 import { Schedule } from '../../schedules/entities/schedule.entity';

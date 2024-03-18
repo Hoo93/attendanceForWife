@@ -3,7 +3,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Attendance } from '../../attendances/entities/attendance.entity';
 import { Attendee } from '../entities/attendee.entity';
 import { INVALID_MOBILENUMBER_MESSAGE } from '../../auth/const/error-message';
-import { MobileNumberTransform } from '../../common/phoneNumber.decorator';
+import { MobileNumberTransform } from '../../common/decorator/phoneNumber.decorator';
 
 export class CreateAttendeeDto {
   @IsString()

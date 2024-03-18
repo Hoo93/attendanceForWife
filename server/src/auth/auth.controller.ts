@@ -5,8 +5,11 @@ import { ApiBearerAuth, ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nes
 import { User } from '../users/entities/user.entity';
 import { SignInDto } from './dto/sign-in.dto';
 import { AuthGuard } from '@nestjs/passport';
-import { GetUser } from '../common/user.decorator';
+import { GetUser } from '../common/decorator/user.decorator';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
+import { CommonResponseDto } from '../common/response/common-response.dto';
+import { AvailabilityResult } from '../common/response/is-available-res';
+import { TokenResponseDto } from './dto/token-response.dto';
 
 @Controller('auth')
 @ApiTags('인증')
@@ -24,7 +27,7 @@ export class AuthController {
     type: CreateAuthDto,
     description: '회원 가입 DTO',
   })
-  signup(@Body() createAuthDto: CreateAuthDto) {
+  signup(@Body() createAuthDto: CreateAuthDto): Promise<CommonResponseDto<User>> {
     return this.authService.signup(createAuthDto);
   }
 
@@ -39,7 +42,7 @@ export class AuthController {
     type: SignInDto,
     description: '로그인 DTO',
   })
-  async signIn(@Body() signInDto: SignInDto) {
+  async signIn(@Body() signInDto: SignInDto): Promise<CommonResponseDto<TokenResponseDto>> {
     return this.authService.signIn(signInDto);
   }
 
@@ -54,7 +57,7 @@ export class AuthController {
     type: RefreshTokenDto,
     description: '로그인 DTO',
   })
-  async refreshAccessToken(@Body() refreshTokenDto: RefreshTokenDto) {
+  async refreshAccessToken(@Body() refreshTokenDto: RefreshTokenDto): Promise<CommonResponseDto<TokenResponseDto>> {
     return this.authService.refreshToken(refreshTokenDto.refreshToken);
   }
 }

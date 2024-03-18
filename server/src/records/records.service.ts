@@ -11,8 +11,8 @@ import { AttendanceStatus } from './record-type.enum';
 import { RecordFilterDto } from './dto/record-filter.dto';
 import { NumberToDayString } from './numberToDayString';
 import { ExcelService } from '../common/excel.service';
-import { PageResponseDto } from '../common/pageResponse.dto';
-import { ResponseWithoutPaginationDto } from '../common/responseWithoutPagination.dto';
+import { PageResponseDto } from '../common/response/pageResponse.dto';
+import { ResponseWithoutPaginationDto } from '../common/response/responseWithoutPagination.dto';
 
 @Injectable()
 export class RecordsService {

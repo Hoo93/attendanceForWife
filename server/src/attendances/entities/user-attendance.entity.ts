@@ -2,7 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 't
 import { User } from '../../users/entities/user.entity';
 import { Attendance } from './attendance.entity';
 import { ApiProperty } from '@nestjs/swagger';
-import { BaseTimeEntity } from '../../BaseTimeEntity';
+import { BaseTimeEntity } from '../../common/BaseTimeEntity';
 import { RoleType } from '../../roles/entities/role-type.enum';
 
 @Entity({ name: 'user_attendance' }) // This should match the join table name in User entity

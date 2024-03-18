@@ -15,7 +15,7 @@ import {
 } from '../const/error-message';
 import { User } from '../../users/entities/user.entity';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { MobileNumberTransform } from '../../common/phoneNumber.decorator';
+import { MobileNumberTransform } from '../../common/decorator/phoneNumber.decorator';
 
 export class CreateAuthDto {
   @IsString()

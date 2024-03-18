@@ -5,7 +5,7 @@ import { DayType } from '../../schedules/const/day-type.enum';
 import { IsDate, IsDateString, IsEnum, IsNotEmpty, IsOptional, IsPositive, IsString, Matches, Max, Min } from 'class-validator';
 import { Record } from '../entities/record.entity';
 import { Transform } from 'class-transformer';
-import { Pagination } from '../../common/pagination';
+import { Pagination } from '../../common/response/pagination';
 
 export class RecordFilterDto extends Pagination {
   @IsEnum(AttendanceStatus)

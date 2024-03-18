@@ -15,7 +15,7 @@ import { Schedule } from './schedules/entities/schedule.entity';
 import { Record } from './records/entities/record.entity';
 import { RecordsModule } from './records/records.module';
 import { ConfigModule } from '@nestjs/config';
-import { getOrmConfig } from './orm.config';
+import { getOrmConfig } from './common/const/orm.config';
 import { Invitation } from './invitations/entities/invitation.entity';
 import { InvitationsModule } from './invitations/invitations.module';
 

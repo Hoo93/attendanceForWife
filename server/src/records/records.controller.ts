@@ -3,7 +3,7 @@ import { RecordsService } from './records.service';
 import { CreateRecordDto } from './dto/create-record.dto';
 import { UpdateRecordDto } from './dto/update-record.dto';
 import { User } from '../users/entities/user.entity';
-import { GetUser } from '../common/user.decorator';
+import { GetUser } from '../common/decorator/user.decorator';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Attendee } from '../attendees/entities/attendee.entity';
 import { Record } from './entities/record.entity';
@@ -16,8 +16,8 @@ import { DeleteRecordDto } from './dto/delete-record.dto';
 import { DeleteAttendeeDto } from '../attendees/dto/delete-attendee.dto';
 import { CreateAllRecordDto } from './dto/createAll-record.dto';
 import { RecordFilterDto } from './dto/record-filter.dto';
-import { PageResponseDto } from '../common/pageResponse.dto';
-import { ResponseWithoutPaginationDto } from '../common/responseWithoutPagination.dto';
+import { PageResponseDto } from '../common/response/pageResponse.dto';
+import { ResponseWithoutPaginationDto } from '../common/response/responseWithoutPagination.dto';
 
 @UseGuards(AuthGuard('jwt'))
 @Controller('records')

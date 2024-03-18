@@ -4,7 +4,7 @@ import { MockUserRepository } from './mockUserRepository';
 import { Test, TestingModule } from '@nestjs/testing';
 import { MockJwtService } from './mockJwtService';
 import { UsersService } from '../../../src/users/users.service';
-import { Pagination } from '../../../src/common/pagination';
+import { Pagination } from '../../../src/common/response/pagination';
 
 describe('UserService Test', function () {
   let service: UsersService;

@@ -1,5 +1,5 @@
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, Unique } from 'typeorm';
-import { BaseTimeEntity } from '../../BaseTimeEntity';
+import { BaseTimeEntity } from '../../common/BaseTimeEntity';
 import { ApiProperty } from '@nestjs/swagger';
 import { Attendee } from '../../attendees/entities/attendee.entity';
 import { DayType } from '../const/day-type.enum';

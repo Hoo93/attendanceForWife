@@ -5,7 +5,7 @@ import { Attendee } from '../../attendees/entities/attendee.entity';
 import { IsEnum, IsNotEmpty, IsOptional, IsString, Matches } from 'class-validator';
 import { Schedule } from '../entities/schedule.entity';
 import { share } from 'rxjs';
-import { IsTimeFormat } from '../../common/isTimeformat.decorator';
+import { IsTimeFormat } from '../../common/decorator/isTimeformat.decorator';
 import { Optional } from '@nestjs/common';
 
 export class ScheduleFilterDto {

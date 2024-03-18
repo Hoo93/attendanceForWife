@@ -1,4 +1,4 @@
-import { BaseTimeEntity } from '../../BaseTimeEntity';
+import { BaseTimeEntity } from '../../common/BaseTimeEntity';
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, Unique } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { AttendanceStatus } from '../record-type.enum';

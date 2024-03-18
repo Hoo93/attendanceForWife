@@ -1,25 +1,11 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-  UseGuards,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto/update-user.dto';
-import {
-  ApiBearerAuth,
-  ApiOperation,
-  ApiResponse,
-  ApiTags,
-} from '@nestjs/swagger';
-import { Pagination } from '../common/pagination';
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Pagination } from '../common/response/pagination';
 import { AuthGuard } from '@nestjs/passport';
 import { User } from './entities/user.entity';
-import { MobileNumberTransform } from '../common/phoneNumber.decorator';
+import { MobileNumberTransform } from '../common/decorator/phoneNumber.decorator';
 
 @Controller('users')
 @ApiTags('회원')

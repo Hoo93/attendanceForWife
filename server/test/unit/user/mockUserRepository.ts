@@ -2,7 +2,7 @@ import { User } from '../../../src/users/entities/user.entity';
 import { CreateAuthDto } from '../../../src/auth/dto/create-auth.dto';
 import { NotFoundException } from '@nestjs/common';
 import { plainToClass } from 'class-transformer';
-import { Pagination } from '../../../src/common/pagination';
+import { Pagination } from '../../../src/common/response/pagination';
 
 export class MockUserRepository {
   private users: User[] = [
