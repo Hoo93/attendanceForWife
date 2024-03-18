@@ -85,12 +85,13 @@ describe('UserAuthService Test', function () {
 
       const testUser = new User();
       testUser.id = 'test';
+      testUser.type = UserType.GENERAL;
       testUser.name = '박상후';
       testUser.username = 'TestUser1';
       testUser.password = 'pwd123!@#';
       testUser.email = 'test@email.com';
       testUser.mobileNumber = '01080981398';
-      testUser.createId = 'test';
+      testUser.createId = 'TestUser1';
 
       await userRepository.insert(testUser);
 

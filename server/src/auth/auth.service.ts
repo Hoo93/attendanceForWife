@@ -17,7 +17,7 @@ import { AvailabilityResult } from '../common/response/is-available-res';
 export class AuthService {
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
-    @InjectRepository(User) private loginHistoryRepository: Repository<LoginHistory>,
+    @InjectRepository(LoginHistory) private loginHistoryRepository: Repository<LoginHistory>,
     private jwtService: JwtService,
   ) {}
   public async signup(createAuthDto: CreateAuthDto): Promise<CommonResponseDto<User>> {
@@ -53,33 +53,39 @@ export class AuthService {
 
     await this.saveRefreshToken(user.id, refreshToken);
 
+    await this.createLoginHistory(user.id, ip, loginAt);
+
     return new CommonResponseDto('SUCCESS SIGN IN', new TokenResponseDto(accessToken, refreshToken));
   }
 
   public async refreshToken(oldRefreshToken: string, ip: string): Promise<CommonResponseDto<TokenResponseDto>> {
     const decoded: JwtPayload = this.verifyRefreshToken(oldRefreshToken);
-    const user = await this.userRepository.findOne({
-      relations: { userAttendance: true },
-      where: {
-        id: decoded.id,
-      },
+
+    const recentLoginHistory = await this.loginHistoryRepository.findOne({
+      relations: { user: true },
+      where: { userId: decoded.id },
+      order: { loginAt: 'DESC' },
     });
 
-    if (!user || user.refreshToken !== oldRefreshToken) {
-      throw new UnauthorizedException();
+    if (!recentLoginHistory?.user || recentLoginHistory?.user.refreshToken !== oldRefreshToken) {
+      throw new UnauthorizedException('리프레시토큰이 유효하지 않습니다.');
+    }
+
+    if (!recentLoginHistory || recentLoginHistory.currentIp !== ip) {
+      throw new UnauthorizedException('마지막으로 로그인 한 기기가 아닙니다.');
     }
 
     const jwtPayload: JwtPayload = {
-      id: user.id,
-      username: user.username,
-      userType: user.type,
-      userAttendance: user.userAttendance,
+      id: recentLoginHistory.user.id,
+      username: recentLoginHistory.user.username,
+      userType: recentLoginHistory.user.type,
+      userAttendance: recentLoginHistory.user.userAttendance,
     };
 
     const newAccessToken = this.generateAccessToken(jwtPayload);
     const newRefreshToken = this.generateRefreshToken(jwtPayload);
 
-    await this.saveRefreshToken(user.id, newRefreshToken);
+    await this.saveRefreshToken(recentLoginHistory.user.id, newRefreshToken);
 
     return new CommonResponseDto('SUCCESS REFRESH TOKEN', new TokenResponseDto(newAccessToken, newRefreshToken));
   }
@@ -115,5 +121,15 @@ export class AuthService {
     } catch (err) {
       throw new UnauthorizedException('토큰이 만료되었습니다.');
     }
+  }
+
+  private async createLoginHistory(userId: string, ip: string, loginAt: Date): Promise<null> {
+    const loginHistory = new LoginHistory();
+    loginHistory.userId = userId;
+    loginHistory.currentIp = ip;
+    loginHistory.loginAt = loginAt;
+
+    await this.loginHistoryRepository.insert(loginHistory);
+    return;
   }
 }
