@@ -8,10 +8,11 @@ import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './jwt/jwt.strategy';
 import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from './const/auth.const';
+import { LoginHistory } from './entity/login-history.entity';
 
 @Module({
-  imports: [UsersModule, PassportModule, TypeOrmModule.forFeature([User]), JwtModule.register({})],
+  imports: [UsersModule, PassportModule, TypeOrmModule.forFeature([User, LoginHistory]), JwtModule.register({})],
   controllers: [AuthController],
-  providers: [AuthService, User],
+  providers: [AuthService],
 })
 export class AuthModule {}

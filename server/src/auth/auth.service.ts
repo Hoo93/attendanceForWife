@@ -10,11 +10,13 @@ import { jwtConstants } from './const/auth.const';
 import { JwtPayload } from './const/jwtPayload.interface';
 import { CommonResponseDto } from '../common/response/common-response.dto';
 import { TokenResponseDto } from './dto/token-response.dto';
+import { LoginHistory } from './entity/login-history.entity';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
+    @InjectRepository(User) private loginHistoryRepository: Repository<LoginHistory>,
     private jwtService: JwtService,
   ) {}
   public async signup(createAuthDto: CreateAuthDto): Promise<CommonResponseDto<User>> {
@@ -35,7 +37,7 @@ export class AuthService {
     throw new BadRequestException('ID 또는 비밀번호가 정확하지 않습니다.');
   }
 
-  public async signIn(signInDto: SignInDto): Promise<CommonResponseDto<TokenResponseDto>> {
+  public async signIn(signInDto: SignInDto, ip: string, loginAt: Date = new Date()): Promise<CommonResponseDto<TokenResponseDto>> {
     const user = await this.validateUser(signInDto.username, signInDto.password);
 
     const payload: JwtPayload = {
