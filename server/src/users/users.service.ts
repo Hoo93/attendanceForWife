@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { Pagination } from '../common/response/pagination';
+import { CommonResponseDto } from '../common/response/common-response.dto';
 
 @Injectable()
 export class UsersService {
@@ -47,7 +48,7 @@ export class UsersService {
     return `This action updates a #${id} user`;
   }
 
-  async remove(id: number) {
-    return `This action removes a #${id} user`;
+  async softDelete(id: string): Promise<CommonResponseDto<null>> {
+    return;
   }
 }
