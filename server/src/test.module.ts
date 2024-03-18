@@ -18,6 +18,7 @@ import { ConfigModule } from '@nestjs/config';
 import { getOrmConfig } from './common/const/orm.config';
 import { Invitation } from './invitations/entities/invitation.entity';
 import { InvitationsModule } from './invitations/invitations.module';
+import { LoginHistory } from './auth/entity/login-history.entity';
 
 @Module({
   imports: [
@@ -26,7 +27,7 @@ import { InvitationsModule } from './invitations/invitations.module';
     }),
     TypeOrmModule.forRoot({
       ...getOrmConfig(),
-      entities: [User, Role, Attendance, UserAttendance, Attendee, Schedule, Record, Invitation],
+      entities: [User, Role, Attendance, UserAttendance, Attendee, Schedule, Record, Invitation, LoginHistory],
     }),
     UsersModule,
     AuthModule,
