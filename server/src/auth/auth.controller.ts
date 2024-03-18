@@ -1,4 +1,4 @@
-import { Controller, Post, Body, UseGuards } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards, Get, Query, BadRequestException } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -63,5 +63,23 @@ export class AuthController {
     @CurrentIp() ip: string,
   ): Promise<CommonResponseDto<TokenResponseDto>> {
     return this.authService.refreshToken(refreshTokenDto.refreshToken, ip);
+  }
+
+  @Get('/check-email')
+  @ApiOperation({ summary: '회원 이메일 중복 확인' })
+  async checkEmailAvailability(@Query('email') email: string): Promise<CommonResponseDto<AvailabilityResult>> {
+    if (!email) {
+      throw new BadRequestException('Email is required');
+    }
+    return this.authService.isAvailableEmail(email);
+  }
+
+  @Get('/check-mobile-number')
+  @ApiOperation({ summary: '회원 휴대전화번호 중복 확인' })
+  async checkMobileNumberAvailability(@Query('mobileNumber') mobileNumber: string): Promise<CommonResponseDto<AvailabilityResult>> {
+    if (!mobileNumber) {
+      throw new BadRequestException('Mobile number is required');
+    }
+    return this.authService.isAvailableMobileNumber(mobileNumber);
   }
 }
