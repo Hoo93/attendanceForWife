@@ -7,6 +7,7 @@ import { LoginHistory } from '../../../src/auth/entity/login-history.entity';
 import { AuthService } from '../../../src/auth/auth.service';
 import { UserType } from '../../../src/users/user-type.enum';
 import { UsersService } from '../../../src/users/users.service';
+import { BadRequestException } from '@nestjs/common';
 
 describe('UserService Test', () => {
   let module: TestingModule;
@@ -43,10 +44,10 @@ describe('UserService Test', () => {
 
       const createResult = await userRepository.insert(user);
 
-      const userId = createResult.raw.id;
+      const userId = createResult.identifiers[0].id;
 
       // When
-      const sut = await service.softDelete(userId);
+      const sut = await service.softDelete(userId, userId);
 
       // Then
       expect(sut.success).toBe(true);
@@ -59,14 +60,30 @@ describe('UserService Test', () => {
 
       const createResult = await userRepository.insert(user);
 
-      const userId = createResult.raw.id;
+      const userId = createResult.identifiers[0].id;
 
       // When
-      await service.softDelete(userId);
+      await service.softDelete(userId, userId);
       const sut = await userRepository.findOneBy({ id: userId });
 
       // Then
       expect(sut).toBe(null);
+    });
+
+    it('로그인한 회원의 id가 아닌 경우 BadRequest 에러를 발생시킨다..', async () => {
+      // Given
+      const user = createSimpleGeneralUser('test_id_1', 'pwd123!@#', '박상후', '01080981398');
+
+      const createResult = await userRepository.insert(user);
+
+      const userId = createResult.identifiers[0].id;
+
+      const loginId = 'invalidId';
+
+      // When , Then
+      await expect(async () => await service.softDelete(userId, loginId)).rejects.toThrow(
+        new BadRequestException('본인의 아이디만 삭제 가능합니다.'),
+      );
     });
   });
 
