@@ -186,6 +186,7 @@ describe('UserAuthService Test', function () {
       const signInDto = new SignInDto();
       signInDto.username = 'TestUser1';
       signInDto.password = 'pwd123!@#';
+      signInDto.isAutoLogin = true;
 
       const ip = '127.0.0.1';
 
@@ -259,6 +260,7 @@ describe('UserAuthService Test', function () {
       const signInDto = new SignInDto();
       signInDto.username = 'TestUser1';
       signInDto.password = 'pwd123!@#';
+      signInDto.isAutoLogin = true;
 
       const ip = '127.0.0.1';
 
