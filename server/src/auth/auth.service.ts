@@ -98,7 +98,8 @@ export class AuthService {
     return new CommonResponseDto('Email Valid check success', new AvailabilityResult(!!!found));
   }
   public async isAvailableMobileNumber(mobileNumber: string): Promise<CommonResponseDto<AvailabilityResult>> {
-    return new CommonResponseDto('', new AvailabilityResult(true));
+    const found = await this.userRepository.findOneBy({ mobileNumber });
+    return new CommonResponseDto('', new AvailabilityResult(!!!found));
   }
 
   private generateAccessToken(payload: JwtPayload) {
