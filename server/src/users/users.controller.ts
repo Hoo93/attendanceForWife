@@ -6,6 +6,7 @@ import { Pagination } from '../common/response/pagination';
 import { AuthGuard } from '@nestjs/passport';
 import { User } from './entities/user.entity';
 import { MobileNumberTransform } from '../common/decorator/phoneNumber.decorator';
+import { GetUser } from '../common/decorator/user.decorator';
 
 @Controller('users')
 @ApiTags('회원')
@@ -54,7 +55,7 @@ export class UsersController {
   }
 
   @Delete(':id')
-  softDelete(@Param('id') id: string) {
-    return this.usersService.softDelete(id);
+  softDelete(@Param('id') id: string, @GetUser() userId: string) {
+    return this.usersService.softDelete(id, userId);
   }
 }

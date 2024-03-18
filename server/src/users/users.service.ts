@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
@@ -48,7 +48,11 @@ export class UsersService {
     return `This action updates a #${id} user`;
   }
 
-  async softDelete(id: string): Promise<CommonResponseDto<null>> {
-    return;
+  async softDelete(id: string, userId: string): Promise<CommonResponseDto<null>> {
+    if (id !== userId) {
+      throw new BadRequestException('본인의 아이디만 삭제 가능합니다.');
+    }
+    await this.userRepository.softDelete({ id: id });
+    return new CommonResponseDto('SUCCESS DELETE USER');
   }
 }

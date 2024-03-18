@@ -48,7 +48,7 @@ export class User extends BaseTimeEntity {
   @ApiPropertyOptional({ description: '리프레시토큰', type: 'string' })
   refreshToken?: string;
 
-  @Column({ comment: '자동로그인 여부', type: 'boolean', nullable: false, default: false })
+  @Column({ nullable: false, comment: '자동로그인 여부', type: 'boolean', default: false })
   @ApiPropertyOptional({ description: '자동로그인 여부', type: 'boolean', default: false })
   isAutoLogin?: boolean;
 
