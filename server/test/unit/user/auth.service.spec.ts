@@ -402,6 +402,44 @@ describe('UserAuthService Test', function () {
     });
   });
 
+  describe('isAvailableEmail method test', () => {
+    it('이미 이메일이 존재하는 경우 false를 반환한다.', async () => {
+      // Given
+      const validationTargetEmail = 'myEmail@naver.com';
+
+      const testUser = new User();
+      testUser.email = 'myEmail@naver.com';
+      testUser.id = 'test';
+      testUser.name = '박상후';
+      testUser.username = 'TestUser1';
+      testUser.password = 'pwd123!@#';
+      testUser.mobileNumber = '01080981398';
+      testUser.createId = 'test';
+      testUser.refreshToken = 'refresh_token';
+
+      await userRepository.insert(testUser);
+
+      // When
+      const sut = await service.isAvailableEmail(validationTargetEmail);
+
+      // Then
+      expect(sut.success).toBeTruthy();
+      expect(sut.data.isAvailable).toBe(false);
+    });
+
+    it('이메일이 존재하지 않는 경우 true를 반환한다.', async () => {
+      // Given
+      const validationTargetEmail = 'myEmail@naver.com';
+
+      // When
+      const sut = await service.isAvailableEmail(validationTargetEmail);
+
+      // Then
+      expect(sut.success).toBeTruthy();
+      expect(sut.data.isAvailable).toBeTruthy();
+    });
+  });
+
   async function setupTest() {}
 
   async function clear() {
