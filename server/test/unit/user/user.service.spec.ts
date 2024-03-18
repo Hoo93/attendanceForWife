@@ -54,7 +54,7 @@ describe('UserService Test', () => {
       expect(sut.message).toBe('SUCCESS DELETE USER');
     });
 
-    it('입력한 id의 데이터를 softDelete 한다.', async () => {
+    it('soft delete한 id는 조회되지 않는다.', async () => {
       // Given
       const user = createSimpleGeneralUser('test_id_1', 'pwd123!@#', '박상후', '01080981398');
 
