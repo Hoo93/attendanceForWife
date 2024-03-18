@@ -93,7 +93,9 @@ export class AuthService {
   }
 
   public async isAvailableEmail(email: string) {
-    return new CommonResponseDto('', new AvailabilityResult(true));
+    const found = await this.userRepository.findOneBy({ email });
+
+    return new CommonResponseDto('Email Valid check success', new AvailabilityResult(!!!found));
   }
   public async isAvailableMobileNumber(mobileNumber: string): Promise<CommonResponseDto<AvailabilityResult>> {
     return new CommonResponseDto('', new AvailabilityResult(true));
