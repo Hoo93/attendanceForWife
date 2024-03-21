@@ -1,139 +1,95 @@
-"use client";
+import Image from "next/image";
+import styles from "./page.module.css";
 
-import { Box, Button, CircularProgress, Grid, TextField } from "@mui/material";
-import React, { useEffect, useState } from "react";
-import Cookies from "js-cookie";
-import axios from "axios";
-import { useMutation } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
-import { API_BASE_URL, accessToken } from "@/app/utils/common";
-import { pushNotification } from "./utils/notification";
-
-export interface Login {
-  username: string;
-  password: string;
-}
-
-const index = () => {
-  const router = useRouter();
-  const [sessionLoading, setSessionLoading] = useState<boolean>(false);
-  const [login, setLogin] = useState<Login>({
-    username: "",
-    password: "",
-  });
-
-  const fetchLogin = async (params: Login) => {
-    const { username, password } = params;
-
-    try {
-      const response = await axios.post(
-        `${API_BASE_URL}/auth/signin`,
-        {
-          username: username,
-          password: password,
-        },
-        {
-          headers: { "Content-Type": "application/json" },
-        }
-      );
-
-      const token = response.data.access_token;
-      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-
-      Cookies.set("access-token", response.data.access_token);
-
-      // 로그인 성공 시 반환
-      return response;
-    } catch (error) {
-      // 오류 처리
-      console.error("Error occurred during login:", error);
-      throw error;
-    }
-  };
-
-  const { mutate, isLoading } = useMutation(fetchLogin, {
-    onSuccess: () => {
-      pushNotification("로그인 되었습니다.", "success");
-      router.push("/attendancy/list");
-    },
-    onError: () => {
-      pushNotification(
-        "존재하지 않는 계정이거나 비밀번호가 다릅니다.",
-        "error"
-      );
-    },
-  });
-
-  // Hook
-  const onChange = (field: string, value: string) => {
-    setLogin((prevState) => ({
-      ...prevState,
-      [field]: value,
-    }));
-  };
-
-  if (isLoading || sessionLoading) {
-    return <CircularProgress color="inherit" />;
-  }
-
+export default function Home() {
   return (
-    <>
-      <Box>
-        <Grid container spacing={1} alignItems={"center"}>
-          <Grid item xs={12} textAlign={"center"} marginBottom={"20px"}>
-            <Button fullWidth variant="contained">
-              출석이 로그인
-            </Button>
-          </Grid>
-          <Grid item xs={5}>
-            <div>ID</div>
-          </Grid>
-          <Grid item xs={7}>
-            <TextField
-              variant="outlined"
-              value={login?.username}
-              // disabled={isUpdate ? false : true}
-              fullWidth
-              onChange={(e) => onChange("username", e.target.value)}
+    <main className={styles.main}>
+      <div className={styles.description}>
+        <p>
+          Get started by editing&nbsp;
+          <code className={styles.code}>src/app/page.tsx</code>
+        </p>
+        <div>
+          <a
+            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            By{" "}
+            <Image
+              src="/vercel.svg"
+              alt="Vercel Logo"
+              className={styles.vercelLogo}
+              width={100}
+              height={24}
+              priority
             />
-          </Grid>
+          </a>
+        </div>
+      </div>
 
-          <Grid item xs={5}>
-            <div>PW</div>
-          </Grid>
-          <Grid item xs={7}>
-            <TextField
-              variant="outlined"
-              type="password"
-              value={login?.password}
-              fullWidth
-              onChange={(e) => onChange("password", e.target.value)}
-            />
-          </Grid>
-        </Grid>
-        <Box mt={3} display={"flex"} justifyContent={"flex-end"} gap={"5px"}>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => {
-              mutate(login);
-            }}
-          >
-            로그인
-          </Button>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => {
-              router.push("/auth/register");
-            }}
-          >
-            회원가입
-          </Button>
-        </Box>
-      </Box>
-    </>
+      <div className={styles.center}>
+        <Image
+          className={styles.logo}
+          src="/next.svg"
+          alt="Next.js Logo"
+          width={180}
+          height={37}
+          priority
+        />
+      </div>
+
+      <div className={styles.grid}>
+        <a
+          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
+          className={styles.card}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <h2>
+            Docs <span>-&gt;</span>
+          </h2>
+          <p>Find in-depth information about Next.js features and API.</p>
+        </a>
+
+        <a
+          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
+          className={styles.card}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <h2>
+            Learn <span>-&gt;</span>
+          </h2>
+          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
+        </a>
+
+        <a
+          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
+          className={styles.card}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <h2>
+            Templates <span>-&gt;</span>
+          </h2>
+          <p>Explore starter templates for Next.js.</p>
+        </a>
+
+        <a
+          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
+          className={styles.card}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <h2>
+            Deploy <span>-&gt;</span>
+          </h2>
+          <p>
+            Instantly deploy your Next.js site to a shareable URL with Vercel.
+          </p>
+        </a>
+      </div>
+    </main>
   );
-};
-
-export default index;
+}
