@@ -51,6 +51,24 @@ describe('AttendancesService', () => {
   });
 
   describe('createAttendance Test', () => {
+    it('출석부 생성 성공시 success,message,data.id를 반환한다.', async () => {
+      // given
+      const attendanceDto = createAttendanceDto('test title', 'test description', AttendanceType.WEEKDAY);
+
+      const user = new User();
+      user.id = 'user id 1';
+
+      // when
+      const createdResponse = await service.create(attendanceDto, user);
+
+      const newAttendance = await service.findOneById(createdResponse.data.id);
+
+      // then
+      expect(createdResponse.success).toBe(true);
+      expect(createdResponse.message).toBe('SUCCESS CREATE ATTENDANCE');
+      expect(createdResponse.data).toHaveProperty('id');
+    });
+
     it('출석부 테이블에 출석부를 생성한다.', async () => {
       // given
       const attendanceDto = createAttendanceDto('test title', 'test description', AttendanceType.WEEKDAY);
@@ -59,14 +77,14 @@ describe('AttendancesService', () => {
       user.id = 'user id 1';
 
       // when
-      const createdAttendanceId = await service.create(attendanceDto, user);
+      const createdResponse = await service.create(attendanceDto, user);
 
-      const newAttendance = await service.findOneById(createdAttendanceId.id);
+      const newAttendance = await service.findOneById(createdResponse.data.id);
 
       // then
-      expect(newAttendance.title).toBe('test title');
-      expect(newAttendance.description).toBe('test description');
-      expect(newAttendance.type).toBe(AttendanceType.WEEKDAY);
+      expect(newAttendance[0].title).toBe('test title');
+      expect(newAttendance[0].description).toBe('test description');
+      expect(newAttendance[0].type).toBe(AttendanceType.WEEKDAY);
     });
 
     it('UserAttendance 테이블에 MASTER 권한으로 데이터가 생성된다.', async () => {
@@ -77,7 +95,7 @@ describe('AttendancesService', () => {
       user.id = 'user id 1';
 
       // when
-      const createdAttendanceId = await service.create(attendanceDto, user);
+      const sut = await service.create(attendanceDto, user);
 
       const userAttendance = await userAttendanceRepository.findBy({
         userId: 'user id 1',
@@ -85,7 +103,7 @@ describe('AttendancesService', () => {
 
       // then
       expect(userAttendance[0].role).toBe(RoleType.MASTER);
-      expect(userAttendance[0].attendanceId).toBe(createdAttendanceId.id);
+      expect(userAttendance[0].attendanceId).toBe(sut.data.id);
     });
   });
 
@@ -97,22 +115,22 @@ describe('AttendancesService', () => {
 
       const createAttendanceDto_1 = createAttendanceDto('test title 1', 'test description', AttendanceType.WEEKDAY);
 
-      const createdAttendance = await service.create(createAttendanceDto_1, user_1);
+      const createdResponse = await service.create(createAttendanceDto_1, user_1);
 
       const attendee_1 = new Attendee();
-      attendee_1.attendanceId = createdAttendance.id;
+      attendee_1.attendanceId = createdResponse.data.id;
       attendee_1.name = '박우현';
       attendee_1.age = 30;
       attendee_1.createId = user_1.id;
 
       const attendee_2 = new Attendee();
-      attendee_2.attendanceId = createdAttendance.id;
+      attendee_2.attendanceId = createdResponse.data.id;
       attendee_2.name = '김우빈';
       attendee_2.age = 37;
       attendee_2.createId = user_1.id;
 
       const attendee_3 = new Attendee();
-      attendee_3.attendanceId = createdAttendance.id;
+      attendee_3.attendanceId = createdResponse.data.id;
       attendee_3.name = '방정숙';
       attendee_3.age = 45;
       attendee_3.createId = user_1.id;
@@ -124,7 +142,7 @@ describe('AttendancesService', () => {
 
       // then
       expect(sut).toHaveLength(1);
-      expect(sut[0].attendance.id).toBe(createdAttendance.id);
+      expect(sut[0].attendance.id).toBe(createdResponse.data.id);
       expect(sut[0].attendance.attendeeCount).toBe(3);
     });
 
@@ -147,8 +165,9 @@ describe('AttendancesService', () => {
       // when
       const sut = await service.findAllByUserId(user_1.id);
       // then
-      expect(sut).toHaveLength(2);
-      sut.forEach((data) => {
+      expect(sut.success).toBe(true);
+      expect(sut.count).toBe(2);
+      sut.items.forEach((data) => {
         expect(data.attendance.createId).not.toBe(user_2.id);
         expect(data.attendance.createId).toBe(user_1.id);
       });
@@ -163,7 +182,7 @@ describe('AttendancesService', () => {
 
       const createAttendanceDto_1 = createAttendanceDto('test title 1', 'test description', AttendanceType.WEEKDAY);
 
-      const attendance = await service.create(createAttendanceDto_1, user_1);
+      const createdResponse = await service.create(createAttendanceDto_1, user_1);
 
       const updateAttendanceDto = new UpdateAttendanceDto();
       updateAttendanceDto.title = 'updated Title';
@@ -171,14 +190,15 @@ describe('AttendancesService', () => {
       updateAttendanceDto.type = AttendanceType.WEEKEND;
 
       // When
-      await service.update(attendance.id, updateAttendanceDto);
+      await service.update(createdResponse.data.id, updateAttendanceDto);
 
-      const sut = await service.findOneById(attendance.id);
+      const sut = await service.findOneById(createdResponse.data.id);
 
       // Then
-      expect(sut?.title).toBe('updated Title');
-      expect(sut?.description).toBe('updated description');
-      expect(sut?.type).toBe(AttendanceType.WEEKEND);
+      expect(sut.success).toBe(true);
+      expect(sut.data?.title).toBe('updated Title');
+      expect(sut.data?.description).toBe('updated description');
+      expect(sut.data?.type).toBe(AttendanceType.WEEKEND);
     });
   });
 
@@ -190,13 +210,12 @@ describe('AttendancesService', () => {
 
       const createAttendanceDto_1 = createAttendanceDto('test title 1', 'test description', AttendanceType.WEEKDAY);
 
-      const attendance = await service.create(createAttendanceDto_1, user_1);
+      const createdResponse = await service.create(createAttendanceDto_1, user_1);
 
       // When
-      await service.delete(attendance.id, user_1.id);
+      await service.delete(createdResponse.data.id, user_1.id);
 
-      const sut = await attendanceRepository.query(`
-      SELECT * FROM attendance WHERE id = '${attendance.id}'`);
+      const sut = await attendanceRepository.findOneBy({ id: createdResponse.data.id });
 
       // Then
       expect(sut[0].deletedAt).not.toBeNull();
@@ -209,13 +228,12 @@ describe('AttendancesService', () => {
 
       const createAttendanceDto_1 = createAttendanceDto('test title 1', 'test description', AttendanceType.WEEKDAY);
 
-      const attendance = await service.create(createAttendanceDto_1, user_1);
+      const createdResponse = await service.create(createAttendanceDto_1, user_1);
 
       // When
-      await service.delete(attendance.id, user_1.id);
+      await service.delete(createdResponse.data.id, user_1.id);
 
-      const sut = await userAttendanceRepository.query(`
-      SELECT * FROM user_attendance WHERE attendanceId = '${attendance.id}' AND userId = '${user_1.id}'`);
+      const sut = await userAttendanceRepository.findOneBy({ attendanceId: createdResponse.data.id });
 
       // Then
       expect(sut[0].deletedAt).not.toBeNull();
