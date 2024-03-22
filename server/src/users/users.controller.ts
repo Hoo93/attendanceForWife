@@ -7,6 +7,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { User } from './entities/user.entity';
 import { MobileNumberTransform } from '../common/decorator/phoneNumber.decorator';
 import { GetUser } from '../common/decorator/user.decorator';
+import { CommonResponseDto } from '../common/response/common-response.dto';
 
 @Controller('users')
 @ApiTags('회원')
@@ -23,6 +24,7 @@ export class UsersController {
     type: User,
   })
   findAll(pagination: Pagination) {
+    //: Promise<CommonResponseDto<User[]>>
     return this.usersService.findAll(pagination);
   }
 
@@ -35,6 +37,7 @@ export class UsersController {
   })
   @MobileNumberTransform()
   findOneByMobileNumber(@Param('mobileNumber') mobileNumber: string) {
+    //: Promise<CommonResponseDto<User>>
     return this.usersService.findOneByMobileNumber(mobileNumber);
   }
 
@@ -46,16 +49,18 @@ export class UsersController {
     type: User,
   })
   findOneId(@Param('id') id: string) {
+    //: Promise<CommonResponseDto<User>>
     return this.usersService.findOne(+id);
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+    //: Promise<CommonResponseDto<any>>
     return this.usersService.update(+id, updateUserDto);
   }
 
   @Delete(':id')
-  softDelete(@Param('id') id: string, @GetUser() userId: string) {
+  softDelete(@Param('id') id: string, @GetUser() userId: string): Promise<CommonResponseDto<any>> {
     return this.usersService.softDelete(id, userId);
   }
 }

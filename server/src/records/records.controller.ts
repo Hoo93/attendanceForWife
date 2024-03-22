@@ -18,6 +18,7 @@ import { CreateAllRecordDto } from './dto/createAll-record.dto';
 import { RecordFilterDto } from './dto/record-filter.dto';
 import { PageResponseDto } from '../common/response/pageResponse.dto';
 import { ResponseWithoutPaginationDto } from '../common/response/responseWithoutPagination.dto';
+import { CommonResponseDto } from '../common/response/common-response.dto';
 
 @UseGuards(AuthGuard('jwt'))
 @Controller('records')
@@ -43,6 +44,7 @@ export class RecordsController {
   @UseGuards(RoleGuard)
   @Roles(RoleType.MASTER, RoleType.MANAGER, RoleType.GENERAL)
   async createRecord(@Body() createRecordDto: CreateRecordDto, @GetUser() user: User) {
+    //: Promise<CommonResponseDto<any>>
     return this.recordsService.create(createRecordDto, user);
   }
 
@@ -63,6 +65,7 @@ export class RecordsController {
   @UseGuards(RoleGuard)
   @Roles(RoleType.MASTER, RoleType.MANAGER, RoleType.GENERAL)
   async createAllRecord(@Body() createAllRecordDto: CreateAllRecordDto, @GetUser() user: User) {
+    //: Promise<CommonResponseDto<any>>
     return this.recordsService.createAll(createAllRecordDto, user);
   }
 
@@ -172,6 +175,7 @@ export class RecordsController {
   @UseGuards(RoleGuard)
   @Roles(RoleType.MASTER, RoleType.MANAGER)
   deleteAll(@Body() deleteRecordDto: DeleteRecordDto) {
+    //: Promise<CommonResponseDto<any>>
     return this.recordsService.deleteAll(deleteRecordDto);
   }
 }

@@ -12,6 +12,9 @@ import { RoleGuard } from '../roles/role.guard';
 import { RoleType } from '../roles/entities/role-type.enum';
 import { Roles } from '../roles/role.decorator';
 import { DeleteResult, UpdateResult } from 'typeorm';
+import { CommonResponseDto } from '../common/response/common-response.dto';
+import { PageResponseDto } from '../common/response/pageResponse.dto';
+import { ResponseWithoutPaginationDto } from '../common/response/responseWithoutPagination.dto';
 
 @UseGuards(AuthGuard('jwt'))
 @Controller('attendances')
@@ -31,7 +34,7 @@ export class AttendancesController {
     type: CreateAttendanceDto,
     description: '출석부 생성 DTO',
   })
-  createAttendance(@Body() createAttendanceDto: CreateAttendanceDto, @GetUser() user: User) {
+  createAttendance(@Body() createAttendanceDto: CreateAttendanceDto, @GetUser() user: User): Promise<CommonResponseDto<any>> {
     return this.attendancesService.create(createAttendanceDto, user);
   }
 
@@ -42,7 +45,7 @@ export class AttendancesController {
     description: '로그인한 회원의 출석부 목록 조회',
     type: UserAttendance,
   })
-  findAllByUserId(@GetUser() user: User) {
+  findAllByUserId(@GetUser() user: User): Promise<ResponseWithoutPaginationDto<UserAttendance>> {
     return this.attendancesService.findAllByUserId(user.id);
   }
 
@@ -55,7 +58,7 @@ export class AttendancesController {
     description: '출석부 정보 수정',
     type: Attendance,
   })
-  findOneById(@Param('attendanceId') attendanceId: string) {
+  findOneById(@Param('attendanceId') attendanceId: string): Promise<CommonResponseDto<Attendance>> {
     return this.attendancesService.findOneById(attendanceId);
   }
 
@@ -72,7 +75,7 @@ export class AttendancesController {
     // RoleGuard 적용을 위해 attendanceId로 parameter 이름 지정
     @Param('attendanceId') attendanceId: string,
     @Body() updateAttendanceDto: UpdateAttendanceDto,
-  ) {
+  ): Promise<CommonResponseDto<any>> {
     return this.attendancesService.update(attendanceId, updateAttendanceDto);
   }
 
@@ -85,7 +88,7 @@ export class AttendancesController {
     description: '삭제 후 No Content 값 전달',
     type: null,
   })
-  delete(@Param('attendanceId') attendanceId: string, @GetUser() user: User) {
+  delete(@Param('attendanceId') attendanceId: string, @GetUser() user: User): Promise<CommonResponseDto<any>> {
     return this.attendancesService.delete(attendanceId, user.id);
   }
 }

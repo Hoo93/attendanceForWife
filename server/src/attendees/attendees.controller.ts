@@ -13,6 +13,8 @@ import { RoleGuard } from '../roles/role.guard';
 import { Roles } from '../roles/role.decorator';
 import { RoleType } from '../roles/entities/role-type.enum';
 import { DeleteAttendeeDto } from './dto/delete-attendee.dto';
+import { CommonResponseDto } from '../common/response/common-response.dto';
+import { ResponseWithoutPaginationDto } from '../common/response/responseWithoutPagination.dto';
 
 @Controller('attendees')
 @UseGuards(AuthGuard('jwt'))
@@ -33,6 +35,7 @@ export class AttendeesController {
     description: '출석 대상 생성 DTO',
   })
   async create(@Body() createAttendeeDto: CreateAttendeeDto, @GetUser() user: User) {
+    // : Promise<CommonResponseDto<any>>
     return this.attendeesService.createAttendee(createAttendeeDto, user);
   }
 
@@ -46,6 +49,7 @@ export class AttendeesController {
   @UseGuards(RoleGuard)
   @Roles(RoleType.MASTER, RoleType.GENERAL, RoleType.MANAGER, RoleType.READER)
   async findAllByAttendanceId(@Param('attendanceId') attendanceId: string) {
+    //: Promise<ResponseWithoutPaginationDto<Attendee>>
     return this.attendeesService.findAllByAttendanceId(attendanceId);
   }
 
@@ -57,6 +61,7 @@ export class AttendeesController {
     type: Attendee,
   })
   async findOne(@Param('id') id: string) {
+    //: Promise<CommonResponseDto<Attendee>>
     return this.attendeesService.findOneById(id);
   }
 
@@ -70,6 +75,7 @@ export class AttendeesController {
   @UseGuards(RoleGuard)
   @Roles(RoleType.MASTER, RoleType.MANAGER, RoleType.GENERAL)
   async update(@Param('id') id: string, @Body() updateAttendeeDto: UpdateAttendeeDto) {
+    //: Promise<CommonResponseDto<any>>
     return this.attendeesService.update(id, updateAttendeeDto);
   }
 
@@ -87,6 +93,7 @@ export class AttendeesController {
   @UseGuards(RoleGuard)
   @Roles(RoleType.MASTER, RoleType.MANAGER, RoleType.GENERAL)
   delete(@Body() deleteAttendeeDto: DeleteAttendeeDto) {
+    //: Promise<CommonResponseDto<any>>
     return this.attendeesService.deleteAll(deleteAttendeeDto);
   }
 }

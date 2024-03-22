@@ -11,6 +11,7 @@ import { CreateAttendeeDto } from '../attendees/dto/create-attendee.dto';
 import { Schedule } from './entities/schedule.entity';
 import { ScheduleFilterDto } from './dto/schedule-filter.dto';
 import { DeleteScheduleDto } from './dto/delete-schedule.dto';
+import { CommonResponseDto } from '../common/response/common-response.dto';
 
 @Controller('schedules')
 @UseGuards(AuthGuard('jwt'))
@@ -31,6 +32,7 @@ export class SchedulesController {
     description: '출석 스케쥴 생성 DTO',
   })
   create(@Body() createScheduleDto: CreateScheduleDto, @GetUser() user: User) {
+    //: Promise<CommonResponseDto<any>>
     return this.schedulesService.create(createScheduleDto, user);
   }
 
@@ -41,7 +43,7 @@ export class SchedulesController {
     description: '출석대상의 스케쥴 조회',
     type: Array<Schedule>,
   })
-  findByAttendeeId(@Param('attendeeId') attendeeId: string): Promise<Schedule[]> {
+  findByAttendeeId(@Param('attendeeId') attendeeId: string) {
     return this.schedulesService.findByAttendeeId(attendeeId);
   }
 
@@ -78,6 +80,7 @@ export class SchedulesController {
     type: null,
   })
   deleteAll(@Body() deleteScheduleDto: DeleteScheduleDto) {
+    //: Promise<CommonResponseDto<any>>
     return this.schedulesService.deleteAll(deleteScheduleDto);
   }
 }
