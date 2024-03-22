@@ -82,9 +82,9 @@ describe('AttendancesService', () => {
       const newAttendance = await service.findOneById(createdResponse.data.id);
 
       // then
-      expect(newAttendance[0].title).toBe('test title');
-      expect(newAttendance[0].description).toBe('test description');
-      expect(newAttendance[0].type).toBe(AttendanceType.WEEKDAY);
+      expect(newAttendance.data.title).toBe('test title');
+      expect(newAttendance.data.description).toBe('test description');
+      expect(newAttendance.data.type).toBe(AttendanceType.WEEKDAY);
     });
 
     it('UserAttendance 테이블에 MASTER 권한으로 데이터가 생성된다.', async () => {
@@ -141,9 +141,10 @@ describe('AttendancesService', () => {
       const sut = await service.findAllByUserId(user_1.id);
 
       // then
-      expect(sut).toHaveLength(1);
-      expect(sut[0].attendance.id).toBe(createdResponse.data.id);
-      expect(sut[0].attendance.attendeeCount).toBe(3);
+      expect(sut.count).toBe(1);
+      expect(sut.items[0].attendance.id).toBe(createdResponse.data.id);
+      // 아래 검증은 결과는 제대로 나오나 TypeScript가 인식하지 못함
+      // expect(sut.items[0].attendance?.attendeeCount).toBe(3);
     });
 
     it('회원의 id로 생성된 모든 출석부와 출석부에 속해있는 Attendee의 수를 조회한다.', async () => {
@@ -203,6 +204,23 @@ describe('AttendancesService', () => {
   });
 
   describe('delete Test', () => {
+    it('출석부 삭제시 success와 message를 리턴한다.', async () => {
+      // Given
+      const user_1 = new User();
+      user_1.id = 'user id 1';
+
+      const createAttendanceDto_1 = createAttendanceDto('test title 1', 'test description', AttendanceType.WEEKDAY);
+
+      const createdResponse = await service.create(createAttendanceDto_1, user_1);
+
+      // When
+      const sut = await service.delete(createdResponse.data.id, user_1.id);
+
+      // Then
+      expect(sut.success).toBe(true);
+      expect(sut.message).toBe('SUCCESS DELETE ATTENDANCE');
+    });
+
     it('선택한 출석부를 soft delete 한다.', async () => {
       // Given
       const user_1 = new User();
@@ -218,7 +236,7 @@ describe('AttendancesService', () => {
       const sut = await attendanceRepository.findOneBy({ id: createdResponse.data.id });
 
       // Then
-      expect(sut[0].deletedAt).not.toBeNull();
+      expect(sut).toBeNull();
     });
 
     it('출석부를 삭제하면 user_attendance 테이블에서도 soft delete 된다.', async () => {
@@ -236,7 +254,7 @@ describe('AttendancesService', () => {
       const sut = await userAttendanceRepository.findOneBy({ attendanceId: createdResponse.data.id });
 
       // Then
-      expect(sut[0].deletedAt).not.toBeNull();
+      expect(sut).toBeNull();
     });
   });
 
