@@ -13,6 +13,8 @@
   "dependencies": {
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.0",
+    "axios": "^1.6.8",
+    "js-cookie": "^3.0.5",
     "next": "14.1.4",
     "prettier": "^3.2.5",
     "react": "^18",
@@ -28,6 +30,7 @@
     "@storybook/nextjs": "^8.0.2",
     "@storybook/react": "^8.0.2",
     "@storybook/test": "^8.0.2",
+    "@types/js-cookie": "^3.0.6",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
