@@ -34,8 +34,7 @@ export class AttendeesController {
     type: CreateAttendeeDto,
     description: '출석 대상 생성 DTO',
   })
-  async create(@Body() createAttendeeDto: CreateAttendeeDto, @GetUser() user: User) {
-    // : Promise<CommonResponseDto<any>>
+  async create(@Body() createAttendeeDto: CreateAttendeeDto, @GetUser() user: User): Promise<CommonResponseDto<any>> {
     return this.attendeesService.createAttendee(createAttendeeDto, user);
   }
 
@@ -48,8 +47,7 @@ export class AttendeesController {
   })
   @UseGuards(RoleGuard)
   @Roles(RoleType.MASTER, RoleType.GENERAL, RoleType.MANAGER, RoleType.READER)
-  async findAllByAttendanceId(@Param('attendanceId') attendanceId: string) {
-    //: Promise<ResponseWithoutPaginationDto<Attendee>>
+  async findAllByAttendanceId(@Param('attendanceId') attendanceId: string): Promise<ResponseWithoutPaginationDto<Attendee>> {
     return this.attendeesService.findAllByAttendanceId(attendanceId);
   }
 
@@ -60,8 +58,7 @@ export class AttendeesController {
     description: '출석 대상 상세 조회',
     type: Attendee,
   })
-  async findOne(@Param('id') id: string) {
-    //: Promise<CommonResponseDto<Attendee>>
+  async findOne(@Param('id') id: string): Promise<CommonResponseDto<Attendee>> {
     return this.attendeesService.findOneById(id);
   }
 
@@ -74,8 +71,7 @@ export class AttendeesController {
   })
   @UseGuards(RoleGuard)
   @Roles(RoleType.MASTER, RoleType.MANAGER, RoleType.GENERAL)
-  async update(@Param('id') id: string, @Body() updateAttendeeDto: UpdateAttendeeDto) {
-    //: Promise<CommonResponseDto<any>>
+  async update(@Param('id') id: string, @Body() updateAttendeeDto: UpdateAttendeeDto): Promise<CommonResponseDto<any>> {
     return this.attendeesService.update(id, updateAttendeeDto);
   }
 
@@ -92,8 +88,7 @@ export class AttendeesController {
   })
   @UseGuards(RoleGuard)
   @Roles(RoleType.MASTER, RoleType.MANAGER, RoleType.GENERAL)
-  delete(@Body() deleteAttendeeDto: DeleteAttendeeDto) {
-    //: Promise<CommonResponseDto<any>>
+  delete(@Body() deleteAttendeeDto: DeleteAttendeeDto): Promise<CommonResponseDto<any>> {
     return this.attendeesService.deleteAll(deleteAttendeeDto);
   }
 }
