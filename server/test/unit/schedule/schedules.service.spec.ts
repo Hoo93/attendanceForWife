@@ -57,7 +57,7 @@ describe('SchedulesService', () => {
   });
 
   describe('Create Schedules Test', () => {
-    it('선택한 요일과 시간으로 출석 대상의 스케쥴을 생성한다.', async () => {
+    it('요청 성공시 success,message,id를 리턴한다.', async () => {
       // Given
       const user = new User();
       user.id = 'user id 1';
@@ -66,6 +66,24 @@ describe('SchedulesService', () => {
 
       // When
       const sut = await service.create(scheduleDto, user);
+
+      // Then
+      expect(sut.success).toBe(true);
+      expect(sut.message).toBe('SUCCESS CREATE SCHEDULES');
+      expect(sut.data.id).toBeDefined();
+    });
+
+    it('선택한 요일과 시간으로 출석 대상의 스케쥴을 생성한다.', async () => {
+      // Given
+      const user = new User();
+      user.id = 'user id 1';
+
+      const scheduleDto = generateCreateScheduleDto('Attendee Id 1', DayType.MONDAY, '1000');
+
+      // When
+      const createdReponse = await service.create(scheduleDto, user);
+
+      const sut = await scheduleRepository.findOneBy({ id: createdReponse.data.id });
 
       // Then
       expect(sut.attendeeId).toBe('Attendee Id 1');
@@ -106,8 +124,8 @@ describe('SchedulesService', () => {
       const sut = await service.findByAttendeeId(attendee_1.id);
 
       // Then
-      expect(sut).toHaveLength(2);
-      sut.map((result) => {
+      expect(sut.count).toBe(2);
+      sut.items.map((result) => {
         expect(result.attendeeId).toBe('Attendee Id 1');
       });
     });
@@ -121,8 +139,8 @@ describe('SchedulesService', () => {
       const sut = await service.findByAttendeeId(attendee_1.id);
 
       // Then
-      expect(sut).toHaveLength(0);
-      expect(sut).toBeInstanceOf(Array);
+      expect(sut.count).toBe(0);
+      expect(sut.items).toBeInstanceOf(Array);
     });
   });
 
@@ -153,8 +171,8 @@ describe('SchedulesService', () => {
       const sut = await service.findAllByAttendanceId(targetAttendanceId);
 
       // Then
-      expect(sut).toHaveLength(2);
-      sut.map((schedule) => {
+      expect(sut.count).toBe(2);
+      sut.items.map((schedule) => {
         expect(schedule.attendee.attendanceId).toBe(targetAttendanceId);
       });
     });
@@ -202,8 +220,8 @@ describe('SchedulesService', () => {
       const sut = await service.findTodayScheduleByAttendanceId(targetAttendanceId, new Date('2024-02-05'));
 
       // Then
-      expect(sut).toHaveLength(1);
-      sut.map((schedule) => {
+      expect(sut.count).toBe(1);
+      sut.items.map((schedule) => {
         expect(schedule.attendee.attendanceId).toBe(targetAttendanceId);
         expect(schedule.day).toBe(DayType.MONDAY);
         expect(schedule?.attendee.records).toBeDefined();
@@ -245,8 +263,8 @@ describe('SchedulesService', () => {
       const sut = await service.findTodayScheduleByAttendanceId(targetAttendanceId, new Date('2024-02-05'));
 
       // Then
-      expect(sut).toHaveLength(5);
-      const isOrderedByTimeAscend = sut.every((schedule, index, array) => {
+      expect(sut.count).toBe(5);
+      const isOrderedByTimeAscend = sut.items.every((schedule, index, array) => {
         if (index === 0) return true;
         return schedule.time >= array[index - 1].time;
       });
@@ -288,8 +306,8 @@ describe('SchedulesService', () => {
       const sut = await service.findTodayScheduleByAttendanceId(targetAttendanceId, new Date('2024-02-05'));
 
       // Then
-      expect(sut).toHaveLength(5);
-      const isOrderedByTimeAscend = sut.every((schedule, index, array) => {
+      expect(sut.count).toBe(5);
+      const isOrderedByTimeAscend = sut.items.every((schedule, index, array) => {
         if (index === 0) return true;
         return schedule.time >= array[index - 1].time && schedule.attendee.name >= array[index - 1].attendee.name;
       });
@@ -331,8 +349,8 @@ describe('SchedulesService', () => {
       const sut = await service.findTodayScheduleByAttendanceId(targetAttendanceId, new Date('2024-02-05'));
 
       // Then
-      expect(sut).toHaveLength(5);
-      const isOrderedByTimeAscend = sut.every((schedule, index, array) => {
+      expect(sut.count).toBe(5);
+      const isOrderedByTimeAscend = sut.items.every((schedule, index, array) => {
         if (index === 0) return true;
 
         if (schedule.time > array[index - 1].time) return true;
