@@ -50,6 +50,21 @@ describe('AttendeesService', () => {
   });
 
   describe('createAttendee Test ', () => {
+    it('Attendee를 생성 성공시에 success,message,id를 리턴한다.', async () => {
+      // given
+      const attendeeDto = createAttendeeDto('test name', 'testAttendanceId', 'this is first attendee', 15);
+
+      const user = new User();
+      user.id = 'user id 1';
+
+      // when
+      const sut = await service.createAttendee(attendeeDto, user);
+
+      // then
+      expect(sut.success).toBe(true);
+      expect(sut.message).toBe('SUCCESS CREATE ATTENDEE');
+    });
+
     it('Attendee 테이블에 Attendee를 생성한다.', async () => {
       // given
       const attendeeDto = createAttendeeDto('test name', 'testAttendanceId', 'this is first attendee', 15);
@@ -58,13 +73,13 @@ describe('AttendeesService', () => {
       user.id = 'user id 1';
 
       // when
-      const createdAttendee = await service.createAttendee(attendeeDto, user);
+      const sut = await service.createAttendee(attendeeDto, user);
 
       // then
-      expect(createdAttendee?.name).toBe('test name');
-      expect(createdAttendee?.description).toBe('this is first attendee');
-      expect(createdAttendee?.createId).toBe('user id 1');
-      expect(createdAttendee?.attendanceId).toBe('testAttendanceId');
+      expect(sut.data?.name).toBe('test name');
+      expect(sut.data?.description).toBe('this is first attendee');
+      expect(sut.data?.createId).toBe('user id 1');
+      expect(sut.data?.attendanceId).toBe('testAttendanceId');
     });
 
     it('createAttendeeDto의 정보로 Attendee를 생성한다.', async () => {
@@ -81,15 +96,15 @@ describe('AttendeesService', () => {
       user.id = 'user id 1';
 
       // when
-      const createdAttendee = await service.createAttendee(attendeeDto, user);
+      const sut = await service.createAttendee(attendeeDto, user);
 
       // then
-      expect(createdAttendee?.name).toBe('test name');
-      expect(createdAttendee?.description).toBe('this is first attendee');
-      expect(createdAttendee?.createId).toBe('user id 1');
-      expect(createdAttendee?.attendanceId).toBe('testAttendanceId');
-      expect(createdAttendee?.mobileNumber).toBe('01080981398');
-      expect(createdAttendee?.subMobileNumber).toBe('01026478104');
+      expect(sut.data?.name).toBe('test name');
+      expect(sut.data?.description).toBe('this is first attendee');
+      expect(sut.data?.createId).toBe('user id 1');
+      expect(sut.data?.attendanceId).toBe('testAttendanceId');
+      expect(sut.data?.mobileNumber).toBe('01080981398');
+      expect(sut.data?.subMobileNumber).toBe('01026478104');
     });
   });
 
@@ -124,7 +139,7 @@ describe('AttendeesService', () => {
   });
 
   describe('update TEST', () => {
-    it('이름, 설명, 나이 중 원하는 값을 수정할 수 있다.', async () => {
+    it('update attendee 성공 시 success,message,id를 리턴한다.', async () => {
       // Given
       const attendance = new Attendance();
       attendance.id = 'testAttendanceId';
@@ -144,12 +159,42 @@ describe('AttendeesService', () => {
       updateDto.description = '수정되었습니다';
       updateDto.age = 99;
 
-      const updatedAttendee = await service.update(createdAttendee.id, updateDto);
+      const sut = await service.update(createdAttendee.id, updateDto);
 
       // Then
-      expect(updatedAttendee.name).toBe('수정된');
-      expect(updatedAttendee.description).toBe('수정되었습니다');
-      expect(updatedAttendee.age).toBe(99);
+      expect(sut.success).toBe(true);
+      expect(sut.message).toBe('SUCCESS UPDATE ATTENDEE');
+      expect(sut.data.id).toBeDefined();
+    });
+
+    it('이름, 설명, 나이 중 원하는 값을 수정할 수 있다.', async () => {
+      // Given
+      const attendance = new Attendance();
+      attendance.id = 'testAttendanceId';
+
+      const user_1 = new User();
+      user_1.id = 'user id 1';
+
+      const attendee = createAttendee('가나다', 'testAttendanceId', '가나다 학생', 3, user_1.id);
+
+      const createdAttendee = await attendeeRepository.save(attendee);
+
+      const now = new Date();
+
+      const updateDto = new UpdateAttendeeDto();
+      updateDto.name = '수정된';
+      updateDto.description = '수정되었습니다';
+      updateDto.age = 99;
+
+      // When
+      const updatedAttendee = await service.update(createdAttendee.id, updateDto);
+
+      const sut = await attendeeRepository.findOneBy({ id: updatedAttendee.data.id });
+
+      // Then
+      expect(sut.name).toBe('수정된');
+      expect(sut.description).toBe('수정되었습니다');
+      expect(sut.age).toBe(99);
     });
 
     it('수정한 회원의 Id 와 수정 시간이 기록된다.', async () => {
@@ -164,21 +209,23 @@ describe('AttendeesService', () => {
 
       const createdAttendee = await attendeeRepository.save(attendee);
 
-      // When
       const now = new Date();
 
       const updateDto = new UpdateAttendeeDto();
       updateDto.updateId = user_1.id;
       updateDto.updatedAt = now;
 
+      // When
       const updatedAttendee = await service.update(createdAttendee.id, updateDto);
 
+      const sut = await attendeeRepository.findOneBy({ id: updatedAttendee.data.id });
+
       // Then
-      expect(updatedAttendee.name).toBe('가나다');
-      expect(updatedAttendee.description).toBe('가나다 학생');
-      expect(updatedAttendee.age).toBe(3);
-      expect(updatedAttendee.updateId).toBe('user id 1');
-      expect(updatedAttendee.updatedAt).toStrictEqual(now);
+      expect(sut.name).toBe('가나다');
+      expect(sut.description).toBe('가나다 학생');
+      expect(sut.age).toBe(3);
+      expect(sut.updateId).toBe('user id 1');
+      expect(sut.updatedAt).toStrictEqual(now);
     });
   });
 
@@ -202,12 +249,35 @@ describe('AttendeesService', () => {
       const sut = await service.findOneById(createdAttendee.id);
 
       // Then
-      expect(sut.name).toBe('가나다');
-      expect(sut.attendanceId).toBe('testAttendanceId');
-      expect(sut.description).toBe('가나다 학생');
-      expect(sut.age).toBe(3);
-      expect(sut.createId).toBe(user_1.id);
-      expect(sut.createdAt).toStrictEqual(now);
+      expect(sut.success).toBe(true);
+      expect(sut.message).toBe('SUCCESS FIND ATTENDEE');
+    });
+
+    it('수정한 회원의 Id 와 수정 시간이 기록된다.', async () => {
+      // Given
+      const attendance = new Attendance();
+      attendance.id = 'testAttendanceId';
+
+      const user_1 = new User();
+      user_1.id = 'user id 1';
+
+      const now = new Date();
+
+      const attendee = createAttendee('가나다', 'testAttendanceId', '가나다 학생', 3, user_1.id);
+      attendee.createdAt = now;
+
+      const createdAttendee = await attendeeRepository.save(attendee);
+
+      // When
+      const sut = await service.findOneById(createdAttendee.id);
+
+      // Then
+      expect(sut.data.name).toBe('가나다');
+      expect(sut.data.attendanceId).toBe('testAttendanceId');
+      expect(sut.data.description).toBe('가나다 학생');
+      expect(sut.data.age).toBe(3);
+      expect(sut.data.createId).toBe(user_1.id);
+      expect(sut.data.createdAt).toStrictEqual(now);
     });
   });
 
