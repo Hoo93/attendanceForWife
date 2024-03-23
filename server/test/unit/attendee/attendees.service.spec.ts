@@ -73,13 +73,15 @@ describe('AttendeesService', () => {
       user.id = 'user id 1';
 
       // when
-      const sut = await service.createAttendee(attendeeDto, user);
+      const createResponse = await service.createAttendee(attendeeDto, user);
+
+      const sut = await attendeeRepository.findOneBy({ id: createResponse.data.id });
 
       // then
-      expect(sut.data?.name).toBe('test name');
-      expect(sut.data?.description).toBe('this is first attendee');
-      expect(sut.data?.createId).toBe('user id 1');
-      expect(sut.data?.attendanceId).toBe('testAttendanceId');
+      expect(sut?.name).toBe('test name');
+      expect(sut?.description).toBe('this is first attendee');
+      expect(sut?.createId).toBe('user id 1');
+      expect(sut?.attendanceId).toBe('testAttendanceId');
     });
 
     it('createAttendeeDto의 정보로 Attendee를 생성한다.', async () => {
@@ -96,15 +98,17 @@ describe('AttendeesService', () => {
       user.id = 'user id 1';
 
       // when
-      const sut = await service.createAttendee(attendeeDto, user);
+      const createResponse = await service.createAttendee(attendeeDto, user);
+
+      const sut = await attendeeRepository.findOneBy({ id: createResponse.data.id });
 
       // then
-      expect(sut.data?.name).toBe('test name');
-      expect(sut.data?.description).toBe('this is first attendee');
-      expect(sut.data?.createId).toBe('user id 1');
-      expect(sut.data?.attendanceId).toBe('testAttendanceId');
-      expect(sut.data?.mobileNumber).toBe('01080981398');
-      expect(sut.data?.subMobileNumber).toBe('01026478104');
+      expect(sut?.name).toBe('test name');
+      expect(sut?.description).toBe('this is first attendee');
+      expect(sut?.createId).toBe('user id 1');
+      expect(sut?.attendanceId).toBe('testAttendanceId');
+      expect(sut?.mobileNumber).toBe('01080981398');
+      expect(sut?.subMobileNumber).toBe('01026478104');
     });
   });
 
@@ -127,12 +131,10 @@ describe('AttendeesService', () => {
 
       // when
       const sut = await service.findAllByAttendanceId(attendance.id);
-      const sutAttendeeList = sut[0];
-      const sutAttendeeCount = sut[1];
 
       // then
-      expect(sutAttendeeCount).toBe(2);
-      sutAttendeeList.forEach((data) => {
+      expect(sut.count).toBe(2);
+      sut.items.forEach((data) => {
         expect(data.attendanceId).toBe('testAttendanceId');
       });
     });
