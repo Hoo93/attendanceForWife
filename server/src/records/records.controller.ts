@@ -19,6 +19,7 @@ import { RecordFilterDto } from './dto/record-filter.dto';
 import { PageResponseDto } from '../common/response/pageResponse.dto';
 import { ResponseWithoutPaginationDto } from '../common/response/responseWithoutPagination.dto';
 import { CommonResponseDto } from '../common/response/common-response.dto';
+import { AffectedResponse } from '../common/response/affectedResponse';
 
 @UseGuards(AuthGuard('jwt'))
 @Controller('records')
@@ -43,8 +44,7 @@ export class RecordsController {
   })
   @UseGuards(RoleGuard)
   @Roles(RoleType.MASTER, RoleType.MANAGER, RoleType.GENERAL)
-  async createRecord(@Body() createRecordDto: CreateRecordDto, @GetUser() user: User) {
-    //: Promise<CommonResponseDto<any>>
+  async createRecord(@Body() createRecordDto: CreateRecordDto, @GetUser() user: User): Promise<CommonResponseDto<AffectedResponse>> {
     return this.recordsService.create(createRecordDto, user);
   }
 
@@ -64,8 +64,10 @@ export class RecordsController {
   })
   @UseGuards(RoleGuard)
   @Roles(RoleType.MASTER, RoleType.MANAGER, RoleType.GENERAL)
-  async createAllRecord(@Body() createAllRecordDto: CreateAllRecordDto, @GetUser() user: User) {
-    //: Promise<CommonResponseDto<any>>
+  async createAllRecord(
+    @Body() createAllRecordDto: CreateAllRecordDto,
+    @GetUser() user: User,
+  ): Promise<CommonResponseDto<AffectedResponse>> {
     return this.recordsService.createAll(createAllRecordDto, user);
   }
 
@@ -79,7 +81,7 @@ export class RecordsController {
     description: '출석기록 ID로 조회',
     type: Record,
   })
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id') id: string): Promise<CommonResponseDto<Record>> {
     return this.recordsService.findOneById(+id);
   }
 
@@ -174,8 +176,7 @@ export class RecordsController {
   })
   @UseGuards(RoleGuard)
   @Roles(RoleType.MASTER, RoleType.MANAGER)
-  deleteAll(@Body() deleteRecordDto: DeleteRecordDto) {
-    //: Promise<CommonResponseDto<any>>
+  deleteAll(@Body() deleteRecordDto: DeleteRecordDto): Promise<CommonResponseDto<any>> {
     return this.recordsService.deleteAll(deleteRecordDto);
   }
 }

@@ -13,6 +13,8 @@ import { NumberToDayString } from './numberToDayString';
 import { ExcelService } from '../common/excel.service';
 import { PageResponseDto } from '../common/response/pageResponse.dto';
 import { ResponseWithoutPaginationDto } from '../common/response/responseWithoutPagination.dto';
+import { CommonResponseDto } from '../common/response/common-response.dto';
+import { AffectedResponse } from '../common/response/affectedResponse';
 
 @Injectable()
 export class RecordsService {
@@ -21,7 +23,7 @@ export class RecordsService {
     private recordRepository: Repository<Record>,
     private excelService: ExcelService,
   ) {}
-  async create(createRecordDto: CreateRecordDto, user: User) {
+  async create(createRecordDto: CreateRecordDto, user: User): Promise<CommonResponseDto<AffectedResponse>> {
     const record = createRecordDto.toEntity(user.id);
 
     const realDay = NumberToDayString[new Date(record.date).getDay()];
@@ -39,10 +41,10 @@ export class RecordsService {
       upsertType: 'on-conflict-do-update',
     });
 
-    return this.findOneById(result.raw?.insertId);
+    return new CommonResponseDto('SUCCESS CREATE RECORD', { id: result.raw.id });
   }
 
-  async createAll(createAllRecordDto: CreateAllRecordDto, user: User): Promise<number> {
+  async createAll(createAllRecordDto: CreateAllRecordDto, user: User): Promise<CommonResponseDto<AffectedResponse>> {
     const result = await this.recordRepository.query(
       `
     INSERT INTO record (attendeeId,status,date,day,createId)
@@ -61,11 +63,12 @@ export class RecordsService {
         createAllRecordDto.attendanceId,
       ],
     );
-    return result.affectedRows;
+
+    return new CommonResponseDto('SUCCESS CREATE ALL RECORDS', { id: await result.affectedRows });
   }
 
-  async findOneById(id: number) {
-    return this.recordRepository.findOneBy({ id });
+  async findOneById(id: number): Promise<CommonResponseDto<Record>> {
+    return new CommonResponseDto('SUCCESS FIND RECORD', await this.recordRepository.findOneBy({ id }));
   }
 
   async findByAttendanceId(attendanceId: string, recordFilterDto: RecordFilterDto): Promise<PageResponseDto<Record>> {
@@ -125,8 +128,59 @@ export class RecordsService {
     const result = await queryBuilder.getManyAndCount();
     return new ResponseWithoutPaginationDto<Record>(result[1], result[0]);
   }
+  async deleteAll(deleteRecordDto: DeleteRecordDto): Promise<CommonResponseDto<any>> {
+    const found = await this.recordRepository.find({
+      where: {
+        attendee: { attendanceId: deleteRecordDto.attendanceId },
+        id: In(deleteRecordDto.ids),
+      },
+    });
 
-  private async findByAttendeeIdForExcelDownload(attendeeId: string, recordFilterDto: RecordFilterDto): Promise<Record[]> {
+    const filteredRecord = found.filter((record) => {
+      return deleteRecordDto.ids.includes(record.id);
+    });
+
+    if (filteredRecord.length !== deleteRecordDto.ids.length) {
+      throw new BadRequestException(`AttendanceId : ${deleteRecordDto.attendanceId} 에 속한 기록만 삭제할 수 있습니다..`);
+    }
+
+    await this.recordRepository.softDelete({
+      id: In(deleteRecordDto.ids),
+    });
+    return new CommonResponseDto('SUCCESS DELETE RECORDS');
+  }
+
+  async excelDownload(attendanceId: string, recordFilterDto: RecordFilterDto) {
+    const rawData = await this.findByAttendanceIdForExcel(attendanceId, recordFilterDto);
+
+    const dataToDbMapper = {};
+
+    dataToDbMapper['attendee_name'] = '회원이름';
+    dataToDbMapper['attendee_age'] = '나이';
+    dataToDbMapper['record_day'] = '요일';
+    dataToDbMapper['record_date'] = '날짜';
+    dataToDbMapper['record_status'] = '출석상태';
+
+    const excelBuffer = this.excelService.exportDataToExcel(rawData, dataToDbMapper);
+    return excelBuffer;
+  }
+
+  async attendeeRecordExcelDownload(attendeeId: string, recordFilterDto: RecordFilterDto) {
+    const rawData = await this.findByAttendeeIdForExcel(attendeeId, recordFilterDto);
+
+    const dataToDbMapper = {};
+
+    dataToDbMapper['attendee_name'] = '회원이름';
+    dataToDbMapper['attendee_age'] = '나이';
+    dataToDbMapper['record_day'] = '요일';
+    dataToDbMapper['record_date'] = '날짜';
+    dataToDbMapper['record_status'] = '출석상태';
+
+    const excelBuffer = this.excelService.exportDataToExcel(rawData, dataToDbMapper);
+    return excelBuffer;
+  }
+
+  private async findByAttendeeIdForExcel(attendeeId: string, recordFilterDto: RecordFilterDto): Promise<Record[]> {
     let queryBuilder: SelectQueryBuilder<Record>;
     queryBuilder = this.recordRepository
       .createQueryBuilder('record')
@@ -178,57 +232,5 @@ export class RecordsService {
     queryBuilder.orderBy('attendee_name', 'ASC');
 
     return queryBuilder.getRawMany();
-  }
-
-  async deleteAll(deleteRecordDto: DeleteRecordDto) {
-    const found = await this.recordRepository.find({
-      where: {
-        attendee: { attendanceId: deleteRecordDto.attendanceId },
-        id: In(deleteRecordDto.ids),
-      },
-    });
-
-    const filteredRecord = found.filter((record) => {
-      return deleteRecordDto.ids.includes(record.id);
-    });
-
-    if (filteredRecord.length !== deleteRecordDto.ids.length) {
-      throw new BadRequestException(`AttendanceId : ${deleteRecordDto.attendanceId} 에 속한 기록만 삭제할 수 있습니다..`);
-    }
-
-    await this.recordRepository.softDelete({
-      id: In(deleteRecordDto.ids),
-    });
-    return;
-  }
-
-  async excelDownload(attendanceId: string, recordFilterDto: RecordFilterDto) {
-    const rawData = await this.findByAttendanceIdForExcel(attendanceId, recordFilterDto);
-
-    const dataToDbMapper = {};
-
-    dataToDbMapper['attendee_name'] = '회원이름';
-    dataToDbMapper['attendee_age'] = '나이';
-    dataToDbMapper['record_day'] = '요일';
-    dataToDbMapper['record_date'] = '날짜';
-    dataToDbMapper['record_status'] = '출석상태';
-
-    const excelBuffer = this.excelService.exportDataToExcel(rawData, dataToDbMapper);
-    return excelBuffer;
-  }
-
-  async attendeeRecordExcelDownload(attendeeId: string, recordFilterDto: RecordFilterDto) {
-    const rawData = await this.findByAttendeeIdForExcelDownload(attendeeId, recordFilterDto);
-
-    const dataToDbMapper = {};
-
-    dataToDbMapper['attendee_name'] = '회원이름';
-    dataToDbMapper['attendee_age'] = '나이';
-    dataToDbMapper['record_day'] = '요일';
-    dataToDbMapper['record_date'] = '날짜';
-    dataToDbMapper['record_status'] = '출석상태';
-
-    const excelBuffer = this.excelService.exportDataToExcel(rawData, dataToDbMapper);
-    return excelBuffer;
   }
 }
