@@ -12,6 +12,7 @@ import { Schedule } from './entities/schedule.entity';
 import { ScheduleFilterDto } from './dto/schedule-filter.dto';
 import { DeleteScheduleDto } from './dto/delete-schedule.dto';
 import { CommonResponseDto } from '../common/response/common-response.dto';
+import { ResponseWithoutPaginationDto } from '../common/response/responseWithoutPagination.dto';
 
 @Controller('schedules')
 @UseGuards(AuthGuard('jwt'))
@@ -31,8 +32,7 @@ export class SchedulesController {
     type: CreateScheduleDto,
     description: '출석 스케쥴 생성 DTO',
   })
-  create(@Body() createScheduleDto: CreateScheduleDto, @GetUser() user: User) {
-    //: Promise<CommonResponseDto<any>>
+  create(@Body() createScheduleDto: CreateScheduleDto, @GetUser() user: User): Promise<CommonResponseDto<{ id: number }>> {
     return this.schedulesService.create(createScheduleDto, user);
   }
 
@@ -43,7 +43,7 @@ export class SchedulesController {
     description: '출석대상의 스케쥴 조회',
     type: Array<Schedule>,
   })
-  findByAttendeeId(@Param('attendeeId') attendeeId: string) {
+  findByAttendeeId(@Param('attendeeId') attendeeId: string): Promise<ResponseWithoutPaginationDto<Schedule>> {
     return this.schedulesService.findByAttendeeId(attendeeId);
   }
 
@@ -57,7 +57,7 @@ export class SchedulesController {
   findTodayScheduleByAttendanceId(
     @Param('attendanceId') attendanceId: string,
     @Query() scheduleFilterDto: ScheduleFilterDto,
-  ): Promise<Schedule[]> {
+  ): Promise<ResponseWithoutPaginationDto<Schedule>> {
     return this.schedulesService.findTodayScheduleByAttendanceId(attendanceId);
   }
 
@@ -68,7 +68,10 @@ export class SchedulesController {
     description: '출석부에 속한 모든 스케쥴 조회',
     type: Array<Schedule>,
   })
-  findByAttendanceId(@Param('attendanceId') attendanceId: string, @Query() scheduleFilterDto: ScheduleFilterDto): Promise<Schedule[]> {
+  findByAttendanceId(
+    @Param('attendanceId') attendanceId: string,
+    @Query() scheduleFilterDto: ScheduleFilterDto,
+  ): Promise<ResponseWithoutPaginationDto<Schedule>> {
     return this.schedulesService.findAllByAttendanceId(attendanceId);
   }
 
@@ -79,8 +82,7 @@ export class SchedulesController {
     description: '스케쥴 일괄 삭제',
     type: null,
   })
-  deleteAll(@Body() deleteScheduleDto: DeleteScheduleDto) {
-    //: Promise<CommonResponseDto<any>>
+  deleteAll(@Body() deleteScheduleDto: DeleteScheduleDto): Promise<CommonResponseDto<any>> {
     return this.schedulesService.deleteAll(deleteScheduleDto);
   }
 }
