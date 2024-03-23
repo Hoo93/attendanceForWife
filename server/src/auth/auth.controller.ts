@@ -11,6 +11,7 @@ import { CommonResponseDto } from '../common/response/common-response.dto';
 import { AvailabilityResult } from '../common/response/is-available-res';
 import { TokenResponseDto } from './dto/token-response.dto';
 import { CurrentIp } from '../common/decorator/current-ip.decorator';
+import { Schedule } from '../schedules/entities/schedule.entity';
 
 @Controller('auth')
 @ApiTags('인증')
@@ -22,7 +23,7 @@ export class AuthController {
   @ApiResponse({
     status: 201,
     description: '회원 가입',
-    type: User,
+    type: CommonResponseDto<User>,
   })
   @ApiBody({
     type: CreateAuthDto,
@@ -37,7 +38,7 @@ export class AuthController {
   @ApiResponse({
     status: 200,
     description: '로그인',
-    type: String,
+    type: CommonResponseDto<TokenResponseDto>,
   })
   @ApiBody({
     type: SignInDto,
@@ -52,7 +53,7 @@ export class AuthController {
   @ApiResponse({
     status: 200,
     description: '리프레시 토큰',
-    type: String,
+    type: CommonResponseDto<TokenResponseDto>,
   })
   @ApiBody({
     type: RefreshTokenDto,
@@ -67,6 +68,11 @@ export class AuthController {
 
   @Get('/check-email')
   @ApiOperation({ summary: '회원 이메일 중복 확인' })
+  @ApiResponse({
+    status: 200,
+    description: '회원 이메일 중복 확인',
+    type: CommonResponseDto<AvailabilityResult>,
+  })
   async checkEmailAvailability(@Query('email') email: string): Promise<CommonResponseDto<AvailabilityResult>> {
     if (!email) {
       throw new BadRequestException('Email is required');
@@ -76,6 +82,11 @@ export class AuthController {
 
   @Get('/check-mobile-number')
   @ApiOperation({ summary: '회원 휴대전화번호 중복 확인' })
+  @ApiResponse({
+    status: 200,
+    description: '회원 전화번호 중복 확인',
+    type: CommonResponseDto<AvailabilityResult>,
+  })
   async checkMobileNumberAvailability(@Query('mobileNumber') mobileNumber: string): Promise<CommonResponseDto<AvailabilityResult>> {
     if (!mobileNumber) {
       throw new BadRequestException('Mobile number is required');

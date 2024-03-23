@@ -28,7 +28,7 @@ export class AttendancesController {
   @ApiResponse({
     status: 200,
     description: '출석부 생성',
-    type: Attendance,
+    type: CommonResponseDto<any>,
   })
   @ApiBody({
     type: CreateAttendanceDto,
@@ -43,7 +43,7 @@ export class AttendancesController {
   @ApiOkResponse({
     status: 200,
     description: '로그인한 회원의 출석부 목록 조회',
-    type: UserAttendance,
+    type: ResponseWithoutPaginationDto<UserAttendance>,
   })
   findAllByUserId(@GetUser() user: User): Promise<ResponseWithoutPaginationDto<UserAttendance>> {
     return this.attendancesService.findAllByUserId(user.id);
@@ -56,7 +56,7 @@ export class AttendancesController {
   @ApiOkResponse({
     status: 200,
     description: '출석부 정보 수정',
-    type: Attendance,
+    type: CommonResponseDto<Attendance>,
   })
   findOneById(@Param('attendanceId') attendanceId: string): Promise<CommonResponseDto<Attendance>> {
     return this.attendancesService.findOneById(attendanceId);
@@ -69,7 +69,7 @@ export class AttendancesController {
   @ApiOkResponse({
     status: 200,
     description: '출석부 정보 수정',
-    type: UpdateResult,
+    type: CommonResponseDto<any>,
   })
   update(
     // RoleGuard 적용을 위해 attendanceId로 parameter 이름 지정
@@ -86,7 +86,7 @@ export class AttendancesController {
   @ApiResponse({
     status: 204,
     description: '삭제 후 No Content 값 전달',
-    type: null,
+    type: CommonResponseDto<any>,
   })
   delete(@Param('attendanceId') attendanceId: string, @GetUser() user: User): Promise<CommonResponseDto<any>> {
     return this.attendancesService.delete(attendanceId, user.id);

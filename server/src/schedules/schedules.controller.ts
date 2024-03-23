@@ -26,7 +26,7 @@ export class SchedulesController {
   @ApiResponse({
     status: 200,
     description: '출석 스케쥴 생성',
-    type: Schedule,
+    type: CommonResponseDto<{ id: number }>,
   })
   @ApiBody({
     type: CreateScheduleDto,
@@ -41,7 +41,7 @@ export class SchedulesController {
   @ApiResponse({
     status: 200,
     description: '출석대상의 스케쥴 조회',
-    type: Array<Schedule>,
+    type: ResponseWithoutPaginationDto<Schedule>,
   })
   findByAttendeeId(@Param('attendeeId') attendeeId: string): Promise<ResponseWithoutPaginationDto<Schedule>> {
     return this.schedulesService.findByAttendeeId(attendeeId);
@@ -52,7 +52,7 @@ export class SchedulesController {
   @ApiResponse({
     status: 200,
     description: '해당 출석부의 오늘의 스케쥴과 출석내역 조회',
-    type: Array<Schedule>,
+    type: ResponseWithoutPaginationDto<Schedule>,
   })
   findTodayScheduleByAttendanceId(
     @Param('attendanceId') attendanceId: string,
@@ -66,7 +66,7 @@ export class SchedulesController {
   @ApiResponse({
     status: 200,
     description: '출석부에 속한 모든 스케쥴 조회',
-    type: Array<Schedule>,
+    type: ResponseWithoutPaginationDto<Schedule>,
   })
   findByAttendanceId(
     @Param('attendanceId') attendanceId: string,
@@ -80,7 +80,7 @@ export class SchedulesController {
   @ApiResponse({
     status: 200,
     description: '스케쥴 일괄 삭제',
-    type: null,
+    type: CommonResponseDto<any>,
   })
   deleteAll(@Body() deleteScheduleDto: DeleteScheduleDto): Promise<CommonResponseDto<any>> {
     return this.schedulesService.deleteAll(deleteScheduleDto);

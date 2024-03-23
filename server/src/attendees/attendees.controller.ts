@@ -28,7 +28,7 @@ export class AttendeesController {
   @ApiResponse({
     status: 200,
     description: '출석 대상 생성',
-    type: Attendee,
+    type: CommonResponseDto<any>,
   })
   @ApiBody({
     type: CreateAttendeeDto,
@@ -43,7 +43,7 @@ export class AttendeesController {
   @ApiResponse({
     status: 200,
     description: '해당 출석부의 출석 대상 조회',
-    type: Attendee,
+    type: ResponseWithoutPaginationDto<Attendee>,
   })
   @UseGuards(RoleGuard)
   @Roles(RoleType.MASTER, RoleType.GENERAL, RoleType.MANAGER, RoleType.READER)
@@ -56,7 +56,7 @@ export class AttendeesController {
   @ApiResponse({
     status: 200,
     description: '출석 대상 상세 조회',
-    type: Attendee,
+    type: CommonResponseDto<Attendee>,
   })
   async findOne(@Param('id') id: string): Promise<CommonResponseDto<Attendee>> {
     return this.attendeesService.findOneById(id);
@@ -67,7 +67,7 @@ export class AttendeesController {
   @ApiResponse({
     status: 200,
     description: '출석대상 수정',
-    type: Attendee,
+    type: CommonResponseDto<any>,
   })
   @UseGuards(RoleGuard)
   @Roles(RoleType.MASTER, RoleType.MANAGER, RoleType.GENERAL)
@@ -84,7 +84,7 @@ export class AttendeesController {
   @ApiResponse({
     status: 204,
     description: '출석대상 일괄 삭제',
-    type: null,
+    type: CommonResponseDto<any>,
   })
   @UseGuards(RoleGuard)
   @Roles(RoleType.MASTER, RoleType.MANAGER, RoleType.GENERAL)

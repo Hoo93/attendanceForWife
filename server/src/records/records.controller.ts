@@ -40,7 +40,7 @@ export class RecordsController {
   @ApiResponse({
     status: 200,
     description: '출석기록 생성',
-    type: Record,
+    type: CommonResponseDto<any>,
   })
   @UseGuards(RoleGuard)
   @Roles(RoleType.MASTER, RoleType.MANAGER, RoleType.GENERAL)
@@ -60,7 +60,7 @@ export class RecordsController {
   @ApiResponse({
     status: 200,
     description: '출석 기록 일괄 생성 후 affected Raws',
-    type: Number,
+    type: CommonResponseDto<any>,
   })
   @UseGuards(RoleGuard)
   @Roles(RoleType.MASTER, RoleType.MANAGER, RoleType.GENERAL)
@@ -76,7 +76,7 @@ export class RecordsController {
   @ApiResponse({
     status: 200,
     description: '출석기록 ID로 조회',
-    type: Record,
+    type: CommonResponseDto<Record>,
   })
   findOne(@Param('id') id: string): Promise<CommonResponseDto<Record>> {
     return this.recordsService.findOneById(+id);
@@ -90,7 +90,7 @@ export class RecordsController {
   @ApiResponse({
     status: 200,
     description: '출석대상에 속한 출석기록 조회',
-    type: Array<Record>,
+    type: ResponseWithoutPaginationDto<Record>,
   })
   async findByAttendeeId(
     @Param('attendeeId') attendeeId: string,
@@ -107,7 +107,7 @@ export class RecordsController {
   @ApiResponse({
     status: 200,
     description: '출석부에 속한 출석기록 조회',
-    type: Array<Record>,
+    type: PageResponseDto<Record>,
   })
   async findByAttendanceId(
     @Param('attendanceId') attendanceId: string,
@@ -169,7 +169,7 @@ export class RecordsController {
   @ApiResponse({
     status: 204,
     description: '출석기록 일괄 삭제',
-    type: null,
+    type: CommonResponseDto<any>,
   })
   @UseGuards(RoleGuard)
   @Roles(RoleType.MASTER, RoleType.MANAGER)
