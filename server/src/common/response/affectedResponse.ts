@@ -1,3 +1,3 @@
-export class AffectedResponse {
+export interface AffectedResponse {
   id: string | number | string[] | number[];
 }

@@ -61,7 +61,8 @@ describe('RecordsService', () => {
   });
 
   describe('Create Record Test', () => {
-    it('입력한 값으로 출석기록을 생성한다.', async () => {
+    it('출석기록 생성시 success,message,id를 리턴한다.', async () => {
+      // Given
       const user = new User();
       user.id = 'user id 1';
 
@@ -70,8 +71,31 @@ describe('RecordsService', () => {
 
       const recordDto = createRecordDto('2024-01-15', DayType.MONDAY, AttendanceStatus.PRESENT, attendee.id);
 
+      // When
       const sut = await service.create(recordDto, user);
 
+      // Then
+      expect(sut.success).toBe(true);
+      expect(sut.message).toBe('SUCCESS CREATE RECORD');
+      expect(sut.data.id).toBeDefined();
+    });
+
+    it('입력한 값으로 출석기록을 생성한다.', async () => {
+      // Given
+      const user = new User();
+      user.id = 'user id 1';
+
+      const attendee = new Attendee();
+      attendee.id = 'Attendee Id 1';
+
+      const recordDto = createRecordDto('2024-01-15', DayType.MONDAY, AttendanceStatus.PRESENT, attendee.id);
+
+      // When
+      const createResponse = await service.create(recordDto, user);
+
+      const sut = await recordRepository.findOneBy({ id: createResponse.data.id });
+
+      // Then
       expect(sut.attendeeId).toBe('Attendee Id 1');
       expect(sut.date).toBe('2024-01-15');
       expect(sut.day).toBe('MONDAY');
@@ -109,7 +133,9 @@ describe('RecordsService', () => {
       recordDto.attendeeId = attendee.id;
       recordDto.lateReason = '입력이 되지 않을 겁니다.';
 
-      const sut = await service.create(recordDto, user);
+      const createResponse = await service.create(recordDto, user);
+
+      const sut = await recordRepository.findOneBy({ id: createResponse.data.id });
 
       expect(sut.lateReason).toBeNull();
       expect(sut.attendeeId).toBe('Attendee Id 1');
@@ -131,8 +157,12 @@ describe('RecordsService', () => {
       const recordDto = createRecordDto('2024-01-15', DayType.MONDAY, AttendanceStatus.PRESENT, attendee.id);
       recordDto.createdAt = now;
 
-      const sut = await service.create(recordDto, user);
+      // When
+      const createResponse = await service.create(recordDto, user);
 
+      const sut = await recordRepository.findOneBy({ id: createResponse.data.id });
+
+      // Then
       expect(sut.createdAt).toStrictEqual(now);
       expect(sut.createId).toBe('user id 1');
     });
@@ -152,7 +182,9 @@ describe('RecordsService', () => {
       const recordDto_2 = createRecordDto('2024-01-15', DayType.MONDAY, AttendanceStatus.ABSENT, attendee.id);
 
       // When
-      const sut = await service.create(recordDto_2, user);
+      const createResponse = await service.create(recordDto_2, user);
+
+      const sut = await recordRepository.findOneBy({ id: createResponse.data.id });
 
       // Then
       expect(sut.attendeeId).toBe('Attendee Id 1');
@@ -164,6 +196,41 @@ describe('RecordsService', () => {
   });
 
   describe('CreateAll Test', () => {
+    it('일괄 생성 성공시 success,message,affectedRows를 리턴한다.', async () => {
+      // Given
+      const user = new User();
+      user.id = 'user id 1';
+
+      const attendanceId = 'testAttendanceId';
+
+      const attendee1 = createSimpleAttendee('attendee_1', attendanceId, 'user id 1');
+      const attendee2 = createSimpleAttendee('attendee_2', attendanceId, 'user id 1');
+      const attendee3 = createSimpleAttendee('attendee_3', attendanceId, 'user id 1');
+
+      await attendeeRepository.query('DELETE FROM attendee;');
+      const attendeeIds = await attendeeRepository.save([attendee1, attendee2, attendee3]);
+
+      const schedule1 = createSchedule(attendeeIds[0].id, DayType.TUESDAY, '0930');
+      const schedule2 = createSchedule(attendeeIds[1].id, DayType.TUESDAY, '1210');
+      const schedule3 = createSchedule(attendeeIds[2].id, DayType.TUESDAY, '1500');
+
+      await scheduleRepository.save([schedule1, schedule2, schedule3]);
+
+      const createAllRecordDto = new CreateAllRecordDto();
+      createAllRecordDto.day = DayType.TUESDAY;
+      createAllRecordDto.date = '2024-01-30';
+      createAllRecordDto.status = AttendanceStatus.PRESENT;
+      createAllRecordDto.attendanceId = attendanceId;
+
+      // When
+      const sut = await service.createAll(createAllRecordDto, user);
+
+      // Then
+      expect(sut.success).toBe(true);
+      expect(sut.message).toBe('SUCCESS CREATE ALL RECORDS');
+      expect(sut.data.affectedRows).toBeDefined();
+    });
+
     it('선택한 날짜에 스케쥴이 있는 모든 출석대상의 출석기록을 일괄 생성한다.', async () => {
       // Given
       const user = new User();
@@ -339,11 +406,51 @@ describe('RecordsService', () => {
       const sut = await service.createAll(createAllRecordDto, user);
 
       // Then
-      expect(sut).toBe(2);
+      expect(sut.data.affectedRows).toBe(2);
     });
   });
 
   describe('FindByAttendanceId Test', () => {
+    it('요청 성공 시 success,count,totalPage,pageSize,items를 리턴한다.', async () => {
+      // Given
+      const user_1 = new User();
+      user_1.id = 'user id 1';
+
+      const targetAttendanceId = 'testAttendanceId';
+
+      const attendee1 = createSimpleAttendee('attendee_1', targetAttendanceId, 'user id 1');
+      const attendee2 = createSimpleAttendee('attendee_2', targetAttendanceId, 'user id 1');
+      const attendee3 = createSimpleAttendee('attendee_3', targetAttendanceId, 'user id 1');
+
+      await attendeeRepository.query('DELETE FROM attendee;');
+      const [createdAttendee1, createdAttendee2, createdAttendee3] = await attendeeRepository.save([attendee1, attendee2, attendee3]);
+
+      const record1_1 = createRecord('2024-01-31', DayType.WEDNESDAY, AttendanceStatus.PRESENT, createdAttendee1.id, user_1.id);
+      const record2_1 = createRecord('2024-01-31', DayType.WEDNESDAY, AttendanceStatus.PRESENT, createdAttendee2.id, user_1.id);
+      const record3_1 = createRecord('2024-01-31', DayType.WEDNESDAY, AttendanceStatus.PRESENT, createdAttendee3.id, user_1.id);
+      const record1_2 = createRecord('2024-02-01', DayType.THURSDAY, AttendanceStatus.PRESENT, createdAttendee1.id, user_1.id);
+      const record2_2 = createRecord('2024-02-01', DayType.THURSDAY, AttendanceStatus.PRESENT, createdAttendee2.id, user_1.id);
+      const record3_2 = createRecord('2024-02-01', DayType.THURSDAY, AttendanceStatus.PRESENT, createdAttendee3.id, user_1.id);
+      const record1_3 = createRecord('2024-02-02', DayType.FRIDAY, AttendanceStatus.PRESENT, createdAttendee1.id, user_1.id);
+      const record2_3 = createRecord('2024-02-02', DayType.FRIDAY, AttendanceStatus.PRESENT, createdAttendee2.id, user_1.id);
+      const record3_3 = createRecord('2024-02-02', DayType.FRIDAY, AttendanceStatus.PRESENT, createdAttendee3.id, user_1.id);
+
+      await recordRepository.save([record1_1, record1_2, record1_3, record2_1, record2_2, record2_3, record3_1, record3_2, record3_3]);
+
+      // When
+      const recordFilterDto = new RecordFilterDto();
+      recordFilterDto.pageSize = 10;
+      recordFilterDto.pageNo = 0;
+      const sut = await service.findByAttendanceId(targetAttendanceId, recordFilterDto);
+
+      // Then
+      expect(sut.success).toBe(true);
+      expect(sut.count).toBe(9);
+      expect(sut.totalPage).toBe(1);
+      expect(sut.pageSize).toBe(10);
+      expect(sut.items).toBeDefined();
+    });
+
     it('attendanceId에 속한 모든 record를 조사한다.', async () => {
       // Given
       const user_1 = new User();

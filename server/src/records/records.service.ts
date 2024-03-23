@@ -23,7 +23,7 @@ export class RecordsService {
     private recordRepository: Repository<Record>,
     private excelService: ExcelService,
   ) {}
-  async create(createRecordDto: CreateRecordDto, user: User): Promise<CommonResponseDto<AffectedResponse>> {
+  async create(createRecordDto: CreateRecordDto, user: User): Promise<CommonResponseDto<any>> {
     const record = createRecordDto.toEntity(user.id);
 
     const realDay = NumberToDayString[new Date(record.date).getDay()];
@@ -41,10 +41,10 @@ export class RecordsService {
       upsertType: 'on-conflict-do-update',
     });
 
-    return new CommonResponseDto('SUCCESS CREATE RECORD', { id: result.raw.id });
+    return new CommonResponseDto('SUCCESS CREATE RECORD', { id: result.identifiers[0].id });
   }
 
-  async createAll(createAllRecordDto: CreateAllRecordDto, user: User): Promise<CommonResponseDto<AffectedResponse>> {
+  async createAll(createAllRecordDto: CreateAllRecordDto, user: User): Promise<CommonResponseDto<any>> {
     const result = await this.recordRepository.query(
       `
     INSERT INTO record (attendeeId,status,date,day,createId)
@@ -64,7 +64,7 @@ export class RecordsService {
       ],
     );
 
-    return new CommonResponseDto('SUCCESS CREATE ALL RECORDS', { id: await result.affectedRows });
+    return new CommonResponseDto('SUCCESS CREATE ALL RECORDS', { affectedRows: result.affectedRows });
   }
 
   async findOneById(id: number): Promise<CommonResponseDto<Record>> {

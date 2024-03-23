@@ -44,7 +44,7 @@ export class RecordsController {
   })
   @UseGuards(RoleGuard)
   @Roles(RoleType.MASTER, RoleType.MANAGER, RoleType.GENERAL)
-  async createRecord(@Body() createRecordDto: CreateRecordDto, @GetUser() user: User): Promise<CommonResponseDto<AffectedResponse>> {
+  async createRecord(@Body() createRecordDto: CreateRecordDto, @GetUser() user: User): Promise<CommonResponseDto<any>> {
     return this.recordsService.create(createRecordDto, user);
   }
 
@@ -64,10 +64,7 @@ export class RecordsController {
   })
   @UseGuards(RoleGuard)
   @Roles(RoleType.MASTER, RoleType.MANAGER, RoleType.GENERAL)
-  async createAllRecord(
-    @Body() createAllRecordDto: CreateAllRecordDto,
-    @GetUser() user: User,
-  ): Promise<CommonResponseDto<AffectedResponse>> {
+  async createAllRecord(@Body() createAllRecordDto: CreateAllRecordDto, @GetUser() user: User): Promise<CommonResponseDto<any>> {
     return this.recordsService.createAll(createAllRecordDto, user);
   }
 
