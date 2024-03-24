@@ -64,7 +64,11 @@ export class AuthService {
     const decoded: JwtPayload = this.verifyRefreshToken(oldRefreshToken);
 
     const recentLoginHistory = await this.loginHistoryRepository.findOne({
-      relations: { user: true },
+      relations: {
+        user: {
+          userAttendance: true,
+        },
+      },
       where: { userId: decoded.id },
       order: { loginAt: 'DESC' },
     });
