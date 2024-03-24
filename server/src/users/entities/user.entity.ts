@@ -42,7 +42,7 @@ export class User extends BaseTimeEntity {
 
   @Column({ nullable: true, comment: '회원 생년', type: 'int' })
   @ApiPropertyOptional({ description: '회원 생년', type: 'number' })
-  birthYear?: string;
+  birthYear?: number;
 
   @Column({ nullable: true, comment: '회원 이메일', type: 'varchar' })
   @ApiPropertyOptional({ description: '회원 이메일', type: 'string' })

@@ -76,7 +76,7 @@ export class CreateAuthDto {
     type: 'number',
     example: '1993',
   })
-  birthYear?: string;
+  birthYear?: number;
 
   @IsString()
   @IsOptional()

@@ -64,6 +64,7 @@ describe('UserAuthService Test', function () {
     dto.name = 'testname';
     dto.mobileNumber = '010-8098-1398';
     dto.birthday = '1117';
+    dto.birthYear = 1993;
     dto.email = 'sksk8922@gmail.com';
 
     const signupResult = await service.signup(dto);
@@ -74,6 +75,7 @@ describe('UserAuthService Test', function () {
     expect(signupResult.data.name).toBe('testname');
     expect(signupResult.data.mobileNumber).toBe('010-8098-1398');
     expect(signupResult.data.birthday).toBe('1117');
+    expect(signupResult.data.birthYear).toBe(1993);
     expect(signupResult.data.email).toBe('sksk8922@gmail.com');
     expect(signupResult.data.password).not.toBeDefined();
   });
