@@ -1,6 +1,7 @@
 import { IsEmail, IsOptional, IsString, Matches, MaxLength, MinLength } from 'class-validator';
 import {
   INVALID_BIRTHDAY_MESSAGE,
+  INVALID_BIRTHYEAR_MESSAGE,
   INVALID_EMAIL_MESSAGE,
   INVALID_ID_MAX_LENGTH_MESSAGE,
   INVALID_ID_MESSAGE,
@@ -67,13 +68,25 @@ export class CreateAuthDto {
 
   @IsString()
   @IsOptional()
+  @Matches(/^\d{4}$/, {
+    message: INVALID_BIRTHYEAR_MESSAGE,
+  })
+  @ApiPropertyOptional({
+    description: '회원 생년',
+    type: 'number',
+    example: '1993',
+  })
+  birthYear?: string;
+
+  @IsString()
+  @IsOptional()
   @Matches(/^\d{6}$/, {
     message: INVALID_BIRTHDAY_MESSAGE,
   })
   @ApiPropertyOptional({
-    description: '회원 생년월일',
+    description: '회원 생일',
     type: 'string',
-    example: '700101',
+    example: '0623',
   })
   birthday?: string;
 

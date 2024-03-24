@@ -5,7 +5,7 @@ import { SALT } from '../../auth/const/auth.const';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Attendance } from '../../attendances/entities/attendance.entity';
 import { UserAttendance } from '../../attendances/entities/user-attendance.entity';
-import { UserType } from '../user-type.enum';
+import { UserType } from '../const/user-type.enum';
 
 @Entity()
 @Unique(['mobileNumber'])
@@ -36,9 +36,13 @@ export class User extends BaseTimeEntity {
   @ApiProperty({ description: '회원 전화번호', type: 'string' })
   mobileNumber: string;
 
-  @Column({ nullable: true, comment: '회원 생년월일', type: 'varchar' })
-  @ApiPropertyOptional({ description: '회원 생년월일', type: 'string' })
+  @Column({ nullable: true, comment: '회원 생일', type: 'varchar' })
+  @ApiPropertyOptional({ description: '회원 생일', type: 'string' })
   birthday?: string;
+
+  @Column({ nullable: true, comment: '회원 생년', type: 'int' })
+  @ApiPropertyOptional({ description: '회원 생년', type: 'number' })
+  birthYear?: string;
 
   @Column({ nullable: true, comment: '회원 이메일', type: 'varchar' })
   @ApiPropertyOptional({ description: '회원 이메일', type: 'string' })
