@@ -18,18 +18,6 @@ import { UserAttendance } from '../../../src/attendances/entities/user-attendanc
 import { AttendanceType } from '../../../src/attendances/const/attendance-type.enum';
 import { RoleType } from '../../../src/roles/entities/role-type.enum';
 
-function createSimpleUser(name: string, username: string) {
-  const testUser = new User();
-  testUser.id = 'test';
-  testUser.name = name;
-  testUser.username = username;
-  testUser.password = 'pwd123!@#';
-  testUser.email = 'test@email.com';
-  testUser.mobileNumber = '01080981398';
-  testUser.createId = 'test';
-  return testUser;
-}
-
 describe('UserAuthService Test', function () {
   let module: TestingModule;
   let service: AuthService;
@@ -301,12 +289,7 @@ describe('UserAuthService Test', function () {
       const testUser = createSimpleUser('박상후', 'TestUser1');
       testUser.refreshToken = 'invalid_refresh_token';
 
-      const loginHistory = new LoginHistory();
-      loginHistory.id = 1;
-      loginHistory.userId = 'test';
-      loginHistory.user = testUser;
-      loginHistory.currentIp = '127.0.0.1';
-      loginHistory.loginAt = new Date('2024-03-17 08:00:000');
+      const loginHistory = createLoginHistoryWithIpAndDate(testUser, '127.0.0.1', '2024-03-17 08:00:00');
 
       await userRepository.insert(testUser);
       await loginHistoryRepository.insert(loginHistory);
@@ -332,22 +315,9 @@ describe('UserAuthService Test', function () {
       // Given
       const refreshToken = 'refresh_token';
 
-      const testUser = new User();
-      testUser.id = 'test';
-      testUser.name = '박상후';
-      testUser.username = 'TestUser1';
-      testUser.password = 'pwd123!@#';
-      testUser.email = 'test@email.com';
-      testUser.mobileNumber = '01080981398';
-      testUser.createId = 'test';
-      testUser.refreshToken = 'refresh_token';
+      const testUser = createSimpleUser('박상후', 'TestUser1');
 
-      const loginHistory = new LoginHistory();
-      loginHistory.id = 1;
-      loginHistory.userId = 'test';
-      loginHistory.user = testUser;
-      loginHistory.currentIp = '127.0.0.1';
-      loginHistory.loginAt = new Date('2024-03-17 08:00:000');
+      const loginHistory = createLoginHistoryWithIpAndDate(testUser, '127.0.0.1', '2024-03-17 08:00:00');
 
       await userRepository.insert(testUser);
       await loginHistoryRepository.insert(loginHistory);
@@ -378,28 +348,14 @@ describe('UserAuthService Test', function () {
       const attendance_1 = createAttendance('test_attendance_1', 'attendacne_title_1');
       const attendance_2 = createAttendance('test_attendance_2', 'attendacne_title_2');
 
-      const userAttendance_1 = new UserAttendance();
-      userAttendance_1.userId = 'test';
-      userAttendance_1.attendanceId = 'test_attendance_1';
-      userAttendance_1.role = RoleType.MASTER;
-      userAttendance_1.createId = 'test';
-
-      const userAttendance_2 = new UserAttendance();
-      userAttendance_2.userId = 'test';
-      userAttendance_2.attendanceId = 'test_attendance_2';
-      userAttendance_2.role = RoleType.MASTER;
-      userAttendance_2.createId = 'test';
+      const userAttendance_1 = createAttendanceWithUserIdAndAttendanceId('test', 'test_attendance_id_1');
+      const userAttendance_2 = createAttendanceWithUserIdAndAttendanceId('test', 'test_attendance_id_2');
 
       const testUser = createSimpleUser('박상후', 'TestUser1');
       testUser.refreshToken = refreshToken;
       testUser.userAttendance = [userAttendance_1, userAttendance_2];
 
-      const loginHistory = new LoginHistory();
-      loginHistory.id = 1;
-      loginHistory.userId = 'test';
-      loginHistory.user = testUser;
-      loginHistory.currentIp = '127.0.0.1';
-      loginHistory.loginAt = new Date('2024-03-17 08:00:000');
+      const loginHistory = createLoginHistoryWithIpAndDate(testUser, '127.0.0.1', '2024-03-17 08:00:00');
 
       await userRepository.insert(testUser);
       await loginHistoryRepository.insert(loginHistory);
@@ -525,4 +481,35 @@ function createAttendance(id: string, title: string) {
   attendance.type = AttendanceType.WEEKDAY;
   attendance.title = title;
   return attendance;
+}
+
+function createSimpleUser(name: string, username: string) {
+  const testUser = new User();
+  testUser.id = 'test';
+  testUser.name = name;
+  testUser.username = username;
+  testUser.password = 'pwd123!@#';
+  testUser.email = 'test@email.com';
+  testUser.mobileNumber = '01080981398';
+  testUser.createId = 'test';
+  return testUser;
+}
+
+function createLoginHistoryWithIpAndDate(user: User, ip: string, date: string) {
+  const loginHistory = new LoginHistory();
+  loginHistory.id = 1;
+  loginHistory.userId = 'test';
+  loginHistory.user = user;
+  loginHistory.currentIp = ip;
+  loginHistory.loginAt = new Date(date);
+  return loginHistory;
+}
+
+function createAttendanceWithUserIdAndAttendanceId(userId: string, attendanceId: string) {
+  const userAttendance = new UserAttendance();
+  userAttendance.userId = userId;
+  userAttendance.attendanceId = attendanceId;
+  userAttendance.role = RoleType.MASTER;
+  userAttendance.createId = userId;
+  return userAttendance;
 }
