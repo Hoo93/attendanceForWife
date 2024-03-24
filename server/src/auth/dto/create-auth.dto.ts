@@ -111,6 +111,7 @@ export class CreateAuthDto {
     user.mobileNumber = this.mobileNumber;
     user.email = this?.email || null;
     user.birthday = this?.birthday || null;
+    user.birthYear = this?.birthYear || null;
     user.createId = this.username;
     user.createdAt = createdAt;
     return user;
