@@ -43,6 +43,7 @@
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.1.2",
     "eslint-plugin-storybook": "^0.6.15",
+    "jose": "^5.2.3",
     "storybook": "^8.0.2",
     "typescript": "^5"
   }
