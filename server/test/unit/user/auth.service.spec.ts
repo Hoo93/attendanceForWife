@@ -13,17 +13,35 @@ import { AuthService } from '../../../src/auth/auth.service';
 import { CreateAuthDto } from '../../../src/auth/dto/create-auth.dto';
 import { UserType } from '../../../src/users/const/user-type.enum';
 import { JwtPayload } from '../../../src/auth/const/jwtPayload.interface';
+import { Attendance } from '../../../src/attendances/entities/attendance.entity';
+import { UserAttendance } from '../../../src/attendances/entities/user-attendance.entity';
+import { AttendanceType } from '../../../src/attendances/const/attendance-type.enum';
+import { RoleType } from '../../../src/roles/entities/role-type.enum';
+
+function createSimpleUser(name: string, username: string) {
+  const testUser = new User();
+  testUser.id = 'test';
+  testUser.name = name;
+  testUser.username = username;
+  testUser.password = 'pwd123!@#';
+  testUser.email = 'test@email.com';
+  testUser.mobileNumber = '01080981398';
+  testUser.createId = 'test';
+  return testUser;
+}
 
 describe('UserAuthService Test', function () {
   let module: TestingModule;
   let service: AuthService;
   let userRepository: Repository<User>;
+  let userAttendanceRepository: Repository<UserAttendance>;
+  let attendanceRepository: Repository<Attendance>;
   let loginHistoryRepository: Repository<LoginHistory>;
   let jwtService: MockJwtService;
 
   beforeAll(async () => {
     module = await Test.createTestingModule({
-      imports: [TestModule, TypeOrmModule.forFeature([User, LoginHistory])],
+      imports: [TestModule, TypeOrmModule.forFeature([User, LoginHistory, UserAttendance, Attendance])],
       providers: [
         AuthService,
         {
@@ -35,6 +53,8 @@ describe('UserAuthService Test', function () {
 
     service = module.get<AuthService>(AuthService);
     userRepository = module.get(getRepositoryToken(User));
+    attendanceRepository = module.get(getRepositoryToken(Attendance));
+    userAttendanceRepository = module.get(getRepositoryToken(UserAttendance));
     loginHistoryRepository = module.get(getRepositoryToken(LoginHistory));
     jwtService = module.get<MockJwtService>(JwtService);
   });
@@ -85,15 +105,7 @@ describe('UserAuthService Test', function () {
       // Given
       jest.spyOn(bcrypt, 'compare').mockImplementationOnce(() => Promise.resolve(true));
 
-      const testUser = new User();
-      testUser.id = 'test';
-      testUser.type = UserType.GENERAL;
-      testUser.name = '박상후';
-      testUser.username = 'TestUser1';
-      testUser.password = 'pwd123!@#';
-      testUser.email = 'test@email.com';
-      testUser.mobileNumber = '01080981398';
-      testUser.createId = 'TestUser1';
+      const testUser = createSimpleUser('박상후', 'TestUser1');
 
       await userRepository.insert(testUser);
 
@@ -119,14 +131,7 @@ describe('UserAuthService Test', function () {
 
       const ip = '127.0.0.1';
 
-      const testUser = new User();
-      testUser.id = 'test';
-      testUser.name = '박상후';
-      testUser.username = 'TestUser1';
-      testUser.password = 'pwd123!@#';
-      testUser.email = 'test@email.com';
-      testUser.mobileNumber = '01080981398';
-      testUser.createId = 'test';
+      const testUser = createSimpleUser('박상후', 'TestUser1');
 
       await userRepository.insert(testUser);
 
@@ -147,14 +152,7 @@ describe('UserAuthService Test', function () {
     it('비밀번호가 정확하지 않은 경우 에러를 발생시킨다.', async () => {
       jest.spyOn(bcrypt, 'compare').mockReturnValue();
 
-      const testUser = new User();
-      testUser.id = 'test';
-      testUser.name = '박상후';
-      testUser.username = 'TestUser1';
-      testUser.password = 'pwd123!@#';
-      testUser.email = 'test@email.com';
-      testUser.mobileNumber = '01080981398';
-      testUser.createId = 'test';
+      const testUser = createSimpleUser('박상후', 'TestUser1');
 
       await userRepository.insert(testUser);
 
@@ -174,14 +172,7 @@ describe('UserAuthService Test', function () {
       // Given
       jest.spyOn(bcrypt, 'compare').mockImplementation(() => Promise.resolve(true));
 
-      const testUser = new User();
-      testUser.id = 'test';
-      testUser.name = '박상후';
-      testUser.username = 'TestUser1';
-      testUser.password = 'pwd123!@#';
-      testUser.email = 'test@email.com';
-      testUser.mobileNumber = '01080981398';
-      testUser.createId = 'test';
+      const testUser = createSimpleUser('박상후', 'TestUser1');
 
       await userRepository.insert(testUser);
 
@@ -211,14 +202,7 @@ describe('UserAuthService Test', function () {
       // Given
       jest.spyOn(bcrypt, 'compare').mockImplementationOnce(() => Promise.resolve(true));
 
-      const testUser = new User();
-      testUser.id = 'test';
-      testUser.name = '박상후';
-      testUser.username = 'TestUser1';
-      testUser.password = 'pwd123!@#';
-      testUser.email = 'test@email.com';
-      testUser.mobileNumber = '01080981398';
-      testUser.createId = 'test';
+      const testUser = createSimpleUser('박상후', 'TestUser1');
 
       await userRepository.insert(testUser);
 
@@ -248,14 +232,7 @@ describe('UserAuthService Test', function () {
       jest.spyOn(bcrypt, 'compare').mockImplementationOnce(() => Promise.resolve(true));
       jest.spyOn(jwtService, 'sign').mockImplementationOnce(() => Promise.resolve('token'));
 
-      const testUser = new User();
-      testUser.id = 'test';
-      testUser.name = '박상후';
-      testUser.username = 'TestUser1';
-      testUser.password = 'pwd123!@#';
-      testUser.email = 'test@email.com';
-      testUser.mobileNumber = '01080981398';
-      testUser.createId = 'test';
+      const testUser = createSimpleUser('박상후', 'TestUser1');
 
       await userRepository.insert(testUser);
 
@@ -281,14 +258,7 @@ describe('UserAuthService Test', function () {
       jest.spyOn(bcrypt, 'compare').mockImplementationOnce(() => Promise.resolve(true));
       jest.spyOn(jwtService, 'sign').mockImplementationOnce(() => Promise.resolve('token'));
 
-      const testUser = new User();
-      testUser.id = 'test';
-      testUser.name = '박상후';
-      testUser.username = 'TestUser1';
-      testUser.password = 'pwd123!@#';
-      testUser.email = 'test@email.com';
-      testUser.mobileNumber = '01080981398';
-      testUser.createId = 'test';
+      const testUser = createSimpleUser('박상후', 'TestUser1');
 
       testUser.isAutoLogin = true;
 
@@ -328,14 +298,7 @@ describe('UserAuthService Test', function () {
       // Given
       const refreshToken = 'refresh_token';
 
-      const testUser = new User();
-      testUser.id = 'test';
-      testUser.name = '박상후';
-      testUser.username = 'TestUser1';
-      testUser.password = 'pwd123!@#';
-      testUser.email = 'test@email.com';
-      testUser.mobileNumber = '01080981398';
-      testUser.createId = 'test';
+      const testUser = createSimpleUser('박상후', 'TestUser1');
       testUser.refreshToken = 'invalid_refresh_token';
 
       const loginHistory = new LoginHistory();
@@ -404,6 +367,67 @@ describe('UserAuthService Test', function () {
       await expect(async () => {
         await service.refreshToken(refreshToken, ip);
       }).rejects.toThrow(new UnauthorizedException('마지막으로 로그인 한 기기가 아닙니다.'));
+    });
+
+    it('회원이 가지고 있는 userAttendance 정보를 토큰에 담는다.', async () => {
+      // Given
+      const jwtSpy = jest.spyOn(jwtService, 'sign');
+
+      const refreshToken = 'refresh_token';
+
+      const attendance_1 = createAttendance('test_attendance_1', 'attendacne_title_1');
+      const attendance_2 = createAttendance('test_attendance_2', 'attendacne_title_2');
+
+      const userAttendance_1 = new UserAttendance();
+      userAttendance_1.userId = 'test';
+      userAttendance_1.attendanceId = 'test_attendance_1';
+      userAttendance_1.role = RoleType.MASTER;
+      userAttendance_1.createId = 'test';
+
+      const userAttendance_2 = new UserAttendance();
+      userAttendance_2.userId = 'test';
+      userAttendance_2.attendanceId = 'test_attendance_2';
+      userAttendance_2.role = RoleType.MASTER;
+      userAttendance_2.createId = 'test';
+
+      const testUser = createSimpleUser('박상후', 'TestUser1');
+      testUser.refreshToken = refreshToken;
+      testUser.userAttendance = [userAttendance_1, userAttendance_2];
+
+      const loginHistory = new LoginHistory();
+      loginHistory.id = 1;
+      loginHistory.userId = 'test';
+      loginHistory.user = testUser;
+      loginHistory.currentIp = '127.0.0.1';
+      loginHistory.loginAt = new Date('2024-03-17 08:00:000');
+
+      await userRepository.insert(testUser);
+      await loginHistoryRepository.insert(loginHistory);
+      await attendanceRepository.insert([attendance_1, attendance_2]);
+      await userAttendanceRepository.insert([userAttendance_1, userAttendance_2]);
+
+      const jwtPayload = {
+        id: testUser.id,
+        username: testUser.username,
+        userType: UserType.GENERAL,
+        userAttendance: testUser.userAttendance,
+      };
+
+      const ip = '127.0.0.1';
+
+      jest.spyOn(jwtService, 'verify').mockReturnValue(jwtPayload);
+
+      // When
+      await service.refreshToken(refreshToken, ip);
+
+      // Then
+      // spy 하고 있는 jwtService.sign 을 호출할 때의 payload 정보
+      const mockCalledPayload = jwtSpy.mock.calls;
+
+      mockCalledPayload.every((payload) => {
+        expect(payload[0].userAttendance).toHaveLength(2);
+        expect(payload[0].userAttendance.every((userAttendance) => userAttendance.userId === 'test')).toBe(true);
+      });
     });
   });
 
@@ -487,7 +511,18 @@ describe('UserAuthService Test', function () {
 
   async function clear() {
     jest.restoreAllMocks(); // 각 테스트가 종료될 때 마다 jest의 모든 모의를 초기화
+    await userAttendanceRepository.query('DELETE FROM user_attendance;');
+    await attendanceRepository.query('DELETE FROM attendance;');
     await loginHistoryRepository.query('DELETE FROM login_history;');
     await userRepository.query('DELETE FROM user;');
   }
 });
+
+function createAttendance(id: string, title: string) {
+  const attendance = new Attendance();
+  attendance.id = id;
+  attendance.createId = 'test';
+  attendance.type = AttendanceType.WEEKDAY;
+  attendance.title = title;
+  return attendance;
+}
