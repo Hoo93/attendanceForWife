@@ -11,7 +11,7 @@ import { User } from '../../../src/users/entities/user.entity';
 import { LoginHistory } from '../../../src/auth/entity/login-history.entity';
 import { AuthService } from '../../../src/auth/auth.service';
 import { CreateAuthDto } from '../../../src/auth/dto/create-auth.dto';
-import { UserType } from '../../../src/users/user-type.enum';
+import { UserType } from '../../../src/users/const/user-type.enum';
 import { JwtPayload } from '../../../src/auth/const/jwtPayload.interface';
 
 describe('UserAuthService Test', function () {

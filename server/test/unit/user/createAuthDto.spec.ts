@@ -2,6 +2,8 @@ import { plainToInstance } from 'class-transformer';
 import { CreateAuthDto } from '../../../src/auth/dto/create-auth.dto';
 import { validate } from 'class-validator';
 import {
+  INVALID_BIRTHDAY_MESSAGE,
+  INVALID_BIRTHYEAR_MESSAGE,
   INVALID_EMAIL_MESSAGE,
   INVALID_ID_MAX_LENGTH_MESSAGE,
   INVALID_ID_MESSAGE,
@@ -42,85 +44,91 @@ describe('create-auth.dto TEST', () => {
     expect(user.mobileNumber).toBe(createAuthDto.mobileNumber);
   });
 
-  it('이름은 한글,영문로 이루어져야 합니다.', async () => {
-    const invalidName = 'noSpecial#';
-    createAuthDto.name = invalidName;
+  describe('name property test', () => {
+    it('이름은 한글,영문로 이루어져야 합니다.', async () => {
+      const invalidName = 'noSpecial#';
+      createAuthDto.name = invalidName;
 
-    const validationErrors = await validate(createAuthDto);
+      const validationErrors = await validate(createAuthDto);
 
-    expect(validationErrors[0].constraints.matches).toBe(INVALID_NAME_MESSAGE);
+      expect(validationErrors[0].constraints.matches).toBe(INVALID_NAME_MESSAGE);
+    });
+
+    it('이름은 6글자 이상이어야 합니다.', async () => {
+      const tooShortName = '짧';
+      createAuthDto.name = tooShortName;
+
+      const validationErrors = await validate(createAuthDto);
+
+      expect(validationErrors[0].constraints.minLength).toBe(INVALID_NAME_MIN_LENGTH_MESSAGE);
+    });
+
+    it('이름은 20글자 이하이어야 합니다.', async () => {
+      const tooLongName = 'ThisNameIsTooLongForOurSystem';
+      createAuthDto.name = tooLongName;
+
+      const validationErrors = await validate(createAuthDto);
+
+      expect(validationErrors[0].constraints.maxLength).toBe(INVALID_NAME_MAX_LENGTH_MESSAGE);
+    });
   });
 
-  it('이름은 6글자 이상이어야 합니다.', async () => {
-    const tooShortName = '짧';
-    createAuthDto.name = tooShortName;
+  describe('password property test', () => {
+    it('비밀번호는 각각 최소 1개 이상의 한글,영문,숫자로 이루어져야 합니다.', async () => {
+      const invalidPassword = 'noSpecial#';
+      createAuthDto.password = invalidPassword;
 
-    const validationErrors = await validate(createAuthDto);
+      const validationErrors = await validate(createAuthDto);
 
-    expect(validationErrors[0].constraints.minLength).toBe(INVALID_NAME_MIN_LENGTH_MESSAGE);
+      expect(validationErrors[0].constraints.matches).toBe(INVALID_PASSWORD_MESSAGE);
+    });
+
+    it('비밀번호는 6글자 이상이어야 합니다.', async () => {
+      const tooShortPassword = 'a1#';
+      createAuthDto.password = tooShortPassword;
+
+      const validationErrors = await validate(createAuthDto);
+
+      expect(validationErrors[0].constraints.minLength).toBe(INVALID_PASSWORD_MIN_LENGTH_MESSAGE);
+    });
+
+    it('비밀번호는 12글자 이하이어야 합니다.', async () => {
+      const tooLongPassword = 'abcd123456789!';
+      createAuthDto.password = tooLongPassword;
+
+      const validationErrors = await validate(createAuthDto);
+
+      expect(validationErrors[0].constraints.maxLength).toBe(INVALID_PASSWORD_MAX_LENGTH_MESSAGE);
+    });
   });
 
-  it('이름은 20글자 이하이어야 합니다.', async () => {
-    const tooLongName = 'ThisNameIsTooLongForOurSystem';
-    createAuthDto.name = tooLongName;
+  describe('username property test', () => {
+    it('아이디는 영문,숫자로 이루어져야 합니다.', async () => {
+      const invalidId = 'noSpecial#';
+      createAuthDto.username = invalidId;
 
-    const validationErrors = await validate(createAuthDto);
+      const validationErrors = await validate(createAuthDto);
 
-    expect(validationErrors[0].constraints.maxLength).toBe(INVALID_NAME_MAX_LENGTH_MESSAGE);
-  });
+      expect(validationErrors[0].constraints.matches).toBe(INVALID_ID_MESSAGE);
+    });
 
-  it('비밀번호는 각각 최소 1개 이상의 한글,영문,숫자로 이루어져야 합니다.', async () => {
-    const invalidPassword = 'noSpecial#';
-    createAuthDto.password = invalidPassword;
+    it('아이디는 6글자 이상이어야 합니다.', async () => {
+      const tooShortId = 'a1#';
+      createAuthDto.username = tooShortId;
 
-    const validationErrors = await validate(createAuthDto);
+      const validationErrors = await validate(createAuthDto);
 
-    expect(validationErrors[0].constraints.matches).toBe(INVALID_PASSWORD_MESSAGE);
-  });
+      expect(validationErrors[0].constraints.minLength).toBe(INVALID_ID_MIN_LENGTH_MESSAGE);
+    });
 
-  it('비밀번호는 6글자 이상이어야 합니다.', async () => {
-    const tooShortPassword = 'a1#';
-    createAuthDto.password = tooShortPassword;
+    it('아이디는 12글자 이하이어야 합니다.', async () => {
+      const tooLongId = 'abcd123456789!';
+      createAuthDto.username = tooLongId;
 
-    const validationErrors = await validate(createAuthDto);
+      const validationErrors = await validate(createAuthDto);
 
-    expect(validationErrors[0].constraints.minLength).toBe(INVALID_PASSWORD_MIN_LENGTH_MESSAGE);
-  });
-
-  it('비밀번호는 12글자 이하이어야 합니다.', async () => {
-    const tooLongPassword = 'abcd123456789!';
-    createAuthDto.password = tooLongPassword;
-
-    const validationErrors = await validate(createAuthDto);
-
-    expect(validationErrors[0].constraints.maxLength).toBe(INVALID_PASSWORD_MAX_LENGTH_MESSAGE);
-  });
-
-  it('아이디는 영문,숫자로 이루어져야 합니다.', async () => {
-    const invalidId = 'noSpecial#';
-    createAuthDto.username = invalidId;
-
-    const validationErrors = await validate(createAuthDto);
-
-    expect(validationErrors[0].constraints.matches).toBe(INVALID_ID_MESSAGE);
-  });
-
-  it('아이디는 6글자 이상이어야 합니다.', async () => {
-    const tooShortId = 'a1#';
-    createAuthDto.username = tooShortId;
-
-    const validationErrors = await validate(createAuthDto);
-
-    expect(validationErrors[0].constraints.minLength).toBe(INVALID_ID_MIN_LENGTH_MESSAGE);
-  });
-
-  it('아이디는 12글자 이하이어야 합니다.', async () => {
-    const tooLongId = 'abcd123456789!';
-    createAuthDto.username = tooLongId;
-
-    const validationErrors = await validate(createAuthDto);
-
-    expect(validationErrors[0].constraints.maxLength).toBe(INVALID_ID_MAX_LENGTH_MESSAGE);
+      expect(validationErrors[0].constraints.maxLength).toBe(INVALID_ID_MAX_LENGTH_MESSAGE);
+    });
   });
 
   it('휴대폰 번호의 공백과 - 을 제거한다.', async () => {
@@ -141,5 +149,23 @@ describe('create-auth.dto TEST', () => {
     const validationErrors = await validate(createAuthDto);
 
     expect(validationErrors[0].constraints.matches).toBe(INVALID_EMAIL_MESSAGE);
+  });
+
+  it('생일은 4자리 숫자 형식이어야 합니다.', async () => {
+    const invalidBirthday = '322';
+    createAuthDto.birthday = invalidBirthday;
+
+    const validationErrors = await validate(createAuthDto);
+
+    expect(validationErrors[0].constraints.matches).toBe(INVALID_BIRTHDAY_MESSAGE);
+  });
+
+  it('생년은 4자리 숫자 형식이어야 합니다.', async () => {
+    const invalidBirthYear = '322';
+    createAuthDto.birthYear = invalidBirthYear;
+
+    const validationErrors = await validate(createAuthDto);
+
+    expect(validationErrors[0].constraints.matches).toBe(INVALID_BIRTHYEAR_MESSAGE);
   });
 });

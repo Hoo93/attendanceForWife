@@ -5,7 +5,7 @@ import { TestModule } from '../../../src/test.module';
 import { User } from '../../../src/users/entities/user.entity';
 import { LoginHistory } from '../../../src/auth/entity/login-history.entity';
 import { AuthService } from '../../../src/auth/auth.service';
-import { UserType } from '../../../src/users/user-type.enum';
+import { UserType } from '../../../src/users/const/user-type.enum';
 import { UsersService } from '../../../src/users/users.service';
 import { BadRequestException } from '@nestjs/common';
 
