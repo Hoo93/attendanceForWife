@@ -1,5 +1,5 @@
 import { UserAttendance } from '../../attendances/entities/user-attendance.entity';
-import { UserType } from '../../users/user-type.enum';
+import { UserType } from '../../users/const/user-type.enum';
 
 export interface JwtPayload {
   id: string;
