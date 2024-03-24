@@ -80,7 +80,7 @@ export class CreateAuthDto {
 
   @IsString()
   @IsOptional()
-  @Matches(/^\d{6}$/, {
+  @Matches(/^\d{4}$/, {
     message: INVALID_BIRTHDAY_MESSAGE,
   })
   @ApiPropertyOptional({
