@@ -316,6 +316,7 @@ describe('UserAuthService Test', function () {
       const refreshToken = 'refresh_token';
 
       const testUser = createSimpleUser('박상후', 'TestUser1');
+      testUser.refreshToken = refreshToken;
 
       const loginHistory = createLoginHistoryWithIpAndDate(testUser, '127.0.0.1', '2024-03-17 08:00:00');
 
@@ -345,8 +346,8 @@ describe('UserAuthService Test', function () {
 
       const refreshToken = 'refresh_token';
 
-      const attendance_1 = createAttendance('test_attendance_1', 'attendacne_title_1');
-      const attendance_2 = createAttendance('test_attendance_2', 'attendacne_title_2');
+      const attendance_1 = createAttendance('test_attendance_id_1', 'attendacne_title_1');
+      const attendance_2 = createAttendance('test_attendance_id_2', 'attendacne_title_2');
 
       const userAttendance_1 = createAttendanceWithUserIdAndAttendanceId('test', 'test_attendance_id_1');
       const userAttendance_2 = createAttendanceWithUserIdAndAttendanceId('test', 'test_attendance_id_2');
