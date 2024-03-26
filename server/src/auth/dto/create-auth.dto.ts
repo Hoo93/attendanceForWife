@@ -73,10 +73,10 @@ export class CreateAuthDto {
   })
   @ApiPropertyOptional({
     description: '회원 생년',
-    type: 'number',
+    type: 'string',
     example: '1993',
   })
-  birthYear?: number;
+  birthYear?: string;
 
   @IsString()
   @IsOptional()
@@ -111,7 +111,7 @@ export class CreateAuthDto {
     user.mobileNumber = this.mobileNumber;
     user.email = this?.email || null;
     user.birthday = this?.birthday || null;
-    user.birthYear = this?.birthYear || null;
+    user.birthYear = +this?.birthYear || null;
     user.createId = this.username;
     user.createdAt = createdAt;
     return user;
