@@ -93,4 +93,18 @@ export class AuthController {
     }
     return this.authService.isAvailableMobileNumber(mobileNumber);
   }
+
+  @Get('/check-username')
+  @ApiOperation({ summary: '회원 아이디 중복 확인' })
+  @ApiResponse({
+    status: 200,
+    description: '회원 아이디 중복 확인',
+    type: CommonResponseDto<AvailabilityResult>,
+  })
+  async checkUsernameAvailability(@Query('username') username: string): Promise<CommonResponseDto<AvailabilityResult>> {
+    if (!username) {
+      throw new BadRequestException('username is required');
+    }
+    return this.authService.isAvailableUsername(username);
+  }
 }
