@@ -72,7 +72,7 @@ describe('UserAuthService Test', function () {
     dto.name = 'testname';
     dto.mobileNumber = '010-8098-1398';
     dto.birthday = '1117';
-    dto.birthYear = 1993;
+    dto.birthYear = '1993';
     dto.email = 'sksk8922@gmail.com';
 
     const signupResult = await service.signup(dto);
@@ -457,6 +457,44 @@ describe('UserAuthService Test', function () {
 
       // When
       const sut = await service.isAvailableMobileNumber(validationTargetMobileNumber);
+
+      // Then
+      expect(sut.success).toBeTruthy();
+      expect(sut.data.isAvailable).toBe(true);
+    });
+  });
+
+  describe('isAvailableUsername method test', () => {
+    it('이미 존재하는 아이디인 경우 false를 반환한다.', async () => {
+      // Given
+      const validationTargetUsername = 'TestUser1';
+
+      const testUser = new User();
+      testUser.mobileNumber = '01080981398';
+      testUser.id = 'test';
+      testUser.name = '박상후';
+      testUser.username = 'TestUser1';
+      testUser.password = 'pwd123!@#';
+      testUser.email = 'myEmail@naver.com';
+      testUser.createId = 'test';
+      testUser.refreshToken = 'refresh_token';
+
+      await userRepository.insert(testUser);
+
+      // When
+      const sut = await service.isAvailableUsername(validationTargetUsername);
+
+      // Then
+      expect(sut.success).toBeTruthy();
+      expect(sut.data.isAvailable).toBe(false);
+    });
+
+    it('존재하지 않는 아이디인 경우 true를 반환한다.', async () => {
+      // Given
+      const validationTargetUsername = 'ValidUsername';
+
+      // When
+      const sut = await service.isAvailableMobileNumber(validationTargetUsername);
 
       // Then
       expect(sut.success).toBeTruthy();
