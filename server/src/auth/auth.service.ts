@@ -106,6 +106,11 @@ export class AuthService {
     return new CommonResponseDto('', new AvailabilityResult(!!!found));
   }
 
+  public async isAvailableUsername(username: string): Promise<CommonResponseDto<AvailabilityResult>> {
+    const found = await this.userRepository.findOneBy({ username });
+    return new CommonResponseDto('', new AvailabilityResult(!!!found));
+  }
+
   private generateAccessToken(payload: JwtPayload) {
     return this.jwtService.sign(payload, {
       secret: jwtConstants.accessTokenSecret,
