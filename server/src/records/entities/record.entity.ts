@@ -1,7 +1,7 @@
 import { BaseTimeEntity } from '../../common/BaseTimeEntity';
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, Unique } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
-import { AttendanceStatus } from '../record-type.enum';
+import { AttendanceStatus } from '../const/record-type.enum';
 import { DayType } from '../../schedules/const/day-type.enum';
 import { Attendee } from '../../attendees/entities/attendee.entity';
 
