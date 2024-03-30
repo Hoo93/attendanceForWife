@@ -27,7 +27,7 @@ export class CreateScheduleDto {
   attendeeId: string;
 
   @IsArray()
-  @ApiProperty({ description: '출석 요일과 시간', type: SingleSchedule })
+  @ApiProperty({ description: '출석 요일과 시간', type: Array.of(SingleSchedule) })
   singleSchedules: SingleSchedule[];
 
   toEntities(createId: string) {
