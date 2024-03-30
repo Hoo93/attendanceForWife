@@ -1,10 +1,6 @@
-import { Column, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
-import { DayType } from '../const/day-type.enum';
-import { Attendee } from '../../attendees/entities/attendee.entity';
-import { IsArray, IsEnum, IsNotEmpty, IsString, Matches } from 'class-validator';
+import { IsArray, IsNotEmpty, IsString } from 'class-validator';
 import { Schedule } from '../entities/schedule.entity';
-import { share } from 'rxjs';
 import { SingleSchedule } from '../const/single-schedule.class';
 
 export class CreateScheduleDto {

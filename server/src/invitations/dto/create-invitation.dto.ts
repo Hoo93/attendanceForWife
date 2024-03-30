@@ -1,5 +1,5 @@
 import { IsEnum, IsString } from 'class-validator';
-import { AttendanceStatus } from '../../records/record-type.enum';
+import { AttendanceStatus } from '../../records/const/record-type.enum';
 import { ApiProperty } from '@nestjs/swagger';
 import { RoleType } from '../../roles/entities/role-type.enum';
 
