@@ -1,5 +1,3 @@
-// @ts-ignore
-
 import { Test, TestingModule } from '@nestjs/testing';
 import { RecordsService } from '../../../src/records/records.service';
 import { User } from '../../../src/users/entities/user.entity';
@@ -19,6 +17,7 @@ import { CreateAllRecordDto } from '../../../src/records/dto/createAll-record.dt
 import { Schedule } from '../../../src/schedules/entities/schedule.entity';
 import { RecordFilterDto } from '../../../src/records/dto/record-filter.dto';
 import { ExcelService } from '../../../src/common/excel.service';
+import { SingleRecord } from '../../../src/records/const/singleRecord.class';
 
 describe('RecordsService', () => {
   let module: TestingModule;
@@ -77,7 +76,7 @@ describe('RecordsService', () => {
       // Then
       expect(sut.success).toBe(true);
       expect(sut.message).toBe('SUCCESS CREATE RECORD');
-      expect(sut.data.id).toBeDefined();
+      expect(sut.data.ids).toBeDefined();
     });
 
     it('입력한 값으로 출석기록을 생성한다.', async () => {
@@ -93,7 +92,7 @@ describe('RecordsService', () => {
       // When
       const createResponse = await service.create(recordDto, user);
 
-      const sut = await recordRepository.findOneBy({ id: createResponse.data.id });
+      const sut = await recordRepository.findOneBy({ id: createResponse.data.ids[0] });
 
       // Then
       expect(sut.attendeeId).toBe('Attendee Id 1');
@@ -126,16 +125,19 @@ describe('RecordsService', () => {
       const attendee = new Attendee();
       attendee.id = 'Attendee Id 1';
 
+      const singleRecord = new SingleRecord();
+      singleRecord.day = DayType.MONDAY;
+      singleRecord.date = '2024-01-15';
+      singleRecord.status = AttendanceStatus.PRESENT;
+      singleRecord.attendeeId = attendee.id;
+      singleRecord.lateReason = '입력이 되지 않을 겁니다.';
+
       const recordDto = new CreateRecordDto();
-      recordDto.day = DayType.MONDAY;
-      recordDto.date = '2024-01-15';
-      recordDto.status = AttendanceStatus.PRESENT;
-      recordDto.attendeeId = attendee.id;
-      recordDto.lateReason = '입력이 되지 않을 겁니다.';
+      recordDto.singleRecords = [singleRecord];
 
       const createResponse = await service.create(recordDto, user);
 
-      const sut = await recordRepository.findOneBy({ id: createResponse.data.id });
+      const sut = await recordRepository.findOneBy({ id: createResponse.data.ids[0] });
 
       expect(sut.lateReason).toBeNull();
       expect(sut.attendeeId).toBe('Attendee Id 1');
@@ -160,7 +162,7 @@ describe('RecordsService', () => {
       // When
       const createResponse = await service.create(recordDto, user);
 
-      const sut = await recordRepository.findOneBy({ id: createResponse.data.id });
+      const sut = await recordRepository.findOneBy({ id: createResponse.data.ids[0] });
 
       // Then
       expect(sut.createdAt).toStrictEqual(now);
@@ -184,7 +186,7 @@ describe('RecordsService', () => {
       // When
       const createResponse = await service.create(recordDto_2, user);
 
-      const sut = await recordRepository.findOneBy({ id: createResponse.data.id });
+      const sut = await recordRepository.findOneBy({ id: createResponse.data.ids[0] });
 
       // Then
       expect(sut.attendeeId).toBe('Attendee Id 1');
@@ -1045,12 +1047,17 @@ describe('RecordsService', () => {
     await userRepository.query(`DELETE FROM user;`);
   }
 });
+
 function createRecordDto(date, day: DayType, status: AttendanceStatus, attendeeId) {
+  const singleRecord = new SingleRecord();
+  singleRecord.date = date;
+  singleRecord.day = day;
+  singleRecord.status = status;
+  singleRecord.attendeeId = attendeeId;
+
   const recordDto = new CreateRecordDto();
-  recordDto.date = date;
-  recordDto.day = day;
-  recordDto.status = status;
-  recordDto.attendeeId = attendeeId;
+  recordDto.singleRecords = [singleRecord];
+
   return recordDto;
 }
 
