@@ -101,6 +101,110 @@ describe('RecordsService', () => {
       expect(sut.status).toBe('Present');
     });
 
+    it('복수의 records를 입력 받아 출석기록을 생성한다.', async () => {
+      // Given
+      const user = new User();
+      user.id = 'user id 1';
+
+      const attendee_1 = new Attendee();
+      attendee_1.id = 'Attendee Id 1';
+
+      const attendee_2 = new Attendee();
+      attendee_2.id = 'Attendee Id 2';
+
+      const recordDto = new CreateRecordDto();
+      recordDto.singleRecords = [
+        createSingleRecord('2024-01-15', DayType.MONDAY, AttendanceStatus.PRESENT, attendee_1.id),
+        createSingleRecord('2024-01-16', DayType.TUESDAY, AttendanceStatus.ABSENT, attendee_1.id),
+        createSingleRecord('2024-01-17', DayType.WEDNESDAY, AttendanceStatus.PRESENT, attendee_2.id),
+      ];
+      // When
+      const createResponse = await service.create(recordDto, user);
+
+      const sut = await recordRepository.findBy({ id: In(createResponse.data.ids) });
+
+      // Then
+      expect(sut).toHaveLength(3);
+
+      const expectedRecords = [
+        { date: '2024-01-15', day: DayType.MONDAY, status: AttendanceStatus.PRESENT, attendeeId: attendee_1.id },
+        { date: '2024-01-16', day: DayType.TUESDAY, status: AttendanceStatus.ABSENT, attendeeId: attendee_1.id },
+        { date: '2024-01-17', day: DayType.WEDNESDAY, status: AttendanceStatus.PRESENT, attendeeId: attendee_2.id },
+      ];
+
+      expectedRecords.forEach((expectedRecord, index) => {
+        const actualRecord = sut[index];
+        expect(actualRecord.date).toEqual(expectedRecord.date);
+        expect(actualRecord.day).toEqual(expectedRecord.day);
+        expect(actualRecord.status).toEqual(expectedRecord.status);
+        expect(actualRecord.attendeeId).toEqual(expectedRecord.attendeeId);
+      });
+    });
+
+    it('같은 attendeeId,data의 records가 복수개인 경우 마지막 데이터로 record를 생성한다.', async () => {
+      // Given
+      const user = new User();
+      user.id = 'user id 1';
+
+      const attendee = new Attendee();
+      attendee.id = 'Attendee Id 1';
+
+      const recordDto = new CreateRecordDto();
+      recordDto.singleRecords = [
+        createSingleRecord('2024-01-15', DayType.MONDAY, AttendanceStatus.PRESENT, attendee.id),
+        createSingleRecord('2024-01-15', DayType.MONDAY, AttendanceStatus.LATE, attendee.id),
+        createSingleRecord('2024-01-15', DayType.MONDAY, AttendanceStatus.ABSENT, attendee.id),
+      ];
+      // When
+      const createResponse = await service.create(recordDto, user);
+
+      const sut = await recordRepository.findBy({ id: In(createResponse.data.ids) });
+
+      // Then
+      expect(sut).toHaveLength(1);
+      expect(sut[0].day).toBe('MONDAY');
+      expect(sut[0].date).toBe('2024-01-15');
+      expect(sut[0].status).toBe(AttendanceStatus.ABSENT);
+      expect(sut[0].attendeeId).toBe('Attendee Id 1');
+    });
+
+    it('같은 attendeeId,data의 records가 복수개인 경우 가장 최신의 record만 upsert 한다.', async () => {
+      // Given
+      const user = new User();
+      user.id = 'user id 1';
+
+      const attendee = new Attendee();
+      attendee.id = 'Attendee Id 1';
+
+      const recordDto = new CreateRecordDto();
+      recordDto.singleRecords = [
+        createSingleRecord('2024-01-15', DayType.MONDAY, AttendanceStatus.PRESENT, attendee.id),
+        createSingleRecord('2024-01-15', DayType.MONDAY, AttendanceStatus.LATE, attendee.id),
+        createSingleRecord('2024-01-15', DayType.MONDAY, AttendanceStatus.ABSENT, attendee.id),
+      ];
+
+      const spyUpsert = jest.spyOn(recordRepository, 'upsert');
+
+      // When
+      const createResponse = await service.create(recordDto, user);
+
+      const sut = await recordRepository.findBy({ id: In(createResponse.data.ids) });
+
+      // Then
+      const recordParameter = spyUpsert.mock.calls[0][0];
+
+      expect(recordParameter).toHaveLength(1);
+
+      expect(recordParameter[0]).toEqual(
+        expect.objectContaining({
+          date: '2024-01-15',
+          day: 'MONDAY',
+          status: AttendanceStatus.ABSENT,
+          attendeeId: 'Attendee Id 1',
+        }),
+      );
+    });
+
     it('입력한 date의 실제 요일이 입력한 day가 아닌 경우 오류를 발생시킨다.', async () => {
       // Given
       const user = new User();
@@ -1048,12 +1152,17 @@ describe('RecordsService', () => {
   }
 });
 
-function createRecordDto(date, day: DayType, status: AttendanceStatus, attendeeId) {
+function createSingleRecord(date: string, day: DayType, status: AttendanceStatus, attendeeId: string) {
   const singleRecord = new SingleRecord();
   singleRecord.date = date;
   singleRecord.day = day;
   singleRecord.status = status;
   singleRecord.attendeeId = attendeeId;
+  return singleRecord;
+}
+
+function createRecordDto(date, day: DayType, status: AttendanceStatus, attendeeId) {
+  const singleRecord = createSingleRecord(date, day, status, attendeeId);
 
   const recordDto = new CreateRecordDto();
   recordDto.singleRecords = [singleRecord];

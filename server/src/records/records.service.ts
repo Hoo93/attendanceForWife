@@ -39,7 +39,9 @@ export class RecordsService {
       }
     });
 
-    const result: InsertResult = await this.recordRepository.upsert(records, {
+    const uniqueRecords = this.removeDuplicateRecords(records);
+
+    const result: InsertResult = await this.recordRepository.upsert(uniqueRecords, {
       conflictPaths: ['attendeeId', 'date'],
       upsertType: 'on-conflict-do-update',
     });
@@ -235,5 +237,17 @@ export class RecordsService {
     queryBuilder.orderBy('attendee_name', 'ASC');
 
     return queryBuilder.getRawMany();
+  }
+
+  private removeDuplicateRecords(records: Record[]): Record[] {
+    // 레코드 분류 및 중복 제거
+    const uniqueRecordsMap = new Map();
+    records.forEach((record) => {
+      const key = `${record.attendeeId}-${record.date}`;
+      uniqueRecordsMap.set(key, record); // 같은 키로 들어오는 레코드를 덮어쓰기. 마지막 레코드만 남음
+    });
+
+    // Map에서 레코드 배열을 재구성
+    return Array.from(uniqueRecordsMap.values());
   }
 }
