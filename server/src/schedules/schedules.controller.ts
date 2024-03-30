@@ -32,7 +32,7 @@ export class SchedulesController {
     type: CreateScheduleDto,
     description: '출석 스케쥴 생성 DTO',
   })
-  create(@Body() createScheduleDto: CreateScheduleDto, @GetUser() user: User): Promise<CommonResponseDto<{ id: number }>> {
+  create(@Body() createScheduleDto: CreateScheduleDto, @GetUser() user: User): Promise<CommonResponseDto<{ ids: number[] }>> {
     return this.schedulesService.create(createScheduleDto, user);
   }
 

@@ -11,7 +11,7 @@ import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm';
 import { Record } from '../../../src/records/entities/record.entity';
 import { CreateRecordDto } from '../../../src/records/dto/create-record.dto';
 import { DayType } from '../../../src/schedules/const/day-type.enum';
-import { AttendanceStatus } from '../../../src/records/record-type.enum';
+import { AttendanceStatus } from '../../../src/records/const/record-type.enum';
 import { In, Repository } from 'typeorm';
 import { DeleteRecordDto } from '../../../src/records/dto/delete-record.dto';
 import { createSimpleAttendee } from '../attendee/createSimpleAttendee';

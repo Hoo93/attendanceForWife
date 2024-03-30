@@ -22,15 +22,15 @@ export class SchedulesService {
     private scheduleRepository: Repository<Schedule>,
   ) {}
 
-  async create(createScheduleDto: CreateScheduleDto, user: User): Promise<CommonResponseDto<{ id: number }>> {
-    const schedule = createScheduleDto.toEntity(user.id);
+  async create(createScheduleDto: CreateScheduleDto, user: User): Promise<CommonResponseDto<{ ids: number[] }>> {
+    const schedules = createScheduleDto.toEntities(user.id);
 
-    if (!this.verifyAttendTime(schedule.time)) {
+    if (!schedules.some((schedule) => this.verifyAttendTime(schedule.time))) {
       throw new BadRequestException('유효하지 않은 시간 포맷입니다.');
     }
-    const createdResponse = await this.scheduleRepository.save(schedule);
+    const createdResponse = await this.scheduleRepository.save(schedules);
 
-    return new CommonResponseDto('SUCCESS CREATE SCHEDULES', { id: createdResponse.id });
+    return new CommonResponseDto('SUCCESS CREATE SCHEDULES', { ids: createdResponse.map((schedule) => schedule.id) });
   }
 
   async findByAttendeeId(attendeeId: string): Promise<ResponseWithoutPaginationDto<Schedule>> {
@@ -106,11 +106,12 @@ export class SchedulesService {
   }
 
   private verifyAttendTime(time: string) {
-    if (typeof time !== 'string' || time.length !== 4) {
+    const timeStringLength = 4;
+    if (time.length !== timeStringLength) {
       return false;
     }
-    const hour = time.slice(0, time.length - 2);
-    const minute = time.slice(time.length - 2);
+    const hour = time.slice(0, 2);
+    const minute = time.slice(2);
 
     return !(parseInt(hour) >= 24 || parseInt(minute) >= 60);
   }

@@ -13,8 +13,9 @@ import { BadRequestException } from '@nestjs/common';
 import { In, Repository } from 'typeorm';
 import { DeleteScheduleDto } from '../../../src/schedules/dto/delete-schedule.dto';
 import { Record } from '../../../src/records/entities/record.entity';
-import { AttendanceStatus } from '../../../src/records/record-type.enum';
+import { AttendanceStatus } from '../../../src/records/const/record-type.enum';
 import { createAttendee } from '../attendee/createAttendee';
+import { SingleSchedule } from '../../../src/schedules/const/single-schedule.class';
 
 describe('SchedulesService', () => {
   let module: TestingModule;
@@ -57,12 +58,12 @@ describe('SchedulesService', () => {
   });
 
   describe('Create Schedules Test', () => {
-    it('요청 성공시 success,message,id를 리턴한다.', async () => {
+    it('요청 성공시 success,message,ids를 리턴한다.', async () => {
       // Given
       const user = new User();
       user.id = 'user id 1';
 
-      const scheduleDto = generateCreateScheduleDto('Attendee Id 1', DayType.MONDAY, '1000');
+      const scheduleDto = createSingleScheduleDto('Attendee Id 1', DayType.MONDAY, '1000');
 
       // When
       const sut = await service.create(scheduleDto, user);
@@ -70,7 +71,7 @@ describe('SchedulesService', () => {
       // Then
       expect(sut.success).toBe(true);
       expect(sut.message).toBe('SUCCESS CREATE SCHEDULES');
-      expect(sut.data.id).toBeDefined();
+      expect(sut.data.ids).toBeDefined();
     });
 
     it('선택한 요일과 시간으로 출석 대상의 스케쥴을 생성한다.', async () => {
@@ -78,17 +79,46 @@ describe('SchedulesService', () => {
       const user = new User();
       user.id = 'user id 1';
 
-      const scheduleDto = generateCreateScheduleDto('Attendee Id 1', DayType.MONDAY, '1000');
+      const scheduleDto = createSingleScheduleDto('Attendee Id 1', DayType.MONDAY, '1000');
 
       // When
-      const createdReponse = await service.create(scheduleDto, user);
+      const createdResponse = await service.create(scheduleDto, user);
 
-      const sut = await scheduleRepository.findOneBy({ id: createdReponse.data.id });
+      const sut = await scheduleRepository.findBy({ id: In(createdResponse.data.ids) });
 
       // Then
-      expect(sut.attendeeId).toBe('Attendee Id 1');
-      expect(sut.day).toBe('MONDAY');
-      expect(sut.time).toBe('1000');
+      sut.map((schedule) => {
+        expect(schedule.attendeeId).toBe('Attendee Id 1');
+        expect(schedule.day).toBe('MONDAY');
+        expect(schedule.time).toBe('1000');
+      });
+    });
+
+    it('입력 받은 SingleSchedule[]의 스케쥴을 생성한다.', async () => {
+      // Given
+      const user = new User();
+      user.id = 'user id 1';
+
+      const singleSchedule_1 = new SingleSchedule();
+      singleSchedule_1.day = DayType.TUESDAY;
+      singleSchedule_1.time = '1800';
+
+      const singleSchedule_2 = new SingleSchedule();
+      singleSchedule_2.day = DayType.WEDNESDAY;
+      singleSchedule_2.time = '1900';
+
+      const scheduleDto = createSingleScheduleDto('Attendee Id 1', DayType.MONDAY, '1000');
+      scheduleDto.singleSchedules = [singleSchedule_1, singleSchedule_2];
+
+      // When
+      const createdResponse = await service.create(scheduleDto, user);
+
+      const sut = await scheduleRepository.findBy({ id: In(createdResponse.data.ids) });
+
+      // Then
+      expect(sut).toHaveLength(2);
+      expect(sut.some((schedule) => schedule.day === 'TUESDAY' && schedule.time === '1800')).toBeTruthy();
+      expect(sut.some((schedule) => schedule.day === 'WEDNESDAY' && schedule.time === '1900')).toBeTruthy();
     });
 
     it('입력한 시간이 0000~2400 범위에 있지 않으면 오류를 일으킨다.', async () => {
@@ -96,7 +126,7 @@ describe('SchedulesService', () => {
       const user = new User();
       user.id = 'user id 1';
 
-      const scheduleDto = generateCreateScheduleDto('Attendee Id 1', DayType.MONDAY, '4500');
+      const scheduleDto = createSingleScheduleDto('Attendee Id 1', DayType.MONDAY, '4500');
 
       // Then
       await expect(async () => {
@@ -462,11 +492,16 @@ describe('SchedulesService', () => {
   }
 });
 
-function generateCreateScheduleDto(attendeeId: string, day: DayType, time: string) {
+function createSingleScheduleDto(attendeeId: string, day: DayType, time: string) {
   const createScheduleDto = new CreateScheduleDto();
   createScheduleDto.attendeeId = attendeeId;
-  createScheduleDto.day = day;
-  createScheduleDto.time = time;
+
+  const singleSchedule = new SingleSchedule();
+  singleSchedule.day = day;
+  singleSchedule.time = time;
+
+  createScheduleDto.singleSchedules = [singleSchedule];
+
   return createScheduleDto;
 }
 
