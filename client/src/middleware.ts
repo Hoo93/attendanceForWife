@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
-
 import { safeJwtDecode } from './libs/jwt';
 
 const ACCESS_TOKEN_KEY = 'ACCESS_TOKEN';
 
 const REFRESH_TOKEN_KEY = 'REFRESH_TOKEN';
+
+const AUTH_PATHS = ['/signin', '/signup'];
 
 const PRIVATE_PATHS = ['/attendancy'];
 
@@ -31,6 +32,7 @@ export default async function handler(req: NextRequest) {
 
     // 토큰 만료시 (refresh)
     const decoded = await safeJwtDecode(String(accessToken?.value));
+
     if (decoded?.exp != null && decoded.exp * 1000 <= Date.now()) {
         if (refreshToken != null) {
             try {
@@ -76,16 +78,22 @@ export default async function handler(req: NextRequest) {
             }
         }
 
+        // 토큰이 만료되었지만 refresh token이 없거나, refresh에 실패 등의 경우 모두 로그아웃 처리한다.
+        // 쿠키가 삭제된 상태로 request를 rewrite 한다.
         req.cookies.delete(ACCESS_TOKEN_KEY);
         req.cookies.delete(REFRESH_TOKEN_KEY);
         const res = NextResponse.next({
             request: req,
         });
-        // 토큰을 cookie에서 삭제한다.
-        res.cookies.delete(ACCESS_TOKEN_KEY);
-        res.cookies.delete(REFRESH_TOKEN_KEY);
+        // // 토큰을 cookie에서 삭제한다.
+        // res.cookies.delete(ACCESS_TOKEN_KEY);
+        // res.cookies.delete(REFRESH_TOKEN_KEY);
         return res;
     }
 
     return NextResponse.next();
 }
+
+export const config = {
+    matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'],
+};

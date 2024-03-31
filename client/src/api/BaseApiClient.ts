@@ -1,5 +1,5 @@
+import { clearTokens, setTokens } from '@/libs/auth';
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
-import { setTokens } from '@/libs/auth';
 
 import Cookies from 'js-cookie';
 
@@ -23,7 +23,7 @@ class BaseApiClient {
             },
         });
 
-        this.axios.interceptors.request.use((config) => {
+        this.axios.interceptors.request.use(async (config) => {
             const accessToken = this.getAccessToken();
             if (accessToken != null) {
                 config.headers['Authorization'] = `Bearer ${accessToken}`;
@@ -49,9 +49,14 @@ class BaseApiClient {
                     )}`
                 );
 
-                const accessToken = this.getAccessToken(); // TODO 토큰 처리 해야함
+                // TODO 오류 발생시 /error 페이지 이동을 막기 위함
+                // if (status === 400) {
+                //   window.location.replace("/error");
+                // }
 
-                if (status === 401) {
+                const accessToken = this.getAccessToken();
+
+                if (accessToken != null && status === 401) {
                     // 토큰 만료 혹은 인증 실패 시
                     return this.refresh(error.config);
                 }
@@ -123,10 +128,10 @@ class BaseApiClient {
 
         // refresh 토큰 없을 시 / 토큰 갱신 실패 시 로그아웃한다.
         if (typeof window !== 'undefined') {
-            // clearTokens();
-            // if (window.location.pathname !== "/") {
-            //   window.location.replace("/");
-            // }
+            clearTokens();
+            if (window.location.pathname !== '/') {
+                window.location.replace('/');
+            }
         }
 
         return Promise.reject(new Error('로그인을 연장할 수 없습니다.'));
