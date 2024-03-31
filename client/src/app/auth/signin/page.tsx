@@ -12,6 +12,7 @@ import {
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 
+import { useRouter } from 'next/navigation';
 import { useMutation } from '@tanstack/react-query';
 import { useMediaQuery } from 'react-responsive';
 import { setTokens } from '@/libs/auth';
@@ -28,6 +29,7 @@ export interface LoginType {
 }
 
 const index = () => {
+    const router = useRouter();
     const isSmall = useMediaQuery({
         query: '(min-width: 393px)',
     });
@@ -35,7 +37,6 @@ const index = () => {
     const [mounted, setMounted] = useState<boolean>(false);
     const [login, setLogin] = useState<LoginType>();
 
-    console.log(login);
     const fetchLogin = async (params: LoginType) => {
         try {
             const response =
@@ -61,6 +62,7 @@ const index = () => {
         mutationFn: fetchLogin,
         onSuccess: () => {
             alert('로그인 되었습니다.');
+            router.push('/attendances');
         },
         onError: () => {},
     });

@@ -87,7 +87,6 @@ const index = () => {
         <>
             {mounted && isSmall === true ? (
                 <ContainerST>
-                    <CssBaseline />
                     <StyledBoxST>
                         <LoginTypographyST>회원가입</LoginTypographyST>
                         <Box
