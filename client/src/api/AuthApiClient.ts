@@ -5,15 +5,6 @@ interface LoginData {
     password: string;
 }
 
-interface Register {
-    username: string;
-    password: string;
-    name: string;
-    mobileNumber: string;
-    birthday: string;
-    email: string;
-}
-
 class AuthApiClient extends BaseApiClient {
     private static instance: AuthApiClient;
 
@@ -32,13 +23,6 @@ class AuthApiClient extends BaseApiClient {
         this.axios.request({
             method: 'POST',
             url: '/auth/signin',
-            data: request,
-        });
-
-    public userRegister = (request: Register) =>
-        this.axios.request({
-            method: 'POST',
-            url: '/auth/signup',
             data: request,
         });
 }
