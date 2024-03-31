@@ -17,10 +17,9 @@ import { useMediaQuery } from 'react-responsive';
 import { setTokens } from '@/libs/auth';
 
 //Api
-
+import AuthApiClient from '@/api/AuthApiClient';
 import axios from 'axios';
 import Image from 'next/image';
-import AuthApiClient from '@/api/AuthApiClient';
 
 export interface LoginType {
     username: string;
