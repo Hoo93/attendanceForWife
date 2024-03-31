@@ -5,7 +5,7 @@ const ACCESS_TOKEN_KEY = 'ACCESS_TOKEN';
 
 const REFRESH_TOKEN_KEY = 'REFRESH_TOKEN';
 
-const AUTH_PATHS = ['/signin', '/signup'];
+const AUTH_PATHS = ['/auth/signin', '/auth/signup'];
 
 const PRIVATE_PATHS = ['/attendancy'];
 
