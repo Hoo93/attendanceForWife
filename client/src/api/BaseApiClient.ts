@@ -49,11 +49,6 @@ class BaseApiClient {
                     )}`
                 );
 
-                // TODO 오류 발생시 /error 페이지 이동을 막기 위함
-                // if (status === 400) {
-                //   window.location.replace("/error");
-                // }
-
                 const accessToken = this.getAccessToken();
 
                 if (accessToken != null && status === 401) {
