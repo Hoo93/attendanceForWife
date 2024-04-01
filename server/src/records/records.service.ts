@@ -15,6 +15,7 @@ import { ResponseWithoutPaginationDto } from '../common/response/responseWithout
 import { CommonResponseDto } from '../common/response/common-response.dto';
 import { AffectedResponse } from '../common/response/affectedResponse';
 import { CreateAllRecordDto } from './dto/createAll-record.dto';
+import { MultiIdsResponseDto } from '../common/response/multi-ids-response.dto';
 
 @Injectable()
 export class RecordsService {
@@ -23,25 +24,29 @@ export class RecordsService {
     private recordRepository: Repository<Record>,
     private excelService: ExcelService,
   ) {}
-  async create(createRecordDto: CreateRecordDto, user: User): Promise<CommonResponseDto<any>> {
-    const record = createRecordDto.toEntity(user.id);
+  async create(createRecordDto: CreateRecordDto, user: User): Promise<CommonResponseDto<MultiIdsResponseDto>> {
+    const records = createRecordDto.toEntities(user.id);
 
-    const realDay = NumberToDayString[new Date(record.date).getDay()];
+    records.forEach((record) => {
+      const realDay = NumberToDayString[new Date(record.date).getDay()];
 
-    if (record.day !== realDay.toUpperCase()) {
-      throw new BadRequestException('요일이 정확하지 않습니다.');
-    }
+      if (record.day !== realDay.toUpperCase()) {
+        throw new BadRequestException('요일이 정확하지 않습니다.');
+      }
 
-    if (record.status !== AttendanceStatus.ABSENT) {
-      delete record.lateReason;
-    }
+      if (record.status !== AttendanceStatus.ABSENT) {
+        delete record.lateReason;
+      }
+    });
 
-    const result: InsertResult = await this.recordRepository.upsert(record, {
+    const uniqueRecords = this.removeDuplicateRecords(records);
+
+    const result: InsertResult = await this.recordRepository.upsert(uniqueRecords, {
       conflictPaths: ['attendeeId', 'date'],
       upsertType: 'on-conflict-do-update',
     });
 
-    return new CommonResponseDto('SUCCESS CREATE RECORD', { id: result.identifiers[0].id });
+    return new CommonResponseDto('SUCCESS CREATE RECORD', { ids: result.identifiers.map((identifier) => identifier.id) });
   }
 
   async createAll(createAllRecordDto: CreateAllRecordDto, user: User): Promise<CommonResponseDto<any>> {
@@ -232,5 +237,17 @@ export class RecordsService {
     queryBuilder.orderBy('attendee_name', 'ASC');
 
     return queryBuilder.getRawMany();
+  }
+
+  private removeDuplicateRecords(records: Record[]): Record[] {
+    // 레코드 분류 및 중복 제거
+    const uniqueRecordsMap = new Map();
+    records.forEach((record) => {
+      const key = `${record.attendeeId}-${record.date}`;
+      uniqueRecordsMap.set(key, record); // 같은 키로 들어오는 레코드를 덮어쓰기. 마지막 레코드만 남음
+    });
+
+    // Map에서 레코드 배열을 재구성
+    return Array.from(uniqueRecordsMap.values());
   }
 }
