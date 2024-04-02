@@ -1,5 +1,7 @@
 'use client';
 
+//Api
+import AuthApiClient, { RegisterData } from '@/api/AuthApiClient';
 import {
     Box,
     Button,
@@ -10,12 +12,10 @@ import {
     styled,
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { useMutation } from '@tanstack/react-query';
-import { useMediaQuery } from 'react-responsive';
 
-//Api
-import AuthApiClient, { RegisterData } from '@/api/AuthApiClient';
 import Image from 'next/image';
+import { useMediaQuery } from 'react-responsive';
+import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 
 const index = () => {
@@ -292,7 +292,12 @@ const index = () => {
                     </StyledBoxST>
                 </ContainerST>
             ) : (
-                <p>화면이 393x852 크기가 아닙니다.</p>
+                <Image
+                    src={'/images/login/checkuree_logo.svg'}
+                    width={200}
+                    height={200}
+                    alt=""
+                />
             )}
         </>
     );
@@ -305,11 +310,11 @@ const TextFieldProps = {
     style: {
         backgroundColor: 'white',
         padding: '0px',
-        width: '303px',
+        width: '301px',
         height: '40px',
         borderRadius: '8px',
         border: '0px',
-        paddingLeft: '10px',
+        paddingLeft: '12px',
         fontSize: '16px',
     },
 };
@@ -318,11 +323,11 @@ const TextFieldProps2 = {
     style: {
         backgroundColor: 'white',
         padding: '0px',
-        width: '215px',
+        width: '213px',
         height: '40px',
         borderRadius: '8px',
         border: '0px',
-        paddingLeft: '10px',
+        paddingLeft: '12px',
         fontSize: '16px',
     },
 };
