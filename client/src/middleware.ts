@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+
 import { safeJwtDecode } from './libs/jwt';
 
 const ACCESS_TOKEN_KEY = 'ACCESS_TOKEN';
@@ -7,7 +8,7 @@ const REFRESH_TOKEN_KEY = 'REFRESH_TOKEN';
 
 const AUTH_PATHS = ['/auth/signin', '/auth/signup'];
 
-const PRIVATE_PATHS = ['/attendancy'];
+const PRIVATE_PATHS = ['/attendances'];
 
 export default async function handler(req: NextRequest) {
     const { pathname, origin } = req.nextUrl;
@@ -16,18 +17,19 @@ export default async function handler(req: NextRequest) {
     const refreshToken = req.cookies.get(REFRESH_TOKEN_KEY);
 
     // 로그인 / 회원가입 페이지의 경우 로그인 되어 있을 시 메인으로 보낸다.
-    if (accessToken != null && pathname === '/') {
-        return NextResponse.redirect(origin + '/attendancy/list');
+    if (accessToken != null && pathname === '/auth/signin') {
+        return NextResponse.redirect(origin + '/attendances');
     }
 
+    console.log(req.url);
     // 비공개 route의 경우 로그인 되어 있지 않을 시 로그인 페이지로 보낸다.
     if (
         accessToken == null &&
         PRIVATE_PATHS.some((path) => pathname.startsWith(path))
     ) {
-        // return NextResponse.redirect(
-        //   `${origin}?redirect_uri=` + encodeURIComponent(req.url)
-        // );
+        return NextResponse.redirect(
+            `${origin}?redirect_uri=` + encodeURIComponent('/auth/signin')
+        );
     }
 
     // 토큰 만료시 (refresh)
