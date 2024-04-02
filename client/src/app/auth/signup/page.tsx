@@ -283,7 +283,7 @@ const index = () => {
                             </RegisterDisabledButton>
                         </Box>
                         <Image
-                            src={'/images/login/checkuree_logo.svg'}
+                            src={'/images/logos/checkuree_logo.svg'}
                             width={100}
                             height={100}
                             alt=""
@@ -292,7 +292,7 @@ const index = () => {
                 </ContainerST>
             ) : (
                 <Image
-                    src={'/images/login/checkuree_logo.svg'}
+                    src={'/images/logos/checkuree_logo.svg'}
                     width={200}
                     height={200}
                     alt=""
