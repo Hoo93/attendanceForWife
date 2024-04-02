@@ -12,15 +12,14 @@ import {
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 
-import { useRouter } from 'next/navigation';
-import { useMutation } from '@tanstack/react-query';
-import { useMediaQuery } from 'react-responsive';
-import { setTokens } from '@/libs/auth';
-
 //Api
 import AuthApiClient from '@/api/AuthApiClient';
-import axios from 'axios';
 import Image from 'next/image';
+import axios from 'axios';
+import { setTokens } from '@/libs/auth';
+import { useMediaQuery } from 'react-responsive';
+import { useMutation } from '@tanstack/react-query';
+import { useRouter } from 'next/navigation';
 
 export interface LoginType {
     username: string;
@@ -64,7 +63,9 @@ const index = () => {
             alert('로그인 되었습니다.');
             router.push('/attendances');
         },
-        onError: () => {},
+        onError: () => {
+            alert('아이디 및 비밀번호가 일치하지 않습니다.');
+        },
     });
 
     // Hook
@@ -103,11 +104,11 @@ const index = () => {
                                     style: {
                                         backgroundColor: 'white',
                                         padding: '0px',
-                                        width: '313px',
+                                        width: '306px',
                                         height: '40px',
                                         borderRadius: '8px',
                                         border: '0px',
-                                        paddingLeft: '5px',
+                                        paddingLeft: '12px',
                                     },
                                 }}
                             />
@@ -122,11 +123,11 @@ const index = () => {
                                     style: {
                                         backgroundColor: 'white',
                                         padding: '0px',
-                                        width: '313px',
+                                        width: '306px',
                                         height: '40px',
                                         borderRadius: '8px',
                                         border: '0px ',
-                                        paddingLeft: '5px',
+                                        paddingLeft: '12px',
                                     },
                                 }}
                             />
@@ -140,9 +141,11 @@ const index = () => {
                                 <StyledCheckbox
                                     inputProps={{
                                         style: {
-                                            border: '0px',
                                             padding: 0,
                                         },
+                                    }}
+                                    sx={{
+                                        color: '#D9D9D9',
                                     }}
                                     onChange={(e) =>
                                         onChange(
@@ -158,6 +161,7 @@ const index = () => {
                                         lineHeight: '16.34px',
                                         fontWeight: 500,
                                         fontFamily: 'Noto Sans',
+                                        verticalAlign: 'middle',
                                     }}
                                 >
                                     로그인 유지
@@ -182,10 +186,16 @@ const index = () => {
                                     justifyContent: 'space-between',
                                 }}
                             >
-                                <StyledLinkTypography>
+                                <StyledLinkTypography
+                                    onClick={() => router.push('/auth/signup')}
+                                >
                                     회원가입
                                 </StyledLinkTypography>
-                                <StyledLinkTypography>
+                                <StyledLinkTypography
+                                    onClick={() =>
+                                        alert('준비중인 기능입니다.')
+                                    }
+                                >
                                     아이디/비밀번호 찾기
                                 </StyledLinkTypography>
                             </Box>
@@ -227,7 +237,12 @@ const index = () => {
                     </StyledBoxST>
                 </ContainerST>
             ) : (
-                <p>화면이 393x852 크기가 아닙니다.</p>
+                <Image
+                    src={'/images/login/checkuree_logo.svg'}
+                    width={200}
+                    height={200}
+                    alt=""
+                />
             )}
         </>
     );
@@ -269,6 +284,7 @@ const StyledCheckbox = styled(Checkbox)`
 
 // 회원가입 및 아이디/비밀번호 찾기 텍스트 스타일
 const StyledLinkTypography = styled(Typography)`
+    cursor: pointer;
     font-size: 14px;
     color: #222222;
     line-height: 19.07px;
@@ -282,7 +298,7 @@ const StyledLoginButton = styled(Button)`
     height: 40px;
     border-radius: 20px;
     font-size: 14px;
-    font-weight: 500;
+    font-weight: 600;
     font-family: 'Noto Sans';
     text-transform: none;
 `;
