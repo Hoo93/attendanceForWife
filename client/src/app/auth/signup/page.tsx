@@ -42,7 +42,7 @@ const index = () => {
         mutationFn: () => AuthApiClient.getInstance().userRegister(register!),
         onSuccess: () => {
             alert('가입이 완료되었습니다.');
-            router.push('/signin');
+            router.push('/auth/signin');
         },
     });
 
