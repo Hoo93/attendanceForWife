@@ -3,7 +3,7 @@ import { AttendeesService } from './attendees.service';
 import { CreateAttendeeDto } from './dto/create-attendee.dto';
 import { UpdateAttendeeDto } from './dto/update-attendee.dto';
 import { GetUser } from '../common/decorator/user.decorator';
-import { User } from '../users/entities/user.entity';
+import { User } from '../auth/entity/user.entity';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Attendance } from '../attendances/entities/attendance.entity';

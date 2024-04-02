@@ -4,7 +4,7 @@ import { TestModule } from '../../../src/test.module';
 import { getDataSourceToken, getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm';
 import { Attendee } from '../../../src/attendees/entities/attendee.entity';
 import { Attendance } from '../../../src/attendances/entities/attendance.entity';
-import { User } from '../../../src/users/entities/user.entity';
+import { User } from '../../../src/auth/entity/user.entity';
 import { CreateAttendeeDto } from '../../../src/attendees/dto/create-attendee.dto';
 import { AttendanceType } from '../../../src/attendances/const/attendance-type.enum';
 import { DataSource, In, Repository } from 'typeorm';

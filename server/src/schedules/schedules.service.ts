@@ -4,7 +4,7 @@ import { UpdateScheduleDto } from './dto/update-schedule.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Schedule } from './entities/schedule.entity';
 import { In, Repository } from 'typeorm';
-import { User } from '../users/entities/user.entity';
+import { User } from '../auth/entity/user.entity';
 import { isNumber } from 'class-validator';
 import { Attendee } from '../attendees/entities/attendee.entity';
 import { ResponseScheduleDto } from './dto/response-schedule.dto';

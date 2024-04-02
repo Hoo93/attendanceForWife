@@ -3,7 +3,7 @@ import { SchedulesService } from '../../../src/schedules/schedules.service';
 import { TestModule } from '../../../src/test.module';
 import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm';
 import { Attendee } from '../../../src/attendees/entities/attendee.entity';
-import { User } from '../../../src/users/entities/user.entity';
+import { User } from '../../../src/auth/entity/user.entity';
 import { Attendance } from '../../../src/attendances/entities/attendance.entity';
 import { Schedule } from '../../../src/schedules/entities/schedule.entity';
 import { AttendanceType } from '../../../src/attendances/const/attendance-type.enum';

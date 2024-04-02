@@ -4,7 +4,7 @@ import { Attendance } from '../../../src/attendances/entities/attendance.entity'
 import { UserAttendance } from '../../../src/attendances/entities/user-attendance.entity';
 import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm';
 import { CreateAttendanceDto } from '../../../src/attendances/dto/create-attendance.dto';
-import { User } from '../../../src/users/entities/user.entity';
+import { User } from '../../../src/auth/entity/user.entity';
 import { AttendanceType } from '../../../src/attendances/const/attendance-type.enum';
 import { TestModule } from '../../../src/test.module';
 import { RoleType } from '../../../src/roles/entities/role-type.enum';

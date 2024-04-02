@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from './entities/user.entity';
+import { User } from '../auth/entity/user.entity';
 import { Repository } from 'typeorm';
 import { Pagination } from '../common/response/pagination';
 import { CommonResponseDto } from '../common/response/common-response.dto';

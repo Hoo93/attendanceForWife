@@ -4,7 +4,7 @@ import { UpdateAttendanceDto } from './dto/update-attendance.dto';
 import { Repository, UpdateResult } from 'typeorm';
 import { Attendance } from './entities/attendance.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from '../users/entities/user.entity';
+import { User } from '../auth/entity/user.entity';
 import { UserAttendance } from './entities/user-attendance.entity';
 import { RoleType } from '../roles/entities/role-type.enum';
 import { ResponseWithoutPaginationDto } from '../common/response/responseWithoutPagination.dto';

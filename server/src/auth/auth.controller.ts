@@ -1,8 +1,8 @@
-import { Controller, Post, Body, UseGuards, Get, Query, BadRequestException } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards, Get, Query, Req, BadRequestException, Res } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { User } from '../users/entities/user.entity';
+import { User } from './entity/user.entity';
 import { SignInDto } from './dto/sign-in.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { GetUser } from '../common/decorator/user.decorator';
@@ -12,6 +12,7 @@ import { AvailabilityResult } from '../common/response/is-available-res';
 import { TokenResponseDto } from './dto/token-response.dto';
 import { CurrentIp } from '../common/decorator/current-ip.decorator';
 import { Schedule } from '../schedules/entities/schedule.entity';
+import { instanceToInstance } from 'class-transformer';
 
 @Controller('auth')
 @ApiTags('인증')
@@ -64,6 +65,20 @@ export class AuthController {
     @CurrentIp() ip: string,
   ): Promise<CommonResponseDto<TokenResponseDto>> {
     return this.authService.refreshToken(refreshTokenDto.refreshToken, ip);
+  }
+
+  @Get('/kakao')
+  @UseGuards(AuthGuard('kakao'))
+  kakaoLogin(): void {
+    // 카카오 인증 페이지로 리다이렉트됩니다.
+  }
+
+  @Get('/kakao/callback')
+  @UseGuards(AuthGuard('kakao'))
+  async kakaoLoginCallback(@Req() req, @Res() res: Response, @CurrentIp() ip: string): Promise<any> {
+    const user = await this.authService.validateKakaoUser(req.user);
+
+    return this.authService.kakaoSignIn(user, ip);
   }
 
   @Get('/check-email')

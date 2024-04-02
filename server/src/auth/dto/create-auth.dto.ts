@@ -14,7 +14,7 @@ import {
   INVALID_PASSWORD_MESSAGE,
   INVALID_PASSWORD_MIN_LENGTH_MESSAGE,
 } from '../const/error-message';
-import { User } from '../../users/entities/user.entity';
+import { User } from '../entity/user.entity';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { MobileNumberTransform } from '../../common/decorator/phoneNumber.decorator';
 

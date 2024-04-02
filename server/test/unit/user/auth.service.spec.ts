@@ -7,7 +7,7 @@ import { MockJwtService } from './mockJwtService';
 import { Repository } from 'typeorm';
 import { TestModule } from '../../../src/test.module';
 import { BadRequestException, UnauthorizedException } from '@nestjs/common';
-import { User } from '../../../src/users/entities/user.entity';
+import { User } from '../../../src/auth/entity/user.entity';
 import { LoginHistory } from '../../../src/auth/entity/login-history.entity';
 import { AuthService } from '../../../src/auth/auth.service';
 import { CreateAuthDto } from '../../../src/auth/dto/create-auth.dto';

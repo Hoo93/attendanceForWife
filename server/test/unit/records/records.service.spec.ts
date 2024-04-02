@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { RecordsService } from '../../../src/records/records.service';
-import { User } from '../../../src/users/entities/user.entity';
+import { User } from '../../../src/auth/entity/user.entity';
 import { Attendance } from '../../../src/attendances/entities/attendance.entity';
 import { AttendanceType } from '../../../src/attendances/const/attendance-type.enum';
 import { Attendee } from '../../../src/attendees/entities/attendee.entity';

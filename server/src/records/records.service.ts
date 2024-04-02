@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateRecordDto } from './dto/create-record.dto';
 import { UpdateRecordDto } from './dto/update-record.dto';
-import { User } from '../users/entities/user.entity';
+import { User } from '../auth/entity/user.entity';
 import { Record } from './entities/record.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, InsertResult, Like, Repository, SelectQueryBuilder } from 'typeorm';

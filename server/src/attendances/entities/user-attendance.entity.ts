@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
-import { User } from '../../users/entities/user.entity';
+import { User } from '../../auth/entity/user.entity';
 import { Attendance } from './attendance.entity';
 import { ApiProperty } from '@nestjs/swagger';
 import { BaseTimeEntity } from '../../common/BaseTimeEntity';

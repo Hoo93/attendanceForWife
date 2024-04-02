@@ -1,15 +1,18 @@
 import { Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn, Unique } from 'typeorm';
 import { BaseTimeEntity } from '../../common/BaseTimeEntity';
 import * as bcrypt from 'bcrypt';
-import { SALT } from '../../auth/const/auth.const';
+import { SALT } from '../const/auth.const';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Attendance } from '../../attendances/entities/attendance.entity';
 import { UserAttendance } from '../../attendances/entities/user-attendance.entity';
-import { UserType } from '../const/user-type.enum';
+import { UserType } from '../../users/const/user-type.enum';
+import { ELoginType } from '../../users/const/login-type.enum';
+import { LoginType } from '../const/login-type.enum';
 
 @Entity()
 @Unique(['mobileNumber'])
 @Unique(['username'])
+@Unique(['kakaoId'])
 @Unique(['email'])
 export class User extends BaseTimeEntity {
   @PrimaryGeneratedColumn('uuid', { comment: '회원번호' })
@@ -20,19 +23,27 @@ export class User extends BaseTimeEntity {
   @ApiProperty({ description: '회원 타입', type: 'string' })
   type: UserType;
 
-  @Column({ comment: '회원 아이디', type: 'varchar' })
+  @Column({ comment: '로그인 타입', type: 'varchar', nullable: false, default: LoginType.GENERAL })
+  @ApiProperty({ description: '로그인 타입', type: 'string' })
+  loginType: LoginType;
+
+  @Column({ comment: '회원 아이디', type: 'varchar', nullable: true })
   @ApiProperty({ description: '회원 아이디', type: 'string' })
   username: string;
 
-  @Column({ comment: '회원 비밀번호', type: 'varchar' })
+  @Column({ comment: '회원 비밀번호', type: 'varchar', nullable: true })
   @ApiProperty({ description: '회원 비밀번호', type: 'string' })
   password: string;
 
-  @Column({ comment: '회원 이름', type: 'varchar' })
+  @Column({ comment: '카카오 아이디', type: 'varchar', nullable: true })
+  @ApiProperty({ description: '카카오 아이디', type: 'string' })
+  kakaoId: string;
+
+  @Column({ nullable: true, comment: '회원 이름', type: 'varchar' })
   @ApiProperty({ description: '회원 이름', type: 'string' })
   name: string;
 
-  @Column({ comment: '회원 전화번호', type: 'varchar' })
+  @Column({ nullable: true, comment: '회원 전화번호', type: 'varchar' })
   @ApiProperty({ description: '회원 전화번호', type: 'string' })
   mobileNumber: string;
 

@@ -1,4 +1,4 @@
-import { User } from '../../../src/users/entities/user.entity';
+import { User } from '../../../src/auth/entity/user.entity';
 
 describe('User Entity Test', () => {
   it('hashPassword Test', async () => {

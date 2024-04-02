@@ -4,7 +4,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Pagination } from '../common/response/pagination';
 import { AuthGuard } from '@nestjs/passport';
-import { User } from './entities/user.entity';
+import { User } from '../auth/entity/user.entity';
 import { MobileNumberTransform } from '../common/decorator/phoneNumber.decorator';
 import { GetUser } from '../common/decorator/user.decorator';
 import { CommonResponseDto } from '../common/response/common-response.dto';

@@ -4,7 +4,7 @@ import { CreateAttendanceDto } from './dto/create-attendance.dto';
 import { UpdateAttendanceDto } from './dto/update-attendance.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiBody, ApiOkResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { User } from '../users/entities/user.entity';
+import { User } from '../auth/entity/user.entity';
 import { GetUser } from '../common/decorator/user.decorator';
 import { Attendance } from './entities/attendance.entity';
 import { UserAttendance } from './entities/user-attendance.entity';

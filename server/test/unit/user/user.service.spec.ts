@@ -2,7 +2,7 @@ import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Repository } from 'typeorm';
 import { TestModule } from '../../../src/test.module';
-import { User } from '../../../src/users/entities/user.entity';
+import { User } from '../../../src/auth/entity/user.entity';
 import { LoginHistory } from '../../../src/auth/entity/login-history.entity';
 import { AuthService } from '../../../src/auth/auth.service';
 import { UserType } from '../../../src/users/const/user-type.enum';

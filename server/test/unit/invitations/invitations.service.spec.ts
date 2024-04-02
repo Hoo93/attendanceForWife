@@ -3,7 +3,7 @@ import { InvitationsService } from '../../../src/invitations/invitations.service
 import { TestModule } from '../../../src/test.module';
 import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm';
 import { Attendance } from '../../../src/attendances/entities/attendance.entity';
-import { User } from '../../../src/users/entities/user.entity';
+import { User } from '../../../src/auth/entity/user.entity';
 import { Repository } from 'typeorm';
 import { Invitation } from '../../../src/invitations/entities/invitation.entity';
 import { AttendanceType } from '../../../src/attendances/const/attendance-type.enum';

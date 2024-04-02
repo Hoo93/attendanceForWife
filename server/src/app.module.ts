@@ -3,7 +3,7 @@ import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { getOrmConfig } from './common/const/orm.config';
-import { User } from './users/entities/user.entity';
+import { User } from './auth/entity/user.entity';
 import { Attendance } from './attendances/entities/attendance.entity';
 import { RolesModule } from './roles/roles.module';
 import { Role } from './roles/entities/role.entity';

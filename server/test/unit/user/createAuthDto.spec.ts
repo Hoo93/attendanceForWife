@@ -16,7 +16,7 @@ import {
   INVALID_PASSWORD_MESSAGE,
   INVALID_PASSWORD_MIN_LENGTH_MESSAGE,
 } from '../../../src/auth/const/error-message';
-import { User } from '../../../src/users/entities/user.entity';
+import { User } from '../../../src/auth/entity/user.entity';
 
 describe('create-auth.dto TEST', () => {
   let createAuthDto: CreateAuthDto;
