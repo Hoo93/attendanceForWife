@@ -241,6 +241,12 @@ const index = () => {
                     src={'/images/login/checkuree_logo.svg'}
                     width={200}
                     height={200}
+                    style={{
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                    }}
                     alt=""
                 />
             )}
