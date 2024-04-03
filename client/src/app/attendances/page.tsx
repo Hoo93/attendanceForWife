@@ -1,6 +1,7 @@
 'use client';
 
 import 'dayjs/locale/ko'; // 한국어 locale 설정
+import dayjs from 'dayjs';
 
 import {
     Avatar,
@@ -22,13 +23,15 @@ import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 
 import AttendanceApiClient from '@/api/AttendanceApiClient';
 import Image from 'next/image';
-import dayjs from 'dayjs';
+import { useRouter } from 'next/navigation';
 
 dayjs.locale('ko');
 
 const daysOfWeek = ['월', '화', '수', '목', '금', '토', '일'];
 
 const Index = () => {
+    const router = useRouter();
+
     // 오늘 날짜
     const today = dayjs();
     const todayFormat = today.format('YYYY년 MM월 DD일 dddd');
@@ -145,7 +148,9 @@ const Index = () => {
                                         height={102}
                                         alt="스켈레톤 이미지"
                                         onClick={() =>
-                                            alert('준비중인 기능입니다.')
+                                            router.push(
+                                                `/attendances/${item.attendanceId}`
+                                            )
                                         }
                                     />
                                     <Box
