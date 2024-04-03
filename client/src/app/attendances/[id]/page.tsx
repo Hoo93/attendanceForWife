@@ -8,6 +8,8 @@ import AttendanceApiClient from '@/api/AttendanceApiClient';
 
 // Styles
 import AttendanceIdContainer from '@/styles/app/attendancesId.styles';
+import Icon from '@/components/Icon';
+import { Icons } from '@/styles/globalStyles';
 
 const Index = () => {
     const attendanceId = usePathname().split('/')[2];
@@ -41,7 +43,9 @@ const Index = () => {
                     </div>
                 </section>
 
-                <section className="attendance-status"></section>
+                <section className="attendance-status">
+                    <Icon icon={Icons.groups} />
+                </section>
             </section>
 
             <section className="attendance-list"></section>
