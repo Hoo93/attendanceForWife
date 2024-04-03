@@ -16,7 +16,7 @@ $ npm install
 ### - FE
 ```bash       
 $ cd client
-$ npm install
+$ yarn
 ```
 
 ## Running the app
@@ -28,6 +28,14 @@ $ npm run start:dev
 
 # production mode
 $ npm run start:prod
+```
+### FE
+```bash
+# development
+$ yarn dev
+
+# production mode
+$ yarn start
 ```
 
 ## Back-End Test
