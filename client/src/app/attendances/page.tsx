@@ -19,10 +19,10 @@ import {
     styled,
 } from '@mui/material';
 import React, { useRef, useState } from 'react';
-import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 
 import AttendanceApiClient from '@/api/AttendanceApiClient';
 import Image from 'next/image';
+import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 
 dayjs.locale('ko');
@@ -88,6 +88,20 @@ const Index = () => {
             fileInputRef.current.click();
         }
     };
+
+    // 요일 선택 로직
+    const [selectedDays, setSelectedDays] = useState<Set<string>>(new Set());
+
+    const handleSelectDay = (day: string) => {
+        const updatedSelectedDays = new Set(selectedDays);
+        if (updatedSelectedDays.has(day)) {
+            updatedSelectedDays.delete(day);
+        } else {
+            updatedSelectedDays.add(day);
+        }
+        setSelectedDays(updatedSelectedDays);
+    };
+
     return (
         <ContainerST>
             {!isCreate ? (
@@ -225,6 +239,17 @@ const Index = () => {
                             );
                         })}
                     </Box>
+                    <Image
+                        src={'/images/icons/add-icon.svg'}
+                        alt=""
+                        width={48}
+                        height={48}
+                        style={{
+                            cursor: 'pointer',
+                            marginLeft: 'auto',
+                        }}
+                        onClick={() => setIsCreate(true)}
+                    />
                 </StyledBoxST>
             ) : (
                 <Box gap={'24px'} display={'flex'} flexDirection={'column'}>
@@ -375,10 +400,14 @@ const Index = () => {
                                             width: 40,
                                             height: 40,
                                             lineHeight: '40px',
-                                            border: '1px solid #D5D5D5',
-                                            color: '#D5D5D5',
+                                            border: `1px solid ${selectedDays.has(day) ? '#59996B' : '#D5D5D5'}`,
+                                            color: selectedDays.has(day)
+                                                ? '#59996B'
+                                                : '#C9C9C9',
+
                                             borderRadius: '8px',
                                         }}
+                                        onClick={() => handleSelectDay(day)}
                                     >
                                         {day}
                                     </Typography>
@@ -386,6 +415,7 @@ const Index = () => {
                             ))}
                         </Grid>
                     </Box>
+
                     {/*  시간 선택 */}
                     <Box
                         sx={{
@@ -467,8 +497,8 @@ const Index = () => {
                             </Grid>
                         </Grid>
                     </Box>
-                    {/* 선생님 선택 */}
 
+                    {/* 선생님 선택 */}
                     <Box
                         sx={{
                             display: 'flex',
@@ -505,13 +535,7 @@ const Index = () => {
                                 border: '1px solid #D5D5D5',
                                 borderRadius: '8px',
                             }}
-                        >
-                            {hours.map((hour) => (
-                                <MenuItem key={hour} value={hour}>
-                                    {hour}
-                                </MenuItem>
-                            ))}
-                        </Select>
+                        />
                     </Box>
                     <Button
                         sx={{
@@ -527,23 +551,26 @@ const Index = () => {
                     </Button>
                 </Box>
             )}
-
-            <Image
-                src={'/images/icons/add-icon.svg'}
-                alt=""
-                width={48}
-                height={48}
-                style={{
-                    cursor: 'pointer',
-                    marginLeft: 'auto',
-                }}
-                onClick={() => setIsCreate(true)}
-            />
         </ContainerST>
     );
 };
 
 export default Index;
+
+// // TODO: 하린님 페이지 완성되면 이어서 작업할 예정
+// export const getServerSideProps: GetServerSideProps = async (context) => {
+//     const queryClient = new QueryClient();
+//     const id = context.params!.id as string;
+//     await queryClient.prefetchQuery({
+//         queryKey: ['아직 안정했음~', id],
+//         queryFn: () => {},
+//     });
+//     return {
+//         props: {
+//             dehydratedState: dehydrate(queryClient),
+//         },
+//     };
+// };
 
 const ContainerST = styled(Container)`
     flex-direction: column;
