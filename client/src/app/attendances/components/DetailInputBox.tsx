@@ -2,9 +2,11 @@
 
 import React from 'react';
 
+// Components
+import { TextField } from '@mui/material';
+
 // Types
 import { AttendanceItemType } from '@/app/attendances/[id]/page';
-import { TextField } from '@mui/material';
 
 const DetailInputBox = ({ item }: { item: AttendanceItemType }) => {
     const detailOptions = {
