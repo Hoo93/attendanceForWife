@@ -1,5 +1,5 @@
-import { clearTokens, setTokens } from '@/libs/auth';
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
+import { clearTokens, setTokens } from '@/libs/auth';
 
 import Cookies from 'js-cookie';
 
@@ -15,7 +15,6 @@ class BaseApiClient {
 
     public constructor(baseURL: string, tokens?: Tokens) {
         this.tokens = tokens;
-
         this.axios = axios.create({
             baseURL,
             headers: {
@@ -25,6 +24,7 @@ class BaseApiClient {
 
         this.axios.interceptors.request.use(async (config) => {
             const accessToken = this.getAccessToken();
+
             if (accessToken != null) {
                 config.headers['Authorization'] = `Bearer ${accessToken}`;
             }
@@ -124,8 +124,8 @@ class BaseApiClient {
         // refresh 토큰 없을 시 / 토큰 갱신 실패 시 로그아웃한다.
         if (typeof window !== 'undefined') {
             clearTokens();
-            if (window.location.pathname !== '/') {
-                window.location.replace('/');
+            if (window.location.pathname !== '/auth/signin') {
+                window.location.replace('/auth/signin');
             }
         }
 

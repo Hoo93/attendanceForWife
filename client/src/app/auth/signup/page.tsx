@@ -1,21 +1,20 @@
 'use client';
 
+//Api
+import AuthApiClient, { RegisterData } from '@/api/AuthApiClient';
 import {
     Box,
     Button,
     Container,
-    CssBaseline,
     TextField,
     Typography,
     styled,
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { useMutation } from '@tanstack/react-query';
-import { useMediaQuery } from 'react-responsive';
 
-//Api
-import AuthApiClient, { RegisterData } from '@/api/AuthApiClient';
 import Image from 'next/image';
+import { useMediaQuery } from 'react-responsive';
+import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 
 const index = () => {
@@ -43,7 +42,7 @@ const index = () => {
         mutationFn: () => AuthApiClient.getInstance().userRegister(register!),
         onSuccess: () => {
             alert('가입이 완료되었습니다.');
-            router.push('/signin');
+            router.push('/auth/signin');
         },
     });
 
@@ -87,7 +86,6 @@ const index = () => {
         <>
             {mounted && isSmall === true ? (
                 <ContainerST>
-                    <CssBaseline />
                     <StyledBoxST>
                         <LoginTypographyST>회원가입</LoginTypographyST>
                         <Box
@@ -285,7 +283,7 @@ const index = () => {
                             </RegisterDisabledButton>
                         </Box>
                         <Image
-                            src={'/images/login/checkuree_logo.svg'}
+                            src={'/images/logos/checkuree_logo.svg'}
                             width={100}
                             height={100}
                             alt=""
@@ -293,7 +291,12 @@ const index = () => {
                     </StyledBoxST>
                 </ContainerST>
             ) : (
-                <p>화면이 393x852 크기가 아닙니다.</p>
+                <Image
+                    src={'/images/logos/checkuree_logo.svg'}
+                    width={200}
+                    height={200}
+                    alt=""
+                />
             )}
         </>
     );
@@ -306,11 +309,11 @@ const TextFieldProps = {
     style: {
         backgroundColor: 'white',
         padding: '0px',
-        width: '303px',
+        width: '301px',
         height: '40px',
         borderRadius: '8px',
         border: '0px',
-        paddingLeft: '10px',
+        paddingLeft: '12px',
         fontSize: '16px',
     },
 };
@@ -319,11 +322,11 @@ const TextFieldProps2 = {
     style: {
         backgroundColor: 'white',
         padding: '0px',
-        width: '215px',
+        width: '213px',
         height: '40px',
         borderRadius: '8px',
         border: '0px',
-        paddingLeft: '10px',
+        paddingLeft: '12px',
         fontSize: '16px',
     },
 };
@@ -360,7 +363,6 @@ const StyledBoxST = styled(Box)`
 // Typography에 대한 스타일
 const LoginTypographyST = styled(Typography)`
     font-weight: 600;
-    font-family: 'Noto sans';
     font-size: 32px;
     line-height: 43.58px;
 `;
