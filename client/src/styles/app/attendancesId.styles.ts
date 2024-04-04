@@ -73,7 +73,7 @@ export const AttendanceIdContainer = styled.section`
         display: flex;
         gap: 12px;
         flex-direction: column;
-        padding-top: 12px;
+        padding: 12px 0 120px;
     }
 `;
 
@@ -88,14 +88,18 @@ export const AttendanceItemContainer = styled.div<{
         align-items: center;
         justify-content: space-between;
         padding: 0 10px 0 18px;
+        border: ${(props) =>
+            props.status === ''
+                ? `1px solid ${Colors.CheckureeGreen}`
+                : 'none'};
         border-radius: 8px;
         box-sizing: border-box;
-        background-color: ${(props) =>
-            props.status === '지각'
-                ? Colors.Orange
-                : props.status === '결석'
-                  ? Colors.Red
-                  : Colors.LightGreen};
+        background-color: ${(props) => {
+            if (props.status === '출석') return Colors.LightGreen;
+            if (props.status === '지각') return Colors.Orange;
+            if (props.status === '결석') return Colors.Red;
+            return Colors.White;
+        }};
         margin-bottom: ${(props) => (props.isDetailOpen ? '4px' : 0)};
 
         & > .name {
@@ -133,12 +137,6 @@ export const AttendanceItemContainer = styled.div<{
             display: ${(props) => (props.isDetailOpen ? 'flex' : 'none')};
             line-height: 24px;
             margin-bottom: 4px;
-
-            & > .detail-button {
-                width: 49px;
-                font-size: 12px;
-                font-weight: 500;
-            }
         }
 
         & > .MuiTextField-root {
@@ -189,6 +187,19 @@ export const StatusButton = styled.div<{ isSelected: boolean }>`
     text-align: center;
     line-height: 32px;
     color: ${(props) => (props.isSelected ? Colors.White : Colors.Black)};
+    background-color: ${(props) => (props.isSelected ? Colors.Black01 : '')};
+    cursor: pointer;
+`;
+
+export const DetailButton = styled.div<{ isSelected: boolean }>`
+    width: fit-content;
+    padding: 0 12px;
+    border-radius: 44px;
+    box-sizing: border-box;
+    font-size: 12px;
+    font-weight: 500;
+    text-align: center;
+    color: ${(props) => (props.isSelected ? Colors.White : Colors.Black01)};
     background-color: ${(props) => (props.isSelected ? Colors.Black01 : '')};
     cursor: pointer;
 `;

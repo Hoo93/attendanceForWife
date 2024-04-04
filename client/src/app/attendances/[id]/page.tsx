@@ -23,25 +23,34 @@ export interface AttendanceItemType {
     name: string;
     status: string;
     isDetailOpen: boolean;
+    lateTime?: string;
+    absentType?: string;
+    lateReason?: string;
 }
 
 const Index = () => {
     const attendanceId = usePathname().split('/')[2];
 
-    const status: { icon: string; count: number }[] = [
+    const statusIcons: { icon: string; count: number }[] = [
         { icon: 'groups', count: 12 },
         { icon: 'sentiment_satisfied_alt', count: 10 },
         { icon: 'watch_later', count: 1 },
         { icon: 'highlight_off', count: 1 },
     ];
 
+    // TODO: api 데이터 제대로 내려오면 하단의 attendance로 대체될 예정.
     const [dummyList, setDummyList] = useState<AttendanceItemType[]>([
-        { id: 1, name: '김차력', status: '출석', isDetailOpen: false },
-        { id: 2, name: '김차린', status: '지각', isDetailOpen: false },
-        { id: 3, name: '김하력', status: '결석', isDetailOpen: false },
-        { id: 4, name: '계창선', status: '출석', isDetailOpen: false },
+        { id: 1, name: '김차력', status: '', isDetailOpen: false },
+        { id: 2, name: '김차린', status: '', isDetailOpen: false },
+        { id: 3, name: '김하력', status: '', isDetailOpen: false },
+        { id: 4, name: '계창선', status: '', isDetailOpen: false },
+        { id: 5, name: '계창선', status: '', isDetailOpen: false },
+        { id: 6, name: '계창선', status: '', isDetailOpen: false },
+        { id: 7, name: '계창선', status: '', isDetailOpen: false },
+        { id: 8, name: '계창선', status: '', isDetailOpen: false },
     ]);
 
+    // fetching API
     const { data: attendance, isLoading } = useQuery({
         queryKey: ['attendance'],
         queryFn: async () => {
@@ -53,25 +62,22 @@ const Index = () => {
         },
     });
 
-    function handleClickDetail(index: number, value: boolean) {
+    /**
+     * @description 출석/지각/결석 선택 및 상세사유 입력 등 출석대상 목록의 값을 변경하는 함수
+     */
+    const handleListItem = (
+        index: number,
+        field: string,
+        value: string | boolean
+    ) => {
         setDummyList((prevState) => {
             return prevState.map((item, idx) => {
                 if (idx === index)
-                    return Object.assign(item, { isDetailOpen: !value });
+                    return Object.assign(item, { [field]: value });
                 else return item;
             });
         });
-    }
-
-    function handleClickStatus(index: number, value: string) {
-        setDummyList((prevState) => {
-            return prevState.map((item, idx) => {
-                if (idx === index)
-                    return Object.assign(item, { status: value });
-                else return item;
-            });
-        });
-    }
+    };
 
     // console.log('attendance', attendance);
 
@@ -83,6 +89,7 @@ const Index = () => {
                 <div className="attendance-img"></div>
 
                 <section className="attendance-info">
+                    {/* TODO: 추후 데이터 제대로 내려오면 api 값으로 변경 필요 */}
                     <div className="name">출석부 이름</div>
                     <div className="date-container">
                         <div className="date">03</div>
@@ -92,7 +99,7 @@ const Index = () => {
                 </section>
 
                 <section className="attendance-status-container">
-                    {status.map((item) => (
+                    {statusIcons.map((item) => (
                         <div className="status">
                             <Icon
                                 icon={Icons[item.icon]}
@@ -111,8 +118,7 @@ const Index = () => {
                     <AttendanceItem
                         item={item}
                         index={index}
-                        handleClickDetail={handleClickDetail}
-                        handleClickStatus={handleClickStatus}
+                        handleListItem={handleListItem}
                     />
                 ))}
             </section>
