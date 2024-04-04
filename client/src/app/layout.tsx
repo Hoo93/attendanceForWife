@@ -1,16 +1,17 @@
 import './globals.css';
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import { Noto_Sans } from 'next/font/google';
+import './globals.css';
 import theme from '@/theme';
 
 // Provider
 import QueryClientProviders from './provider';
 import { ThemeProvider } from '@mui/material';
 
-const inter = Inter({ subsets: ['latin'] });
+const notoSans = Noto_Sans({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-    title: '체쿠리',
+    title: 'CHECKUREE',
     description: '출석부 서비스',
 };
 
@@ -21,7 +22,14 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="en">
-            <body className={inter.className}>
+            <head>
+                <title>CHECKUREE</title>
+                <link
+                    href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined&display=block"
+                    rel="stylesheet"
+                />
+            </head>
+            <body className={notoSans.className}>
                 <QueryClientProviders>
                     <ThemeProvider theme={theme}>{children}</ThemeProvider>
                 </QueryClientProviders>

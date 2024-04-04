@@ -1,6 +1,7 @@
 'use client';
 
 import 'dayjs/locale/ko'; // 한국어 locale 설정
+import dayjs from 'dayjs';
 
 import { Box, Container, Typography, styled } from '@mui/material';
 import React, { useState } from 'react';
@@ -8,8 +9,8 @@ import React, { useState } from 'react';
 import AttendanceApiClient from '@/api/AttendanceApiClient';
 import AttendanceCreateForm from './components';
 import Image from 'next/image';
-import dayjs from 'dayjs';
 import { useQuery } from '@tanstack/react-query';
+import { useRouter } from 'next/navigation';
 
 dayjs.locale('ko');
 
@@ -19,6 +20,8 @@ interface AttendanceData {
     type: string;
 }
 const Index = () => {
+    const router = useRouter();
+
     const today = dayjs(); // 오늘 날짜
     const todayFormat = today.format('YYYY년 MM월 DD일 dddd');
     const [isCreate, setIsCreate] = useState<boolean>(false);
@@ -108,7 +111,9 @@ const Index = () => {
                                         height={102}
                                         alt="스켈레톤 이미지"
                                         onClick={() =>
-                                            alert('준비중인 기능입니다.')
+                                            router.push(
+                                                `/attendances/${item.attendanceId}`
+                                            )
                                         }
                                     />
                                     <Box
