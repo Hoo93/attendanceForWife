@@ -77,7 +77,10 @@ export const AttendanceIdContainer = styled.section`
     }
 `;
 
-export const AttendanceItemContainer = styled.div<{ status: string }>`
+export const AttendanceItemContainer = styled.div<{
+    status: string;
+    isDetailOpen: boolean;
+}>`
     & > .attendance-item__container {
         width: 339px;
         height: 42px;
@@ -93,7 +96,7 @@ export const AttendanceItemContainer = styled.div<{ status: string }>`
                 : props.status === '결석'
                   ? Colors.Red
                   : Colors.LightGreen};
-        margin-bottom: 4px;
+        margin-bottom: ${(props) => (props.isDetailOpen ? '4px' : 0)};
 
         & > .name {
             display: flex;
@@ -114,8 +117,8 @@ export const AttendanceItemContainer = styled.div<{ status: string }>`
     }
 
     & > .detail-box {
-        min-height: 104px;
-        padding: 4px;
+        height: ${(props) => (props.isDetailOpen ? '104px' : 0)};
+        padding: ${(props) => (props.isDetailOpen ? '4px' : 0)};
         border-radius: 8px;
         background-color: ${(props) =>
             props.status === '지각'
@@ -123,10 +126,11 @@ export const AttendanceItemContainer = styled.div<{ status: string }>`
                 : props.status === '결석'
                   ? Colors.Red
                   : Colors.LightGreen};
+        transition: height 0.2s ease-in;
 
         & > .detail-buttons {
             height: 24px;
-            display: flex;
+            display: ${(props) => (props.isDetailOpen ? 'flex' : 'none')};
             line-height: 24px;
             margin-bottom: 4px;
 
@@ -143,19 +147,29 @@ export const AttendanceItemContainer = styled.div<{ status: string }>`
             & > .MuiInputBase-root {
                 width: 100%;
                 height: ${(props) =>
-                    props.status === '지각' || props.status === '결석'
-                        ? '68px'
-                        : '96px'};
+                    props.isDetailOpen
+                        ? props.status === '지각' || props.status === '결석'
+                            ? '68px'
+                            : '96px'
+                        : 0};
                 padding: 0;
                 border-radius: 4px;
                 border: none;
                 background: ${Colors.White};
+                transition: height 0.2s ease-in;
 
                 & > textarea {
+                    height: ${(props) =>
+                        props.isDetailOpen
+                            ? props.status === '지각' || props.status === '결석'
+                                ? '68px'
+                                : '96px'
+                            : 0} !important;
                     padding: 0 8px;
                     box-sizing: border-box;
                     font-size: 12px;
                     font-weight: 500;
+                    transition: height 0.2s ease-in;
                 }
 
                 & > fieldset {

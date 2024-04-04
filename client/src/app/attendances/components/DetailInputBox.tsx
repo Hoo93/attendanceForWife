@@ -40,6 +40,7 @@ const DetailInputBox = ({ item }: { item: AttendanceItemType }) => {
                     ))}
                 </div>
             ) : null}
+
             <TextField rows={item.status === '출석' ? 4 : 3} multiline />
         </div>
     );

@@ -51,6 +51,7 @@ const AttendanceItem = (props: PropsType) => {
     return (
         <AttendanceItemContainer
             status={item.status || '출석'}
+            isDetailOpen={item.isDetailOpen}
             key={`attendance-item__${item.id}`}
         >
             <div className={'attendance-item__container'}>
@@ -80,7 +81,7 @@ const AttendanceItem = (props: PropsType) => {
             </div>
 
             {/* 출석/지각/상세 사유 입력 박스 */}
-            {item.isDetailOpen && <DetailInputBox item={item} />}
+            <DetailInputBox item={item} />
         </AttendanceItemContainer>
     );
 };
