@@ -3,6 +3,7 @@ import BaseApiClient, { Tokens } from './BaseApiClient';
 export interface LoginData {
     username: string;
     password: string;
+    isAutoLogin: boolean;
 }
 export interface RegisterData {
     username: string;

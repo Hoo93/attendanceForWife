@@ -1,5 +1,7 @@
 'use client';
 
+//Api
+import AuthApiClient, { LoginData } from '@/api/AuthApiClient';
 import {
     Box,
     Button,
@@ -12,20 +14,12 @@ import {
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 
-//Api
-import AuthApiClient from '@/api/AuthApiClient';
 import Image from 'next/image';
 import axios from 'axios';
 import { setTokens } from '@/libs/auth';
 import { useMediaQuery } from 'react-responsive';
 import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
-
-export interface LoginType {
-    username: string;
-    password: string;
-    isAutoLogin: boolean;
-}
 
 const index = () => {
     const router = useRouter();
@@ -34,9 +28,9 @@ const index = () => {
     });
 
     const [mounted, setMounted] = useState<boolean>(false);
-    const [login, setLogin] = useState<LoginType>();
+    const [login, setLogin] = useState<LoginData>();
 
-    const fetchLogin = async (params: LoginType) => {
+    const fetchLogin = async (params: LoginData) => {
         try {
             const response =
                 await AuthApiClient.getInstance().userLogin(params);
@@ -69,7 +63,7 @@ const index = () => {
     });
 
     // Hook
-    const onChange = (field: keyof LoginType, value: string | boolean) => {
+    const onChange = (field: keyof LoginData, value: string | boolean) => {
         setLogin((prevState) => ({
             ...prevState!,
             [field]: value,
@@ -82,180 +76,149 @@ const index = () => {
 
     return (
         <>
-            {mounted && isSmall === true ? (
-                <ContainerST>
-                    <CssBaseline />
-                    <StyledBoxST>
-                        <LoginTypographyST>로그인</LoginTypographyST>
+            <ContainerST>
+                <CssBaseline />
+                <StyledBoxST>
+                    <LoginTypographyST>로그인</LoginTypographyST>
+                    <Box
+                        component="form"
+                        display={'flex'}
+                        flexDirection={'column'}
+                        gap={'10px'}
+                    >
+                        <TextField
+                            value={login?.username}
+                            placeholder="아이디를 입력해주세요."
+                            onChange={(e) =>
+                                onChange('username', e.target.value)
+                            }
+                            inputProps={TextFiledInputProps}
+                        />
+                        <TextField
+                            type="password"
+                            placeholder="비밀번호를 입력해주세요."
+                            onChange={(e) =>
+                                onChange('password', e.target.value)
+                            }
+                            inputProps={TextFiledInputProps}
+                        />
                         <Box
-                            component="form"
-                            display={'flex'}
-                            flexDirection={'column'}
-                            gap={'10px'}
+                            sx={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '5px',
+                            }}
                         >
-                            <TextField
-                                value={login?.username}
-                                placeholder="아이디를 입력해주세요."
-                                onChange={(e) =>
-                                    onChange('username', e.target.value)
-                                }
+                            <StyledCheckbox
                                 inputProps={{
-                                    disableUnderline: true,
                                     style: {
-                                        backgroundColor: 'white',
-                                        padding: '0px',
-                                        width: '306px',
-                                        height: '40px',
-                                        borderRadius: '8px',
-                                        border: '0px',
-                                        paddingLeft: '12px',
+                                        padding: 0,
                                     },
                                 }}
-                            />
-                            <TextField
-                                type="password"
-                                placeholder="비밀번호를 입력해주세요."
-                                onChange={(e) =>
-                                    onChange('password', e.target.value)
-                                }
-                                inputProps={{
-                                    disableUnderline: true,
-                                    style: {
-                                        backgroundColor: 'white',
-                                        padding: '0px',
-                                        width: '306px',
-                                        height: '40px',
-                                        borderRadius: '8px',
-                                        border: '0px ',
-                                        paddingLeft: '12px',
-                                    },
-                                }}
-                            />
-                            <Box
                                 sx={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '5px',
+                                    color: '#D9D9D9',
+                                }}
+                                onChange={(e) =>
+                                    onChange('isAutoLogin', e.target?.checked)
+                                }
+                            />
+                            <Typography
+                                sx={{
+                                    fontSize: '12.5px',
+                                    color: '#D9D9D9',
+                                    lineHeight: '16.34px',
+                                    fontWeight: 500,
+                                    verticalAlign: 'middle',
                                 }}
                             >
-                                <StyledCheckbox
-                                    inputProps={{
-                                        style: {
-                                            padding: 0,
-                                        },
-                                    }}
-                                    sx={{
-                                        color: '#D9D9D9',
-                                    }}
-                                    onChange={(e) =>
-                                        onChange(
-                                            'isAutoLogin',
-                                            e.target?.checked
-                                        )
-                                    }
-                                />
-                                <Typography
-                                    sx={{
-                                        fontSize: '12.5px',
-                                        color: '#D9D9D9',
-                                        lineHeight: '16.34px',
-                                        fontWeight: 500,
-                                        fontFamily: 'Noto Sans',
-                                        verticalAlign: 'middle',
-                                    }}
-                                >
-                                    로그인 유지
-                                </Typography>
-                            </Box>
-                            <Button
+                                로그인 유지
+                            </Typography>
+                        </Box>
+                        <Button
+                            sx={{
+                                width: '318px',
+                                height: '48px',
+                                color: 'white',
+                                backgroundColor: '#59996B',
+                            }}
+                            onClick={() => {
+                                loginMudation(login!);
+                            }}
+                        >
+                            로그인 하기
+                        </Button>
+                        <Box
+                            sx={{
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                            }}
+                        >
+                            <StyledLinkTypography
+                                onClick={() => router.push('/auth/signup')}
+                            >
+                                회원가입
+                            </StyledLinkTypography>
+                            <StyledLinkTypography
+                                onClick={() => alert('준비중인 기능입니다.')}
+                            >
+                                아이디/비밀번호 찾기
+                            </StyledLinkTypography>
+                        </Box>
+                        <Box
+                            sx={{
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                            }}
+                        >
+                            <StyledKakaoLoginButton
+                                onClick={() => {
+                                    alert('준비중인 기능입니다.');
+                                }}
+                            >
+                                카카오 로그인
+                            </StyledKakaoLoginButton>
+                            <StyledNaverLoginButton
                                 sx={{
-                                    width: '318px',
-                                    height: '48px',
+                                    width: '152px',
+                                    height: '40px',
                                     color: 'white',
-                                    backgroundColor: '#59996B',
+                                    backgroundColor: '#00BF19',
+                                    borderRadius: '20px',
                                 }}
                                 onClick={() => {
-                                    loginMudation(login!);
+                                    alert('준비중인 기능입니다.');
                                 }}
                             >
-                                로그인 하기
-                            </Button>
-                            <Box
-                                sx={{
-                                    display: 'flex',
-                                    justifyContent: 'space-between',
-                                }}
-                            >
-                                <StyledLinkTypography
-                                    onClick={() => router.push('/auth/signup')}
-                                >
-                                    회원가입
-                                </StyledLinkTypography>
-                                <StyledLinkTypography
-                                    onClick={() =>
-                                        alert('준비중인 기능입니다.')
-                                    }
-                                >
-                                    아이디/비밀번호 찾기
-                                </StyledLinkTypography>
-                            </Box>
-                            <Box
-                                sx={{
-                                    display: 'flex',
-                                    justifyContent: 'space-between',
-                                }}
-                            >
-                                <StyledKakaoLoginButton
-                                    onClick={() => {
-                                        alert('준비중인 기능입니다.');
-                                    }}
-                                >
-                                    카카오 로그인
-                                </StyledKakaoLoginButton>
-                                <StyledNaverLoginButton
-                                    sx={{
-                                        width: '152px',
-                                        height: '40px',
-                                        color: 'white',
-                                        backgroundColor: '#00BF19',
-                                        borderRadius: '20px',
-                                    }}
-                                    onClick={() => {
-                                        alert('준비중인 기능입니다.');
-                                    }}
-                                >
-                                    네이버 로그인
-                                </StyledNaverLoginButton>
-                            </Box>
+                                네이버 로그인
+                            </StyledNaverLoginButton>
                         </Box>
-                        <Image
-                            src={'/images/logos/checkuree_logo.svg'}
-                            width={100}
-                            height={100}
-                            alt=""
-                        />
-                    </StyledBoxST>
-                </ContainerST>
-            ) : (
-                <Image
-                    src={'/images/logos/checkuree_logo.svg'}
-                    width={200}
-                    height={200}
-                    style={{
-                        position: 'absolute',
-                        top: '50%',
-                        left: '50%',
-                        transform: 'translate(-50%, -50%)',
-                    }}
-                    alt=""
-                />
-            )}
+                    </Box>
+                    <Image
+                        src={'/images/logos/checkuree_logo.svg'}
+                        width={100}
+                        height={100}
+                        alt=""
+                    />
+                </StyledBoxST>
+            </ContainerST>
         </>
     );
 };
 
 export default index;
 
+const TextFiledInputProps = {
+    disableUnderline: true,
+    style: {
+        backgroundColor: 'white',
+        padding: '0px',
+        width: '306px',
+        height: '40px',
+        borderRadius: '8px',
+        border: '0px',
+        paddingLeft: '12px',
+    },
+};
 // Container에 대한 스타일
 const ContainerST = styled(Container)`
     display: flex;
@@ -275,7 +238,6 @@ const StyledBoxST = styled(Box)`
 // Typography에 대한 스타일
 const LoginTypographyST = styled(Typography)`
     font-weight: 600;
-    font-family: 'Noto sans';
     font-size: 32px;
     line-height: 43.58px;
 `;
@@ -295,7 +257,6 @@ const StyledLinkTypography = styled(Typography)`
     color: #222222;
     line-height: 19.07px;
     font-weight: 500;
-    font-family: 'Noto Sans';
 `;
 
 // 카카오 및 네이버 로그인 버튼 스타일
@@ -305,7 +266,6 @@ const StyledLoginButton = styled(Button)`
     border-radius: 20px;
     font-size: 14px;
     font-weight: 600;
-    font-family: 'Noto Sans';
     text-transform: none;
 `;
 
