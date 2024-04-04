@@ -1,9 +1,12 @@
 'use client';
 
-import styled from '@emotion/styled';
-import Image from 'next/image';
-import { Colors, Images } from '@/styles/globalStyles';
+// Next
 import Link from 'next/link';
+import Image from 'next/image';
+
+// Styles
+import styled from '@emotion/styled';
+import { Images } from '@/styles/globalStyles';
 
 const NotFoundContainer = styled.section`
     width: 393px;
@@ -38,6 +41,7 @@ const NotFound = () => {
     return (
         <NotFoundContainer>
             <Image src={Images.Logo} alt={'logo'} />
+
             <h2>
                 죄송합니다.
                 <br />
