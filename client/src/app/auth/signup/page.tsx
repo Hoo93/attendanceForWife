@@ -363,7 +363,6 @@ const StyledBoxST = styled(Box)`
 // Typography에 대한 스타일
 const LoginTypographyST = styled(Typography)`
     font-weight: 600;
-    font-family: 'Noto sans';
     font-size: 32px;
     line-height: 43.58px;
 `;
