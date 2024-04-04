@@ -1,9 +1,9 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import { Noto_Sans } from 'next/font/google';
 import Providers from './provider';
 import './globals.css';
 
-const inter = Inter({ subsets: ['latin'] });
+const notoSans = Noto_Sans({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
     title: 'CHECKUREE',
@@ -24,7 +24,7 @@ export default function RootLayout({
                     rel="stylesheet"
                 />
             </head>
-            <body className={inter.className}>
+            <body className={notoSans.className}>
                 <Providers>{children}</Providers>
             </body>
         </html>
