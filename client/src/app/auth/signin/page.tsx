@@ -208,7 +208,6 @@ const index = () => {
 export default index;
 
 const TextFiledInputProps = {
-    disableUnderline: true,
     style: {
         backgroundColor: 'white',
         padding: '0px',
