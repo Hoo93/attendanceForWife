@@ -1,7 +1,19 @@
 import Logo from '../../public/images/logos/checkuree_logo.svg';
 import DetailOpen from '../../public/images/icons/ico-detail-open.svg';
 
-export const Colors: Record<string, string> = {
+// Types
+type ColorKey =
+    | 'CheckureeGreen'
+    | 'LightGreen'
+    | 'Orange'
+    | 'Red'
+    | 'White'
+    | 'Black01'
+    | 'Gray80'
+    | 'Gray60'
+    | 'Gray40';
+
+export const Colors: Record<ColorKey, string> = {
     CheckureeGreen: '#59996B',
     LightGreen: '#EDF9E3',
     Orange: '#EDC588',
