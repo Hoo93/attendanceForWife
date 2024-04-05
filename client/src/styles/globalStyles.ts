@@ -33,6 +33,7 @@ export const Icons: Record<string, { src: string; type: string }> = {
     },
     watch_later: { src: 'watch_later', type: 'material-icons-outlined' },
     highlight_off: { src: 'highlight_off', type: 'material-icons-outlined' },
+    add: { src: 'add', type: 'material-icons-outlined' },
 };
 
 export const Images: Record<string, string> = { Logo, DetailOpen };
