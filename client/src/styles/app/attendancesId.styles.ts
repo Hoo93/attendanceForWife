@@ -3,10 +3,15 @@ import { Colors } from '@/styles/globalStyles';
 
 export const AttendanceIdContainer = styled.section`
     width: 393px;
-    padding: 42px 27px 0;
+    padding: 0 27px;
 
     & > .attendance-header {
-        padding-bottom: 12px;
+        width: 100%;
+        position: fixed;
+        top: 0;
+        padding: 42px 0 12px;
+        box-sizing: border-box;
+        background: ${Colors.White};
 
         & > .attendance-img {
             width: 32px;
@@ -74,6 +79,7 @@ export const AttendanceIdContainer = styled.section`
         gap: 12px;
         flex-direction: column;
         padding: 12px 0 120px;
+        margin-top: 157px;
     }
 `;
 
@@ -186,7 +192,7 @@ export const StatusButton = styled.div<{ isSelected: boolean }>`
     font-weight: 500;
     text-align: center;
     line-height: 32px;
-    color: ${(props) => (props.isSelected ? Colors.White : Colors.Black)};
+    color: ${(props) => (props.isSelected ? Colors.White : Colors.Black01)};
     background-color: ${(props) => (props.isSelected ? Colors.Black01 : '')};
     cursor: pointer;
 `;
